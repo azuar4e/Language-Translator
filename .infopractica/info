@@ -1,0 +1,21 @@
+----------------------------------------------------------------------
+opciones
+----------------------------------------------------------------------
+
+Codigo intermedio -> cuartetos
+Sentencia condicional compuesta if e if-else
+Operador minimo
+Subprograma -> procedimientos con paso de valor por valor y referencia
+
+----------------------------------------------------------------------
+ficheros a generar
+----------------------------------------------------------------------
+
+fichero con el codigo intermedio -> formato fichero de cuartetos
+fichero con el codigo objeto -> codigo ensamblador
+
+Documentacion: https://dlsiis.fi.upm.es/traductores/Documentacion.html
+
+----------------------------------------------------------------------
+
+Memotia max 30 pags

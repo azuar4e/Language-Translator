@@ -1,0 +1,27 @@
+VAR
+ s: string;
+ num: integer;
+ uno: integer;
+
+FUNCTION FactorialRecursivo (n: integer): integer;
+begin
+	if (n < 1) then	return 1;
+	return n * FactorialRecursivo (n - 1);
+end;
+
+PROCEDURE salto;
+begin
+	writeln;
+end;
+
+FUNCTION FactorialLoop (n: integer): integer;
+var factorial: integer;
+begin
+	factorial:= 0 + uno * 1;
+	loop
+		factorial := factorial * n;
+		n:= n - 1; 
+		exit when n = 0;
+	end;
+	return factorial;
+end;

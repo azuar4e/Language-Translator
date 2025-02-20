@@ -1,0 +1,1 @@
+Error en la linea [27]: Debe existir una declaración de program

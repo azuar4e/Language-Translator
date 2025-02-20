@@ -1,0 +1,16 @@
+Terminales = {}
+NoTerminales = {S, E}
+
+EdT = {
+    S -> if E then { S.después:= nuevaetiq();
+emite(‘if’, E.lugar, ‘=’, 0, ‘goto’, S.después) }
+S1 { emite(S.después, ‘:’) }
+
+    S -> if E { S.else:= nuevaetiq(); S.después:= nuevaetiq();
+emite(‘if’, E.lugar, ‘=’, 0, ‘goto’, S.else) }
+then S 1 { emite(‘goto’, S.después);
+emite(S.else, ‘:’) }
+else S2 { emite(S.después, ‘:’) }
+
+
+}

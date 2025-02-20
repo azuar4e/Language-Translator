@@ -1,0 +1,253 @@
+{ Programa de ejemplo correcto }
+{******* JosÃ© Luis Fuertes, enero, 2025 *********}
+{El ejemplo incorpora elementos del lenguaje opcionales y elementos que no todos los grupos tienen que implementar }
+
+VAR
+ s: string;	{ variable global cadena }
+ num: integer;
+ uno: integer;	{ variables globales enteras }
+
+FUNCTION FactorialRecursivo (n: integer): integer;	{ n: parÃ¡metro formal entero por valor de la funciÃ³n entera  }
+begin
+	if (n < 1) then	return 1;
+	return n * FactorialRecursivo (n - 1);	{ llamada recursiva }
+end;
+
+PROCEDURE salto;	{ como no tiene parÃ¡metros, no se ponen parÃ©ntesis }
+begin
+	writeln;
+end;
+
+FUNCTION FactorialLoop (n: integer): integer;	{ n: parÃ¡metro formal entero de la funciÃ³n entera }
+var factorial: integer;	{ variable local }
+begin
+	factorial:= 0 + uno * 1;	{ valdrÃ¡ 1 }
+	loop
+		factorial := factorial * n;
+		n:= n - 1; 
+		exit when n = 0;
+	end;		{ termina cuando n sea 0 }
+	return factorial;		{ devuelve el valor entero de la variable factorial }
+end;
+
+FUNCTION FactorialWhile: integer;
+var factorial: integer;
+	i: integer;
+begin
+	factorial:= 1;	
+	i:= 0;	
+	while i < num do			{ num es variable global entera }
+	begin
+		i := i + 1; factorial := factorial * i;
+	end;
+	return factorial;
+end;
+
+FUNCTION FactorialFor (n: integer): integer;	{ funciÃ³n entera }
+var factorial: integer;
+	i: integer;
+begin
+	factorial := UNO;
+	for i:= 1 to n do
+	begin
+		factorial:= factorial * i;
+	end;
+	return factorial;
+end;
+
+function FactorialRepeat (n: integer): integer;
+var factorial: integer;
+begin
+	factorial:= 0 + uno * 1;
+	repeat
+		factorial:= factorial * n; 
+		n:= n - 1;
+	until (n = 0);		{ hasta que n sea 0 }
+	return factorial;		{ devuelve el valor entero de la variable factorial}
+end;
+
+
+PROCEDURE imprime (s: string; msg: string; f: integer);	{ procedimiento que recibe 3 argumentos }
+begin
+	write (s, msg, f);
+	salto;	{ imprime un salto de lÃ­nea llamando al procedimiento sin argumentos}
+	return;	{ finaliza la ejecuciÃ³n del procedimiento (en este caso, se podrÃ­a omitir) }
+end;
+
+FUNCTION cadena (log1: boolean): string;	{ funciÃ³n que devuelve una cadena }
+begin
+	if (not log1) 
+	then begin return s;end;
+	else begin return'Fin';end;
+end;	
+
+FUNCTION bisiesto (a: integer): boolean; { funciÃ³n lÃ³gica }
+begin			
+	return 		{se tienen en cuenta la precedencia de operadores: }
+		(a mod 4 = 0 and a mod 100 <> 0 or a mod 400 = 0);
+end;
+
+function dias (m: integer; a: integer): integer;
+begin
+	case m of
+		1: begin return 31; end;
+		2: begin if bisiesto (a) then return 29; return 28; end;
+		3: begin return 31; end;
+		4: begin return 30; end;
+		5: begin return 31; end;
+		6: begin return 30; end;
+		7: begin return 31; end;
+		8: begin return 31; end;
+		9: begin return 30; end;
+		10: begin return 31; end;
+		11: begin return 30; end;
+		12: begin return 31; end;
+		otherwise: begin writeln ('Error: mes incorrecto: ', m); end; 
+	end;
+end;	{ Todos los return devuelven un entero y la funciÃ³n es entera
+	{ Pero si la funciÃ³n acaba sin ejecutar un return, la funciÃ³n devolverÃ¡ 'basura' }
+
+function esFechaCorrecta (d: integer; m: integer; a: integer): boolean;
+begin
+	return m>=1 and m<=12 and d>=1 and d<=dias(m,a);
+end; 
+
+procedure imprimeSuma (v: integer; w: integer);
+begin
+	write (v + w);
+	salto;
+end; 	{ procedimiento sin return }
+
+procedure potencia (z: integer; dim: integer);
+var 	s: integer;	{ Oculta a la s global }
+begin
+	if (0=num) {si es cero, termina la funciÃ³n }
+		then return;
+	for s:=0 to dim do
+	begin
+		z:= z*z;
+		imprime ('Potencia:', ' ', z);
+	end;
+end; 
+
+procedure potencias2 (x: integer);
+var i: integer;
+begin
+	writeln ('Todo Ingeniero InformÃ¡tico debe conocer las potencias de 2.');
+	if x>14 then writeln ('Error. ' + '2 elevado a ', x, ' supera el mayor entero que puede representarse');
+	for i:= 0 to x do
+	begin
+		write (2, '^', i, '=');
+		writeln (2 ** i);
+	end;
+end;
+
+procedure demo;	{ definiciÃ³n del procedimiento demo, sin argumentos y que no devuelve nada }
+var 
+	v0:integer;v1:integer;v2:integer;v3:integer;
+	zv:integer; { Variables locales }
+	s: string; 	{ Oculta a la s global}
+	i: integer;
+begin
+	uno:= 1;
+	writeln ('Escriba "tres" nÃºmeros: ');
+	read (v1, v2, v3);
+	
+	if (v3=0) then return;	{ termina el procedimiento }
+	
+	if (not((v1 = v2) and (v1 <> v3))) then	
+	begin
+		writeln ('Â¿Puede escribir su nombre? ');
+		read (s);
+		if v2 < v3 then	{ si v2<v3, v0:=v2; en otro caso v0:=1/v3 }
+		begin
+			 v0:= v2; 
+		end;
+		else
+		begin
+			v0:= 1 / v3;
+		end;
+		write (s);
+	end;
+	s:= 'El primer valor era ';
+	if (v1 <> 0) then
+	begin
+		writeln (s,v1,'.');
+	end;
+	else
+	begin
+		write (s); imprimeSuma (uno, -UNO); salto;	
+	end;
+
+	potencia (v0, 4);
+
+	for i:=1 to 10	do
+	begin
+		zv:= zv+i;
+	end;
+	potencia (zv, 5);
+	imprimeSuma (i, num);
+	s:='';
+	imprime (s, cadena(true), 666);
+	writeln ('El mÃ¡ximo es: ', max (v0, v1, v2, v3));
+	writeln ('El mÃ­nimo es: ', min (v0, v1, v2, v3));
+	if not (uno in (v0, v1, v2, v3)) then s:= ' no';
+	writeln ('El valor 1'+s+' estÃ¡ en la lista.');
+	potencias2 (14);
+end;
+
+procedure asigna (var n: integer; m: integer);	{ un parÃ¡metro por referencia y otro por valor }
+begin
+	n:= m;
+end;
+
+{ Programa principal: }
+program principal;
+var	vFor: integer;
+	vLoop: integer;
+	vRepeat: integer;
+	vWhile: integer;  {variables locales a principal}
+begin
+	s := 'El factorial ';	{ Primera sentencia que se ejecutarÃ­a }
+
+	write (s);
+	repeat
+		salto;
+		write ('Introduce un dÃ­gito: ');
+		read (num);	{ se lee un nÃºmero del teclado y se guarda en la variable global num }
+	until (num<=9);
+	vFor:= FactorialFor (num);
+	vLoop:= FactorialLoop (num);
+	vWhile:= FactorialWhile;
+	vRepeat:= FactorialRepeat (num);
+	case num of
+		1: begin writeln ('El factorial de ',num,' siempre es 1.'); end;
+		0: begin writeln ('El factorial de ',num,' es 1 por definiciÃ³n.'); end;
+		2: begin writeln ('El factorial de ',num,' calculado con un bucle for es= ', vFor); end;
+		3: begin writeln ('El factorial de ',num,' calculado con un bucle loop es= ', vLoop);  end;
+		4: begin writeln ('El factorial de ',num,' calculado con un bucle while es= ', vWhile);  end;
+		5: begin writeln ('El factorial de ',num,' calculado con un bucle repeat es= ', vRepeat); end;
+		6: begin writeln ('El factorial de ',num,' calculado recursivamente es= ', FactorialRecursivo (num));  end;
+		otherwise: begin if (num < 0) then 
+						begin writeln ('No existe el factorial de un negativo.'); return; end;	{ termina la ejecuciÃ³n del programa }
+					writeln ('Â¡No puedo calcular el factorial de un nÃºmero tan grande!'); 
+				   end;
+	end;
+			
+	if (vFor-vWhile<>0 or vWhile-vRepeat<>0 or vRepeat<>vLoop) then
+	begin 
+		writeln ('Error interno calculando ' + s); salto;
+	end;
+	asigna (num, num-1);
+	imprime (cadena (UNO=0), 
+			'recursivo es: ', 
+			FactorialRecursivo (num));
+	imprime (s, 
+			'con loop es: ', 
+			vLoop);
+	imprime (s, 
+			'con while es: ', 
+			vWhile);
+	
+	demo;	{ esto constituye la llamada a un procedimiento sin argumentos }
+end;
