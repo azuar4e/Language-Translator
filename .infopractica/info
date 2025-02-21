@@ -6,6 +6,10 @@ Codigo intermedio -> cuartetos
 Sentencia condicional compuesta if e if-else
 Operador minimo
 Subprograma -> procedimientos con paso de valor por valor y referencia
++, -, *, / y MOD de estos hay que implementar al menos 1 y 2 max
+=, <>, <, >, <= y >= de estos hay que implementar al menos 1 y 2 max
+AND, OR, XOR y NOT de estos hay que implementar al menos 1 y 2 max
+
 
 ----------------------------------------------------------------------
 ficheros a generar

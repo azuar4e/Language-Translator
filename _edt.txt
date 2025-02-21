@@ -1,0 +1,112 @@
+Terminales = {}
+NoTerminales = {S, E}
+
+meterle acciones semanticas a las reglas y quitar las reglas que no necesitemos
+los que tienen un tab de mas hay que quitarlos, pero ver a q otras reglas afecta
+antes de quitarlas
++, -, *, / y MOD de estos hay que implementar al menos 1 y 2 max
+=, <>, <, >, <= y >= de estos hay que implementar al menos 1 y 2 max
+AND, OR, XOR y NOT de estos hay que implementar al menos 1 y 2 max
+borrar operador de concatenacion pertenencia potencia y el max
+
+
+EdT = {
+    P -> M1 D R
+    M1 -> Lambda
+    R -> PP R
+    R -> PF R
+    R -> PR R
+    R -> Lambda
+    PP -> program PPid ; D M2 Bloque ;
+    PPid -> Pid
+    Pid -> id
+    M2 -> Lambda
+    PR -> procedure PRidA ; D M2 Bloque ;
+    PRidA -> Pid A
+    PF -> function PFidAT ; D M2 Bloque ;
+    PFidAT -> Pid A : T
+    D -> var id : T ; DD
+    D -> Lambda
+    DD -> id : T ; DD
+    DD -> Lambda
+    T -> boolean
+    T -> integer
+    T -> string
+    A -> ( X id : T AA )
+    A -> Lambda
+    AA -> ; X id : T AA
+    AA -> Lambda
+    Bloque -> begin C end
+    C -> B C
+    C -> Lambda
+    B -> if EE then S
+    EE -> E
+    B -> S
+    B -> if EE then Bloque ;
+    B -> if THEN else Bloque ;
+    THEN -> EE then Bloque ;
+        B -> while M3 EE do Bloque ;
+    M3 -> Lambda
+        B -> repeat M3 C until E ;
+        B -> loop M3 C end ;
+        B -> FOR do Bloque ;
+        FOR -> for id := E to E
+        B -> case EXP of N O end ;
+    EXP -> E
+    N -> N VALOR : Bloque ;
+    VALOR -> entero
+    N -> Lambda
+    O -> otherwise : M3 Bloque ;
+    O -> Lambda
+    S -> write LL ;
+    S -> writeln LL ;
+    S -> read ( V ) ;
+    S -> id := E ;
+    S -> id LL ;
+    S -> return Y ;
+    S -> exit when E ;
+    LL -> ( L )
+    LL -> Lambda
+    L -> E Q
+    Q -> , E Q
+    Q -> Lambda
+    V -> id W
+    W -> , id W
+    W -> Lambda
+    Y -> E
+    Y -> Lambda
+    E -> E or F
+    E -> E xor F
+    E -> F
+    F -> F and G
+    F -> G
+    G -> G = H
+    G -> G <> H
+    G -> G > H
+    G -> G >= H
+    G -> G < H
+    G -> G <= H
+    G -> H
+    H -> H + I
+    H -> H - I
+    H -> I
+    I -> I * J
+    I -> I / J
+    I -> I mod J
+    I -> J
+        J -> J ** K
+    J -> K
+    K -> not K
+    K -> + K
+    K -> - K
+    K -> Z
+    Z -> entero
+    Z -> cadena
+    Z -> true
+    Z -> false
+    Z -> id LL
+    Z -> ( E )
+    Z -> min ( L )
+    X -> var
+    X -> Lambda
+}

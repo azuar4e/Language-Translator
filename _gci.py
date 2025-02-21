@@ -33,6 +33,7 @@ if __name__=='__main__':
 
     comando = ["java", "-jar", "PBoreal.jar", sys.argv[1]]
     try:
+        # ejecuta el comando del pdl que genera los ficheros de salida
         resultado = subprocess.run(comando, capture_output=True, text=True, check=True)
 
         print(f"\nComando: {' '.join(comando)}")
