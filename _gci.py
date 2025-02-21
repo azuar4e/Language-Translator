@@ -6,10 +6,117 @@ import subprocess
 #_________________________________
 #variables
 archivo = None
+fich_cuartetos = None
 edt = {
     #cuando este completa la edt, 
     # ponerla en formato clave valor, 
     # imagino que habra q hacer los firsts y esas bainas
+}
+
+#gramatica de los chinos
+#imagino que habra q usar el parser para saber q regla han usado
+#y luego hacer lo propio con nuestra gramatica
+gramatica = {
+    1: "P -> M1 D R",
+    2: "M1 -> Lambda",
+    3: "R -> PP R",
+    4: "R -> PF R",
+    5: "R -> PR R",
+    6: "R -> Lambda",
+    7: "PP -> program PPid ; D M2 Bloque ;",
+    8: "PPid -> Pid",
+    9: "Pid -> id",
+    10: "M2 -> Lambda",
+    11: "PR -> procedure PRidA ; D M2 Bloque ;",
+    12: "PRidA -> Pid A",
+    13: "PF -> function PFidAT ; D M2 Bloque ;",
+    14: "PFidAT -> Pid A : T",
+    15: "D -> var id : T ; DD",
+    16: "D -> Lambda",
+    17: "DD -> id : T ; DD",
+    18: "DD -> Lambda",
+    19: "T -> boolean",
+    20: "T -> integer",
+    21: "T -> string",
+    22: "A -> ( X id : T AA )",
+    23: "A -> Lambda",
+    24: "AA -> ; X id : T AA",
+    25: "AA -> Lambda",
+    26: "Bloque -> begin C end",
+    27: "C -> B C",
+    28: "C -> Lambda",
+    29: "B -> if EE then S",
+    30: "EE -> E",
+    31: "B -> S",
+    32: "B -> if EE then Bloque ;",
+    33: "B -> if THEN else Bloque ;",
+    34: "THEN -> EE then Bloque ;",
+    35: "B -> while M3 EE do Bloque ;",
+    36: "M3 -> Lambda",
+    37: "B -> repeat M3 C until E ;",
+    38: "B -> loop M3 C end ;",
+    39: "B -> FOR do Bloque ;",
+    40: "FOR -> for id := E to E",
+    41: "B -> case EXP of N O end ;",
+    42: "EXP -> E",
+    43: "N -> N VALOR : Bloque ;",
+    44: "VALOR -> entero",
+    45: "N -> Lambda",
+    46: "O -> otherwise : M3 Bloque ;",
+    47: "O -> Lambda",
+    48: "S -> write LL ;",
+    49: "S -> writeln LL ;",
+    50: "S -> read ( V ) ;",
+    51: "S -> id := E ;",
+    52: "S -> id LL ;",
+    53: "S -> return Y ;",
+    54: "S -> exit when E ;",
+    55: "LL -> ( L )",
+    56: "LL -> Lambda",
+    57: "L -> E Q",
+    58: "Q -> , E Q",
+    59: "Q -> Lambda",
+    60: "V -> id W",
+    61: "W -> , id W",
+    62: "W -> Lambda",
+    63: "Y -> E",
+    64: "Y -> Lambda",
+    65: "E -> E or F",
+    66: "E -> E xor F",
+    67: "E -> F",
+    68: "F -> F and G",
+    69: "F -> G",
+    70: "G -> G = H",
+    71: "G -> G <> H",
+    72: "G -> G > H",
+    73: "G -> G >= H",
+    74: "G -> G < H",
+    75: "G -> G <= H",
+    76: "G -> H",
+    77: "H -> H + I",
+    78: "H -> H - I",
+    79: "H -> I",
+    80: "I -> I * J",
+    81: "I -> I / J",
+    82: "I -> I mod J",
+    83: "I -> J",
+    84: "J -> J ** K",
+    85: "J -> K",
+    86: "K -> not K",
+    87: "K -> + K",
+    88: "K -> - K",
+    89: "K -> Z",
+    90: "Z -> entero",
+    91: "Z -> cadena",
+    92: "Z -> true",
+    93: "Z -> false",
+    94: "Z -> id LL",
+    95: "Z -> ( E )",
+    96: "Z -> Z in ( L )",
+    97: "Z -> max ( L )",
+    98: "Z -> min ( L )",
+    99: "X -> var",
+    100: "X -> Lambda"
 }
 
 #_________________________________
@@ -20,8 +127,11 @@ def leer() -> str:
         archivo = open(sys.argv[1], "r")
         
 def emite(operador, arg1, arg2, resultado) -> None:
-    return 
-
+    global fich_cuartetos
+    if fich_cuartetos is None:
+        fich_cuartetos = open("cuartetos.txt", "w")
+    #a esto le faltan cosas seguro
+    fich_cuartetos.write(f"{operador}, {arg1}, {arg2}, {resultado}\n")
 
 def main():
     return

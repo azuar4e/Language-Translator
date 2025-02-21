@@ -1,30 +1,20 @@
-Terminales = {}
-NoTerminales = {S, E}
+Terminales = {program, id, ;, var, :, boolean, integer, string, (, ), begin, end, if, then, else, :=, entero, write, writeln, read, return, ,, and, =, *, true, false, min}
+NoTerminales = {P, R, PP, PR, PF, D, DD, T, A, AA, Bloque, C, B, EE, THEN, S, SS, LL, L, Q, V, W, Y, E, G, H, I, Z, X}
 
 meterle acciones semanticas a las reglas y quitar las reglas que no necesitemos
 los que tienen un tab de mas hay que quitarlos, pero ver a q otras reglas afecta
 antes de quitarlas
-+, -, *, / y MOD de estos hay que implementar al menos 1 y 2 max
-=, <>, <, >, <= y >= de estos hay que implementar al menos 1 y 2 max
-AND, OR, XOR y NOT de estos hay que implementar al menos 1 y 2 max
-borrar operador de concatenacion pertenencia potencia y el max
 
 
 EdT = {
-    P -> M1 D R
-    M1 -> Lambda
+    P -> D R
     R -> PP R
     R -> PF R
     R -> PR R
     R -> Lambda
-    PP -> program PPid ; D M2 Bloque ;
-    PPid -> Pid
-    Pid -> id
-    M2 -> Lambda
-    PR -> procedure PRidA ; D M2 Bloque ;
-    PRidA -> Pid A
-    PF -> function PFidAT ; D M2 Bloque ;
-    PFidAT -> Pid A : T
+    PP -> program id ; D Bloque ;
+    PR -> procedure id A ; D Bloque ;
+    PF -> function id A : T ; D Bloque ;
     D -> var id : T ; DD
     D -> Lambda
     DD -> id : T ; DD
@@ -45,26 +35,13 @@ EdT = {
     B -> if EE then Bloque ;
     B -> if THEN else Bloque ;
     THEN -> EE then Bloque ;
-        B -> while M3 EE do Bloque ;
-    M3 -> Lambda
-        B -> repeat M3 C until E ;
-        B -> loop M3 C end ;
-        B -> FOR do Bloque ;
-        FOR -> for id := E to E
-        B -> case EXP of N O end ;
-    EXP -> E
-    N -> N VALOR : Bloque ;
-    VALOR -> entero
-    N -> Lambda
-    O -> otherwise : M3 Bloque ;
-    O -> Lambda
     S -> write LL ;
     S -> writeln LL ;
     S -> read ( V ) ;
-    S -> id := E ;
-    S -> id LL ;
+    S -> id SS ;
     S -> return Y ;
-    S -> exit when E ;
+    SS -> := E ;
+    SS -> LL ;
     LL -> ( L )
     LL -> Lambda
     L -> E Q
@@ -75,31 +52,12 @@ EdT = {
     W -> Lambda
     Y -> E
     Y -> Lambda
-    E -> E or F
-    E -> E xor F
-    E -> F
-    F -> F and G
-    F -> G
+    E -> E and G
+    E -> G
     G -> G = H
-    G -> G <> H
-    G -> G > H
-    G -> G >= H
-    G -> G < H
-    G -> G <= H
-    G -> H
-    H -> H + I
-    H -> H - I
-    H -> I
-    I -> I * J
-    I -> I / J
-    I -> I mod J
-    I -> J
-        J -> J ** K
-    J -> K
-    K -> not K
-    K -> + K
-    K -> - K
-    K -> Z
+    G -> I
+    I -> I * Z
+    I -> Z
     Z -> entero
     Z -> cadena
     Z -> true
