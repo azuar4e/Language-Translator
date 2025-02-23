@@ -16,30 +16,9 @@ class TablaSimbolos:
     def __init__(self):
         self.tabla_global = {}
         self.tablas_locales = {}
-
-    def buscartsglobal(self, lexema):
-        if lexema in self.tabla_global:
-            return self.tabla_global[lexema]
-        return None
-    
-    def insertarlexema(self, lexema, tabla):
-        if tabla is None:
-            self.tabla_global[lexema] = {}
-        else:
-            self.tablas_locales[tabla][lexema] = {}
-    
-    def insertartipots(self, lexema, tipo, tabla):
-        if tabla is None:
-            self.tabla_global[lexema]["tipo"] = tipo
-        else:
-            self.tablas_locales[tabla][lexema]["tipo"] = tipo
-
-    def insertardesplts(self, lexema, despl, tabla):
-        if tabla is None:
-            self.tabla_global[lexema]["despl"] = despl
-        else:
-            self.tablas_locales[tabla][lexema]["despl"] = despl
-            
+        
+    # borrar metodos que no vaya a usar    
+    #tambien modificar porque no sabemos en q tabla local estara
     def contiene(self, lexema):
         if lexema in self.tabla_global:
             return True, "global", self.tabla_global[lexema]["despl"]
@@ -47,7 +26,8 @@ class TablaSimbolos:
             return True, "local", self.tablas_locales[lexema]["despl"]
         else:
             return False
-            
+    
+    #seguramente haya que cambiar esta funcion 
     def buscatipots(self, lexema):        
         if self.tablas_locales is None:
             return self.tabla_global[lexema]["tipo"]
@@ -63,37 +43,28 @@ class TablaSimbolos:
 
         if 'tipoparam' not in self.tabla_global[lexema]:
             return None
-        return self.tabla_global[lexema]['tipoparam']     
-
-    # def sindeclarar(self, lexema, despl):
-    #     self.tabla_global[lexema] = {'tipo': 'ent', 'despl': despl}
-        
-    # def insertarts(self, lexema, tipo, desplazamiento):
-    #     if self.tablas_locales is None:
-    #         if lexema not in self.tabla_global:
-    #             self.tabla_global[lexema] = {}
-    #         self.tabla_global[lexema] = {"tipo": tipo, "despl": desplazamiento}
-    #     else:
-    #         if lexema not in self.tablas_locales:
-    #             self.tablas_locales[lexema] = {}
-    #         self.tablas_locales[lexema] = {"tipo": tipo, "despl": desplazamiento}
-
-    def tiporet(self, lexema):
-        if lexema in self.tabla_global:
-            return self.tabla_global[lexema]['tiporet']
-        else:
-            return None
+        return self.tabla_global[lexema]['tipoparam']
             
-    # def insertar_funcion(self, lexema, numparam, tiporet):
-    #     if lexema not in self.tabla_global:
-    #         self.tabla_global[lexema] = {}
-        
-    #     self.tabla_global[lexema]['tipo'] = 'function'
-    #     self.tabla_global[lexema][numparam] = numparam
-    #     self.tabla_global[lexema]['tiporet'] = tiporet
-        
     #------- funciones para el crear las ts's -------
-        
+    
+    def insertarlexema(self, lexema, tabla):
+        if tabla is None:
+            self.tabla_global[lexema] = {}
+        else:
+            self.tablas_locales[tabla][lexema] = {}
+    
+    def insertartipo(self, lexema, tipo, tabla):
+        if tabla is None:
+            self.tabla_global[lexema]["tipo"] = tipo
+        else:
+            self.tablas_locales[tabla][lexema]["tipo"] = tipo
+
+    def insertardespl(self, lexema, despl, tabla):
+        if tabla is None:
+            self.tabla_global[lexema]["despl"] = despl
+        else:
+            self.tablas_locales[tabla][lexema]["despl"] = despl
+
     def insertarnumparam(self, lexema, numparam):
         self.tabla_global[lexema]["numParam"] = numparam
         
@@ -112,3 +83,27 @@ class TablaSimbolos:
     # solo para la local porque principal siempre va a haber
     def crearts(self, numero):
         self.tablas_locales[numero] = {}
+        
+#________________________________________________________
+#funciones que no se usan DE MOMENTO, borrarlas mas tarde
+
+'''
+def buscartsglobal(self, lexema):
+        if lexema in self.tabla_global:
+            return self.tabla_global[lexema]
+        return None
+
+def insertar_funcion(self, lexema, numparam, tiporet):
+    if lexema not in self.tabla_global:
+        self.tabla_global[lexema] = {}
+    
+    self.tabla_global[lexema]['tipo'] = 'function'
+    self.tabla_global[lexema][numparam] = numparam
+    self.tabla_global[lexema]['tiporet'] = tiporet
+    
+def tiporet(self, lexema):
+    if lexema in self.tabla_global:
+        return self.tabla_global[lexema]['tiporet']
+    else:
+        return None
+'''

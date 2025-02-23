@@ -2,6 +2,7 @@
 #imports
 import sys
 import subprocess
+import re
 from _ts import TablaSimbolos
 from _leerts import ts, init
 from pprint import pprint
@@ -10,11 +11,21 @@ from pprint import pprint
 #variables
 archivo = None
 fich_cuartetos = None
+fichparser = None
+pila = ['P']
+#contador de variables temporales
+tmpcnt = 0
+etiqcnt = 0
+lineaparser = None
+patronparser = r"^(\w+)\s+(\d+(\s+\d+)*)$"
+reglacnt = 0
 edt = {
     #cuando este completa la edt, 
     # ponerla en formato clave valor, 
     # imagino que habra q hacer los firsts y esas bainas
 }
+
+
 
 #tabla simbolos
 # hay que conseguir pasar todo el archivo 
@@ -129,6 +140,36 @@ gramatica = {
 
 #_________________________________
 #funciones
+def nuevatemp() -> str:
+    global tmpcnt
+    tmpcnt += 1
+    return f"t{tmpcnt}"
+
+def nuevaetiq() -> str:
+    global etiqcnt
+    etiqcnt += 1
+    return f"Etiq{etiqcnt}"
+
+#devuelve el numero de la regla a ejecutar
+def parser() -> int:
+    global fichparser, lineaparser, reglas, reglacnt
+    if fichparser is None:
+        fichparser = open("parse.txt", "r")
+        lineaparser = fichparser.readline()
+        match = re.match(patronparser, lineaparser)
+        if match is None:
+            print("\n[+] ERROR: Regla no reconocida en el fichero de parser.")
+            exit(1)
+        reglas = match.group(2).split()
+    try:
+        aux = reglas[reglacnt]
+        reglacnt += 1
+        return int(aux)
+    except IndexError:
+        return -1
+    
+    
+
 def leer() -> str:
     global archivo
     if archivo is None:
@@ -170,9 +211,16 @@ def emite(operador: str, arg1, arg2, resultado) -> None:
             
     #a esto le faltan cosas seguro
     fich_cuartetos.write(f"{operador.upper()}, {arg1impr}, {arg2impr}, {resultado}\n")
+    
+def ejecutaraccion(accion):
+    # case '':
+    return
 
 def main():
-    return
+    #habria q consumir tokens y avanzar la pila sustituyendo las reglas segun el parser
+    #a esperar a lo que me conteste aurora
+    while True:
+        return
 
 if __name__=='__main__':
     if len(sys.argv) < 2:

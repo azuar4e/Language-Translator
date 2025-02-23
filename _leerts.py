@@ -32,9 +32,9 @@ def init():
                         lexemaact = re.search(lexema, line).group(1)
                         ts.insertarlexema(lexemaact, tablaact)
                     elif re.search(tipo, line):
-                        ts.insertartipots(lexemaact, re.search(tipo, line).group(1), tablaact)
+                        ts.insertartipo(lexemaact, re.search(tipo, line).group(1), tablaact)
                     elif re.search(despl, line):
-                        ts.insertardesplts(lexemaact, re.search(despl, line).group(1), tablaact)
+                        ts.insertardespl(lexemaact, re.search(despl, line).group(1), tablaact)
 
                     line = f.readline()
                 lexemaact = None
@@ -45,9 +45,9 @@ def init():
                             lexemaact = re.search(lexema, line).group(1)
                             ts.insertarlexema(lexemaact, None)
                     elif re.search(tipo, line):
-                        ts.insertartipots(lexemaact, re.search(tipo, line).group(1), None)
+                        ts.insertartipo(lexemaact, re.search(tipo, line).group(1), None)
                     elif re.search(despl, line):
-                        ts.insertardesplts(lexemaact, re.search(despl, line).group(1), None)
+                        ts.insertardespl(lexemaact, re.search(despl, line).group(1), None)
                     elif re.search(numparam, line):
                         ts.insertarnumparam(lexemaact, re.search(numparam, line).group(1))
                     elif re.search(tipoparam, line):

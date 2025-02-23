@@ -8,26 +8,26 @@ antes de quitarlas
 
 EdT = {
     P -> D R
-    R -> PP R
-    R -> PF R
-    R -> PR R
+    R -> PP R1
+    R -> PF R1
+    R -> PR R1
     R -> Lambda
     PP -> program id ; D Bloque ;
     PR -> procedure id A ; D Bloque ;
     PF -> function id A : T ; D Bloque ;
     D -> var id : T ; DD
     D -> Lambda
-    DD -> id : T ; DD
+    DD -> id : T ; DD1
     DD -> Lambda
     T -> boolean
     T -> integer
     T -> string
     A -> ( X id : T AA )
     A -> Lambda
-    AA -> ; X id : T AA
+    AA -> ; X id : T AA1
     AA -> Lambda
     Bloque -> begin C end
-    C -> B C
+    C -> B C1
     C -> Lambda
     B -> if EE then S
     EE -> E
@@ -45,18 +45,85 @@ EdT = {
     LL -> ( L )
     LL -> Lambda
     L -> E Q
-    Q -> , E Q
+    Q -> , E Q1
     Q -> Lambda
     V -> id W
     W -> , id W
     W -> Lambda
     Y -> E
     Y -> Lambda
-    E -> E and G
+    E -> E1 and G
     E -> G
-    G -> G = H
+    G -> G1 = I
     G -> I
-    I -> I * Z
+    I -> I1 * Z
+    I -> Z
+    Z -> entero
+    Z -> cadena
+    Z -> true
+    Z -> false
+    Z -> id LL
+    Z -> ( E )
+    Z -> min ( L )
+    X -> var
+    X -> Lambda
+}
+
+-----------------------------------------------------------
+--------------- con acciones semanticas -------------------
+-----------------------------------------------------------
+
+EdT = {
+    P -> D R
+    R -> PP R1
+    R -> PF R1
+    R -> PR R1
+    R -> Lambda
+    PP -> program id ; D Bloque ;
+    PR -> procedure id A ; D Bloque ;
+    PF -> function id A : T ; D Bloque ;
+    D -> var id : T ; DD
+    D -> Lambda
+    DD -> id : T ; DD1
+    DD -> Lambda
+    T -> boolean
+    T -> integer
+    T -> string
+    A -> ( X id : T AA )
+    A -> Lambda
+    AA -> ; X id : T AA1
+    AA -> Lambda
+    Bloque -> begin C end
+    C -> B C1
+    C -> Lambda
+    B -> if EE then S
+    EE -> E
+    B -> S
+    B -> if EE then Bloque ;
+    B -> if THEN else Bloque ;
+    THEN -> EE then Bloque ;
+    S -> write LL ;
+    S -> writeln LL ;
+    S -> read ( V ) ;
+    S -> id SS ;
+    S -> return Y ;
+    SS -> := E ;
+    SS -> LL ;
+    LL -> ( L )
+    LL -> Lambda
+    L -> E Q
+    Q -> , E Q1
+    Q -> Lambda
+    V -> id W
+    W -> , id W
+    W -> Lambda
+    Y -> E
+    Y -> Lambda
+    E -> { E1.verdad := nuevaetiq(); E1.falso := E.falso } E1 and { E2.verdad := E.verdad; E2.falso := E.falso; emite(E1.verdad, ':') } E2
+    E -> G
+    G -> G1 = I
+    G -> I
+    I -> I1 * Z { emite(MUL, I1.lugar, Z.lugar, I.lugar) }
     I -> Z
     Z -> entero
     Z -> cadena
