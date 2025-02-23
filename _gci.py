@@ -2,6 +2,9 @@
 #imports
 import sys
 import subprocess
+from _ts import TablaSimbolos
+from _leerts import ts, init
+from pprint import pprint
 
 #_________________________________
 #variables
@@ -12,6 +15,11 @@ edt = {
     # ponerla en formato clave valor, 
     # imagino que habra q hacer los firsts y esas bainas
 }
+
+#tabla simbolos
+# hay que conseguir pasar todo el archivo 
+# de la ts a una estructura de datos
+# ts = TablaSimbolos()
 
 #gramatica de los chinos
 #imagino que habra q usar el parser para saber q regla han usado
@@ -126,12 +134,42 @@ def leer() -> str:
     if archivo is None:
         archivo = open(sys.argv[1], "r")
         
-def emite(operador, arg1, arg2, resultado) -> None:
+def emite(operador: str, arg1, arg2, resultado) -> None:
     global fich_cuartetos
     if fich_cuartetos is None:
         fich_cuartetos = open("cuartetos.txt", "w")
+       
+    if arg1 is not None:
+        contiene, tabla, despl = ts.contiene(arg1) 
+        if contiene:
+            if tabla == "global":
+                arg1impr = f"{{VAR_GLOBAL, {despl}}}"
+            if tabla == "local":
+                arg1impr = f"{{VAR_LOCAL, {despl}}}"
+        elif arg1 is int:
+            arg1impr = f"{{CTE_ENT, {arg1}}}"
+        elif arg1 is str:
+            arg1impr = f"{{CTE_CADENA, {arg1}}}"
+        #ver el resto de opciones ctes parametros y demas
+    else:
+        arg1impr = None
+    
+    if arg2 is not None:
+        contiene, tabla, despl = ts.contiene(arg2) 
+        if contiene:
+            if tabla == "global":
+                arg2impr = f"{{VAR_GLOBAL, {despl}}}"
+            if tabla == "local":
+                arg2impr = f"{{VAR_LOCAL, {despl}}}"
+        elif arg2 is int:
+            arg2impr = f"{{CTE_ENT, {arg2}}}"
+        elif arg2 is str:
+            arg2impr = f"{{CTE_CADENA, {arg2}}}"
+    else:
+        arg2impr = None
+            
     #a esto le faltan cosas seguro
-    fich_cuartetos.write(f"{operador}, {arg1}, {arg2}, {resultado}\n")
+    fich_cuartetos.write(f"{operador.upper()}, {arg1impr}, {arg2impr}, {resultado}\n")
 
 def main():
     return
@@ -154,5 +192,7 @@ if __name__=='__main__':
         print(f"\nComando fallido: {' '.join(e.cmd)}")
         print(f"✘ Código de retorno: {e.returncode}")
         print(f"⚠️  Error:\n{e.stderr.strip() or 'No hubo errores.'}")
-        
-    main()
+     
+    init()   
+    # pprint(ts.tabla_global)
+    # pprint(ts.tablas_locales)
