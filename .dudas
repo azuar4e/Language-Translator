@@ -1,4 +1,0 @@
-1.- hay que crear una ts aparte para las variables temporales y demas?
-2.- se puede declarar una funcion dentro de otra?
-3.- no entiendo muy bien el uso de las temporales, solo sirven para ponerlas en .cod? porque entonces para que querria guardarlas en la ts con su tipo y todo?
-4.- donde se almacenan los atributos porq si tengo q e1.falso := e.falso ese no terminal ya se ha consumido y no esta en el stack
