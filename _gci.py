@@ -1,4 +1,4 @@
-#_________________________________
+#_____________________________________________________________________________
 #imports
 import sys
 import subprocess
@@ -6,13 +6,14 @@ import re
 from _ts import TablaSimbolos
 from _leerts import ts, init
 from pprint import pprint
+from _slr import slr, cargar_slr
 
-#_________________________________
+#_____________________________________________________________________________
 #variables
 archivo = None
 fich_cuartetos = None
 fichparser = None
-pila = ['P']
+pila = [0]
 #contador de variables temporales
 tmpcnt = 0
 etiqcnt = 0
@@ -138,7 +139,32 @@ gramatica = {
     100: "X -> Lambda"
 }
 
-#_________________________________
+#_____________________________________________________________________________
+#calses
+class atributos:
+    def __init__(self, tipo=None, tiporet=None, tipofunc=None):
+        self.tipo = tipo
+        self.tiporet = tiporet
+        self.tipofunc = tipofunc
+        
+    def set_tipo_func(self, tipofunc):
+        self.tipofunc = tipofunc
+
+    def set_tipo(self, tipo):
+        self.tipo = tipo
+
+    def set_tiporet(self, tiporet):
+        self.tiporet = tiporet
+
+#estructura de datos para pila
+class ep:
+    def __init__(self, elemento, valor=None):
+        if valor is None:
+            valor = atributos()
+        self.elemento = elemento
+        self.valor = valor
+
+#_____________________________________________________________________________
 #funciones
 def nuevatemp() -> str:
     global tmpcnt
@@ -167,7 +193,6 @@ def parser() -> int:
         return int(aux)
     except IndexError:
         return -1
-    
     
 
 def leer() -> str:
@@ -218,9 +243,11 @@ def ejecutaraccion(accion):
 
 def main():
     #habria q consumir tokens y avanzar la pila sustituyendo las reglas segun el parser
-    #a esperar a lo que me conteste aurora
-    while True:
-        return
+    #necesito generar las funciones para los tokens
+    # hay que implementar una pila llamar a las funcinoes accion y goto y generar las acciones
+    # semanticas a ejecutar, que no pueden tener atributos heredados
+    
+    return
 
 if __name__=='__main__':
     if len(sys.argv) < 2:
@@ -241,6 +268,10 @@ if __name__=='__main__':
         print(f"✘ Código de retorno: {e.returncode}")
         print(f"⚠️  Error:\n{e.stderr.strip() or 'No hubo errores.'}")
      
-    init()   
-    # pprint(ts.tabla_global)
-    # pprint(ts.tablas_locales)
+    #cargamos el contenido de las tablas de simbolos
+    init()
+    # cargamos el contenido de la tabla goto
+    cargar_slr("./data/SLR_data.csv")
+    
+    # llamamos al main
+    main()

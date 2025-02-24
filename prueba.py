@@ -1,4 +1,6 @@
 import re
+from pprint import pprint
+from _slr import slr, cargar_slr
 patronparser = r"^(\w+)\s+(\d+(\s+\d+)*)$"
 reglacnt = 0
 fichparser = None
@@ -29,4 +31,6 @@ def main():
         print(aux)
         
 if __name__=='__main__':
-    main()
+    # main()
+    cargar_slr("./data/SLR_data.csv")
+    pprint(slr)
