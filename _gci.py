@@ -7,19 +7,52 @@ from _ts import TablaSimbolos
 from _leerts import ts, init
 from pprint import pprint
 from _slr import slr, cargar_slr
+from _tokens import token
+from _errores import errores
+
+#_____________________________________________________________________________
+#clases
+#cambiar por los atributos del codigo intermedio
+class atributos:
+    def __init__(self, pos=None,tipo=None, tiporet=None, tipofunc=None):
+        self.pos = pos
+        self.tipo = tipo
+        self.tiporet = tiporet
+        self.tipofunc = tipofunc
+    
+    def set_pos(self, pos):
+        self.pos = pos
+        
+    def set_tipo_func(self, tipofunc):
+        self.tipofunc = tipofunc
+
+    def set_tipo(self, tipo):
+        self.tipo = tipo
+
+    def set_tiporet(self, tiporet):
+        self.tiporet = tiporet
+
+#estructura de datos para pila
+class ep:
+    def __init__(self, elemento, valor=None):
+        if valor is None:
+            valor = atributos()
+        self.elemento = elemento
+        self.valor = valor
 
 #_____________________________________________________________________________
 #variables
 archivo = None
 fich_cuartetos = None
 fichparser = None
-pila = [0]
+pila = [ep(0)]
 #contador de variables temporales
 tmpcnt = 0
 etiqcnt = 0
 lineaparser = None
 patronparser = r"^(\w+)\s+(\d+(\s+\d+)*)$"
 reglacnt = 0
+patronregla = r"(.+) -> (.+)"
 edt = {
     #cuando este completa la edt, 
     # ponerla en formato clave valor, 
@@ -140,31 +173,6 @@ gramatica = {
 }
 
 #_____________________________________________________________________________
-#calses
-class atributos:
-    def __init__(self, tipo=None, tiporet=None, tipofunc=None):
-        self.tipo = tipo
-        self.tiporet = tiporet
-        self.tipofunc = tipofunc
-        
-    def set_tipo_func(self, tipofunc):
-        self.tipofunc = tipofunc
-
-    def set_tipo(self, tipo):
-        self.tipo = tipo
-
-    def set_tiporet(self, tiporet):
-        self.tiporet = tiporet
-
-#estructura de datos para pila
-class ep:
-    def __init__(self, elemento, valor=None):
-        if valor is None:
-            valor = atributos()
-        self.elemento = elemento
-        self.valor = valor
-
-#_____________________________________________________________________________
 #funciones
 def nuevatemp() -> str:
     global tmpcnt
@@ -246,8 +254,63 @@ def main():
     #necesito generar las funciones para los tokens
     # hay que implementar una pila llamar a las funcinoes accion y goto y generar las acciones
     # semanticas a ejecutar, que no pueden tener atributos heredados
-    
-    return
+    print("todo al semen")
+    while True:
+        tok = token()
+        estado = pila[-1].elemento
+        accion = slr.get(f"{estado}:{tok.tipo}")
+        print(f"{estado}:{tok.tipo}")
+        print(accion)
+        print("todo al semen1")
+        if not accion:
+            print("todo al semen2")
+            errores()
+            break
+        # desplazamiento
+        elif accion.tipo == 0:
+            
+            if tok == 'id':
+                pila.append(ep(tok.tipo, atributos(pos=tok.atributo)))
+            else:
+                pila.append(ep(tok.tipo))
+                
+            pila.append(ep(accion.valor))
+            tok = token()
+
+            if tok is None:
+                print("todo al semen3")
+                errores()
+                break
+
+            if tok.tipo == 'EOF':
+                print("fin")
+                break
+        
+        # reduccion
+        elif accion.tipo == 1:
+            regla = gramatica.get(accion.valor)
+            print(f"regla: {regla}")
+            valor = re.match(patronregla, regla).group(2).split()
+            # ver q hacer si lambda
+            for _ in range(2 * len(valor)):
+                pila.pop()
+            
+            # logica para ejecutar la accion semantica
+            
+            estado = pila[-1].elemento
+            # antecedente de la regla
+            pila.append(ep(re.match(patronregla, regla).group(1)))
+            pila.append(ep(slr.get(f"{estado}:{pila[-1].elemento}").valor))
+            
+        # aceptar
+        else:
+            print("todo al semen4")
+            return
+        
+        # print(f"\n\n\n---Pila---")
+        # pprint(pila)
+        # print("----------\n\n\n")
+        
 
 if __name__=='__main__':
     if len(sys.argv) < 2:
@@ -272,6 +335,6 @@ if __name__=='__main__':
     init()
     # cargamos el contenido de la tabla goto
     cargar_slr("./data/SLR_data.csv")
-    
+    # pprint(slr)
     # llamamos al main
     main()

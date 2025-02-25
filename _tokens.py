@@ -3,6 +3,20 @@
 import re
 
 #_____________________________________________________________________________
+#clase
+
+class tk:
+    def __init__(self, tipo, atributo):
+        self.tipo = tipo
+        self.atributo = atributo
+
+#_____________________________________________________________________________
+#variables
+
+tokens = []
+patron = r"</w+,(.+)>"
+
+#_____________________________________________________________________________
 #funciones
 
 def convertir():
@@ -13,14 +27,14 @@ def convertir():
             
         tokens.append('$')
         
-#____________________________________________
+#_____________________________________________________________________________
 
 def generador():
     convertir()
     for entrada in tokens:
         yield entrada
 
-#____________________________________________
+#_____________________________________________________________________________
 
 gen = generador()
 def siguiente_token():
@@ -29,90 +43,93 @@ def siguiente_token():
     except StopIteration:
         return None
 
-#____________________________________________
+#_____________________________________________________________________________
+ 
+def token():
+    return toks(siguiente_token())
+
+#_____________________________________________________________________________
 #cambiar esta funcion con los tokes de los chinos
 def toks(token):
-    # patron_valor = r'<Const , (\d+)>'
-    # patron_cadena = r'<Cadena , \"([^\"]+)\">'
+    if "PRODUCTO" in token:
+        return tk('*', None)
+
+    elif "PARENT_ABRIR" in token:
+        return tk('(', None)
     
-    if "OPa" in token:
-        return '+'
+    elif "PARENT_CERRAR" in token:   
+        return tk(')', None)
+        
+    elif "BEGIN" in token:
+        return tk('begin', None)
 
-    elif "Parentesis" in token:
-        if '0' in token:
-            return '('
-        else:
-            return ')'
+    elif "END" in token:
+        return tk('end', None)
+        
+    elif "DOSPUNTOS" in token:
+        return tk(':', None)
 
-    elif "Llave" in token:
-        if '0' in token:
-            return '{'
-        else:
-            return '}'
+    elif "PYC" in token:
+        return tk(';', None)
 
-    elif "PuntoComa" in token:
-        return ';'
+    elif "COMA" in token:
+        return tk(',', None)
 
-    elif "Coma" in token:
-        return ','
+    elif "CADENA" in token:
+        return tk('cadena', re.match(patron, token).group(1))
 
-    elif "Cadena" in token:
-        return 'cad'
+    elif "ENTERO" in token:
+        return tk('entero', re.match(patron, token).group(1))
 
-    elif "Const" in token:
-        return 'ent'
+    elif "AND" in token:
+        return tk('and', None)
 
-    elif "Igual" in token:
-        return '='
-
-    elif "OPl" in token:
-        return '&&'
-
-    elif "OPe" in token:
-        return '/='
-
-    elif "OPr" in token:
-        return '>'
+    elif "IGUAL" in token:
+        return tk('=', None)
                 
-    elif "Entero" in token:
-        return 'int'
+    elif "INTEGER" in token:
+        return tk('int', None)
         
-    elif "Boolean" in token:
-        return 'boolean'
+    elif "BOOLEAN" in token:
+        return tk('boolean', None)
         
-    elif "Str" in token:
-        return 'string'
+    elif "STRING" in token:
+        return tk('string', None)
         
-    elif "If" in token:
-        return 'if'
+    elif "IF" in token:
+        return tk('if', None)
         
-    elif "Else" in token:
-        return 'else'
+    elif "ELSE" in token:
+        return tk('else', None)
         
-    elif "Return" in token:
-        return 'return'
+    elif "RETURN" in token:
+        return tk('return', None)
         
-    elif "Input" in token:
-        return 'input'
+    elif "ASIGNACION" in token:
+        return tk(':=', None)
         
-    elif "Output" in token:
-        return 'output'
+    elif "THEN" in token:
+        return tk('then', None)
         
-    elif "Funcion" in token:
-        return 'function'
+    elif "FUNCTION" in token:
+        return tk('function', None)
         
     elif "Void" in token:    
-        return 'void'
+        return tk('void', None)
         
-    elif "Var" in token:
-        return 'var'
+    elif "VAR" in token:
+        return tk('var', None)
+    
+    elif "PROCEDURE" in token:
+        return tk('procedure', None)
+    
+    elif "PROGRAM" in token:
+        return tk('program', None)
         
-    elif "Id" in token:
-        aux = re.match(r"<[a-zA-Z]+ , (\d+)>", token)
-        posts = int(aux.group(1))
-        id[posts] = buscaridtslex(posts)
-        global pos
-        pos = posts
-        return "id"
+    # revisar esto
+    elif "ID" in token:
+        return tk('id', re.match(patron, token).group(1))
+    elif "EOF" in token:
+        return tk('EOF', None)
     else:
-        return '$'
+        return None
