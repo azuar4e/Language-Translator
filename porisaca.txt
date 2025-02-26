@@ -1,0 +1,61 @@
+#habria q consumir tokens y avanzar la pila sustituyendo las reglas segun el parser
+    #necesito generar las funciones para los tokens
+    # hay que implementar una pila llamar a las funcinoes accion y goto y generar las acciones
+    # semanticas a ejecutar, que no pueden tener atributos heredados
+    print("todo al semen")
+    while True:
+        tok = token()
+        estado = pila[-1].elemento
+        accion = slr.get(f"{estado}:{tok.tipo}")
+        print(f"{estado}:{tok.tipo}")
+        print(accion)
+        print("todo al semen1")
+        if not accion:
+            print("todo al semen2")
+            errores()
+            break
+        # desplazamiento
+        elif accion.tipo == 0:
+            
+            if tok == 'id':
+                pila.append(ep(tok.tipo, atributos(pos=tok.atributo)))
+            else:
+                pila.append(ep(tok.tipo))
+                
+            pila.append(ep(accion.valor))
+            tok = token()
+
+            if tok is None:
+                print("todo al semen3")
+                errores()
+                break
+
+            if tok.tipo == 'EOF':
+                print("fin")
+                break
+        
+        # reduccion
+        elif accion.tipo == 1:
+            regla = gramatica.get(accion.valor)
+            print(f"regla: {regla}")
+            valor = re.match(patronregla, regla).group(2).split()
+            # ver q hacer si lambda
+            if valor[0] != 'Lambda':
+                for _ in range(2 * len(valor)):
+                    pila.pop()
+            
+            # logica para ejecutar la accion semantica
+            
+            estado = pila[-1].elemento
+            # antecedente de la regla
+            pila.append(ep(re.match(patronregla, regla).group(1)))
+            pila.append(ep(slr.get(f"{estado}:{pila[-1].elemento}").valor))
+            
+        # aceptar
+        else:
+            print("todo al semen4")
+            return
+        
+        # print(f"\n\n\n---Pila---")
+        # pprint(pila)
+        # print("----------\n\n\n")

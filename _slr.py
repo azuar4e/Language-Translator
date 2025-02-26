@@ -199,7 +199,7 @@ def cambio(celda):
         return 'EOF'
     
     else:
-        return 'FIN'
+        return celda
 
 def genvalue(value):
     number = re.findall(r'\d+', value)

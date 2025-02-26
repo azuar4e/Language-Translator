@@ -45,7 +45,7 @@ class ep:
 archivo = None
 fich_cuartetos = None
 fichparser = None
-pila = [ep(0)]
+pilasem = []
 #contador de variables temporales
 tmpcnt = 0
 etiqcnt = 0
@@ -172,6 +172,10 @@ gramatica = {
     100: "X -> Lambda"
 }
 
+gramaticaAS = {
+    
+} 
+
 #_____________________________________________________________________________
 #funciones
 def nuevatemp() -> str:
@@ -250,68 +254,14 @@ def ejecutaraccion(accion):
     return
 
 def main():
-    #habria q consumir tokens y avanzar la pila sustituyendo las reglas segun el parser
-    #necesito generar las funciones para los tokens
-    # hay que implementar una pila llamar a las funcinoes accion y goto y generar las acciones
-    # semanticas a ejecutar, que no pueden tener atributos heredados
-    print("todo al semen")
-    while True:
-        tok = token()
-        estado = pila[-1].elemento
-        accion = slr.get(f"{estado}:{tok.tipo}")
-        print(f"{estado}:{tok.tipo}")
-        print(accion)
-        print("todo al semen1")
-        if not accion:
-            print("todo al semen2")
-            errores()
+    while(True):
+        regla = parser()
+        if regla == -1:
             break
-        # desplazamiento
-        elif accion.tipo == 0:
-            
-            if tok == 'id':
-                pila.append(ep(tok.tipo, atributos(pos=tok.atributo)))
-            else:
-                pila.append(ep(tok.tipo))
-                
-            pila.append(ep(accion.valor))
-            tok = token()
 
-            if tok is None:
-                print("todo al semen3")
-                errores()
-                break
-
-            if tok.tipo == 'EOF':
-                print("fin")
-                break
+        ejecutaraccion(regla)
         
-        # reduccion
-        elif accion.tipo == 1:
-            regla = gramatica.get(accion.valor)
-            print(f"regla: {regla}")
-            valor = re.match(patronregla, regla).group(2).split()
-            # ver q hacer si lambda
-            for _ in range(2 * len(valor)):
-                pila.pop()
-            
-            # logica para ejecutar la accion semantica
-            
-            estado = pila[-1].elemento
-            # antecedente de la regla
-            pila.append(ep(re.match(patronregla, regla).group(1)))
-            pila.append(ep(slr.get(f"{estado}:{pila[-1].elemento}").valor))
-            
-        # aceptar
-        else:
-            print("todo al semen4")
-            return
         
-        # print(f"\n\n\n---Pila---")
-        # pprint(pila)
-        # print("----------\n\n\n")
-        
-
 if __name__=='__main__':
     if len(sys.argv) < 2:
         print("\n[+] ERROR: No se ha pasado ningun archivo de entrada.\n")
