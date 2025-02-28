@@ -80,7 +80,7 @@ EdT = {
     R -> PR R1 {}
     R -> Lambda {}
     PP -> program id ; D Bloque ; {}
-    PR -> procedure id A ; D Bloque ; {}
+    PR -> procedure id A ; D { emite(buscaetiqts(id.pos), ':') } Bloque ; { Bloque.siguiente = nuevaetiq(); emite(Bloque.siguiente, ':'); emite('return') }
     PF -> function id A : T ; D Bloque ; {}
     D -> var id : T ; DD {}
     D -> Lambda {}
@@ -96,41 +96,60 @@ EdT = {
     Bloque -> begin C end {}
     C -> B C1 {}
     C -> Lambda {}
-    B -> { B.despues = nuevaetiq() } if EE { emite('if',EE.lugar,'=',1,'goto',sig_instr+1); emite('goto', B.despues)} then S
+    B -> { B.despues = nuevaetiq() } if EE then { emite('if',EE.lugar,'=',1,'goto',sig_instr+1); emite('goto', B.despues)} S
     EE -> E { EE.lugar = E.lugar }
     B -> S {}
-    B -> if EE then Bloque ; {}
-    B -> if THEN else Bloque ; {}
+    B -> { B.despues = nuevaetiq() } if EE then { emite('if',EE.lugar,'=',1,'goto',sig_instr+1); emite('goto', B.despues)} Bloque ; {}
+    B -> { B.despues = nuevaetiq() } if THEN else Bloque ; {}
     THEN -> EE then Bloque ; {}
     S -> write LL ; {}
     S -> writeln LL ; {}
     S -> read ( V ) ; {}
-    S -> id SS ; {}
-    S -> return Y ; {}
-    SS -> := E ; {}
-    SS -> LL ; {}
-    LL -> ( L ) {}
-    LL -> Lambda {}
-    L -> E Q {}
-    Q -> , E Q1 {}
+        S -> id SS ; { if SS.lugar != vacio then emite(buscats(id.pos), ':=', SS.lugar) else emite('call', buscaetiqts(id.pos)) }
+        S -> return Y ; { emite('return', Y.lugar) }
+        SS -> := E ; { SS.lugar = E.lugar }
+        SS -> LL ; {}
+        LL -> ( L ) { SS.lugar = vacio; for i in L.long emite('param', L.param[i]) }
+        LL -> Lambda {}
+
+    L -> E Q { nparam = 1; L.param = E.param x Q.param; }
+    Q -> , E Q1 { Q.param = E.param x Q1.param; nparam = nparam + 1 }
     Q -> Lambda {}
     //esto es del read y no se como cojones va
     V -> id W {}
     W -> , id W {}
     W -> Lambda {}
+
     Y -> E { Y.lugar = E.lugar }
     Y -> Lambda { Y.lugar = vacio }
     E -> { E.lugar = nuevatemp() } E1 and { emite('if',E1.lugar,'=','0','goto',sig_instr+3) } E2 { emite('if',E1.lugar,'=','0','goto',sig_instr+2); emite(E.lugar, ':=', 1); emite('goto', sig_instr+1); emite(E.lugar, ':=', 0) }
     E -> G { E.lugar = G.lugar }
-    G -> G1 = I { emite(); emite(G.lugar, ':=', 1); emite('goto', sig_instr+1); emite(G.lugar, ':=', 0) }
+    
+    G -> G1 = I { G.falso = nuevaetiq();
+                G.siguiente = nuevaetiq();
+                G.lugar = nuevatemp();
+                emite('if',G1.lugar,'!=',I.lugar,'goto',G.falso); 
+                emite(G.lugar, ':=', 1); 
+                emite('goto', G.siguiente);
+                emite(etiqueta,G.falso);
+                emite(G.lugar, ':=', 0);
+                emite(etiqueta,G.siguiente); }
+
     G -> I  { G.lugar = I.lugar }
-    I -> I1 * Z { emite(MUL, I1.lugar, Z.lugar, I.lugar) }
+    I -> I1 * Z { I.lugar = nuevatemp();
+                emite(MUL, I1.lugar, Z.lugar, I.lugar) }
+
     I -> Z { I.lugar = Z.lugar }
     Z -> entero { Z.lugar = entero.valor }
     Z -> cadena { Z.lugar = cadena.valor }
-    Z -> id LL
-    Z -> ( E )
-    Z -> min ( L ) 
+    Z -> id LL { if LL.lugar = vacio then
+                Z.lugar = nuevatemp();
+                emite(Z.lugar,':=','call',buscaetiqts(id.pos)) 
+                else Z.lugar = buscats(id.pos) } aqui igual hay q comprobar q sea logico
+
+    Z -> ( E ) { Z.lugar = E.lugar }
+    //comprobar respuesta de aurora
+    Z -> min ( L ) { for i in L.long aux = min(L.param[i]) emite('param', aux) }
     X -> var
     X -> Lambda
 }
