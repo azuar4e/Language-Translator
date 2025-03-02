@@ -1,0 +1,116 @@
+EdT = {
+    P -> M1 D R
+    M1 -> Lambda
+    R -> PP R
+    R -> PF R
+    R -> PR R
+    R -> Lambda
+    PP -> program PPid ; D M2 Bloque ;
+    PPid -> Pid
+    Pid -> id
+    M2 -> Lambda
+    PR -> procedure id A ; D { emite(buscaetiqts(id.pos), ':') } Bloque ; { Bloque.siguiente = nuevaetiq(); emite(Bloque.siguiente, ':'); emite('return') }
+    PRidA -> Pid A
+    PF -> function PFidAT ; D M2 Bloque ;
+    PFidAT -> Pid A : T
+    D -> var id : T ; DD
+    D -> Lambda
+    DD -> id : T ; DD
+    DD -> Lambda
+    T -> boolean
+    T -> integer
+    T -> string
+    A -> ( X id : T AA )
+    A -> Lambda
+    AA -> ; X id : T AA
+    AA -> Lambda
+    Bloque -> begin C end
+    C -> B C
+    C -> Lambda
+    B -> { B.siguiente = nuevaetiq() } if EE then { emite('if',EE.lugar,'=',0,'goto',B.siguiente) } S { emite(ETIQ,B.siguiente,,) }
+    EE -> E { EE.lugar = E.lugar }
+    B -> S
+    B -> { B.despues = nuevaetiq() } if EE then { emite('if',EE.lugar,'=',1,'goto',sig_instr+1); emite('goto', B.despues)} Bloque ; {}
+    B -> { B.despues = nuevaetiq() } if THEN else Bloque ; {}
+    THEN -> EE then Bloque ;
+    B -> while M3 EE do Bloque ; //no tenemos esta opcion
+    M3 -> Lambda //no tenemos esta opcion
+    B -> repeat M3 C until E ; //no tenemos esta opcion
+    B -> loop M3 C end ; //no tenemos esta opcion
+    B -> FOR do Bloque ; //no tenemos esta opcion
+    FOR -> for id := E to E //no tenemos esta opcion
+    B -> case EXP of N O end ; //no tenemos esta opcion
+    EXP -> E //no tenemos esta opcion
+    N -> N VALOR : Bloque ; //no tenemos esta opcion
+    VALOR -> entero //no tenemos esta opcion
+    N -> Lambda //no tenemos esta opcion
+    O -> otherwise : M3 Bloque ; //no tenemos esta opcion
+    O -> Lambda //no tenemos esta opcion
+
+    S -> write LL ;
+    S -> writeln LL ;
+    S -> read ( V ) ;
+    S -> id := E ; { emite(buscats(id.pos), ':=', E.lugar) }
+    S -> id LL ; { if SS.lugar != vacio then emite('call', buscaetiqts(id.pos)) }
+    S -> return Y ; { emite('return', Y.lugar) }
+    S -> exit when E ; //no tenemos esta opcion
+    LL -> ( L ) { LL.lugar = L.lugar}
+    LL -> Lambda { LL.lugar = vacio }
+    L -> E Q { nparam = 1; L.param = E.param x Q.param; }
+    Q -> , E Q1 { Q.param = E.param x Q1.param; nparam = nparam + 1 }
+    Q -> Lambda
+    V -> id W
+    W -> , id W
+    W -> Lambda
+    Y -> E { Y.lugar = E.lugar }
+    Y -> Lambda
+    E -> E or F //no tenemos esta opcion
+    E -> E xor F //no tenemos esta opcion
+    E -> F { E.lugar = F.lugar }
+    F -> { F.lugar = nuevatemp(); F.falso = nuevaetiq(); F.siguiente = nuevaetiq() } F1 and { emite('if',F1.lugar,'=','0','goto',F.falso) } G
+        { emite('if',G.lugar,'=','0','goto',F.falso); emite(F.lugar, ':=', 1); emite('goto', F.siguiente); emite(ETIQ,F.falso,,); emite(F.lugar, ':=', 0); emite(ETIQ,F.siguiente,,); }
+    F -> G { F.lugar = G.lugar }
+    G -> { G.falso = nuevaetiq(); G.siguiente = nuevaetiq(); G.lugar = nuevatemp(); } G1 = H 
+                    { emite('if',G1.lugar,'!=',H.lugar,'goto',G.falso); 
+                    emite(G.lugar, ':=', 1); 
+                    emite('goto', G.siguiente);
+                    emite(ETIQ,G.falso,,);
+                    emite(G.lugar, ':=', 0);
+                    emite(ETIQ,G.siguiente,,) }
+    G -> G <> H //no tenemos esta opcion
+    G -> G > H //no tenemos esta opcion
+    G -> G >= H //no tenemos esta opcion
+    G -> G < H //no tenemos esta opcion
+    G -> G <= H //no tenemos esta opcion
+    G -> H { G.lugar = H.lugar }
+    H -> H + I //no tenemos esta opcion
+    H -> H - I //no tenemos esta opcion
+    H -> I { H.lugar = I.lugar }
+    I -> I1 * J { I.lugar = nuevatemp();
+                emite(MUL, I1.lugar, Z.lugar, I.lugar) }
+    I -> I / J //no tenemos esta opcion
+    I -> I mod J //no tenemos esta opcion
+    I -> J { I.lugar = J.lugar }
+    J -> J ** K //no tenemos esta opcion
+    J -> K { J.lugar = K.lugar }
+    K -> not K //no tenemos esta opcion
+    K -> + K //no tenemos esta opcion
+    K -> - K //no tenemos esta opcion
+    K -> Z { K.lugar = Z.lugar }
+    Z -> entero { Z.lugar = entero.valor }
+    Z -> cadena { Z.lugar = cadena.valor }
+    Z -> true //no tenemos esta opcion
+    Z -> false //no tenemos esta opcion
+    Z -> id LL { if LL.lugar = vacio then
+                    Z.lugar = nuevatemp();
+                    emite(Z.lugar,':=','call',buscaetiqts(id.pos)) 
+                    else Z.lugar = buscats(id.pos) } aqui igual hay q comprobar q sea logico
+    Z -> ( E ) { Z.lugar = E.lugar }
+    Z -> Z in ( L ) //no tenemos esta opcion
+    Z -> max ( L ) //no tenemos esta opcion
+
+    //comprobar respuesta de aurora
+    Z -> min ( L ) { for i in L.long aux = min(L.param[i]) emite('param', aux) }
+    X -> var
+    X -> Lambda
+}

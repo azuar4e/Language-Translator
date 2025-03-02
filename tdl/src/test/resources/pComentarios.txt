@@ -1,0 +1,38 @@
+{ Comentario al principio }
+
+var x : { Comentario en medio de una declaracion } boolean;
+
+PROGRAM pruebaComentarios;
+
+var x : integer; { Declaracion de variable }
+
+begin
+		
+	{ Comentario basico }
+	
+	x := 10; { Asignacion de valor }
+	
+	{ x := true; }
+	
+	{ Comentarios }
+	{ Consecutivos }
+	
+	{ 
+	Comentario con varias 
+	lineas 
+	holamundo
+	}
+	
+	{}
+	
+	{ Comentario con caracteres especiales: @#$%^&*()[]ç }
+	
+	{ Este es un comentario muy largo ......................................................................................................................................................................................... }
+	
+	{{}
+	
+	writeln({ Comentario dentro del parametro }'Hola');
+	
+	x := { Comentario en medio de una sentencia} 10;
+	
+end; { Comentario al final }

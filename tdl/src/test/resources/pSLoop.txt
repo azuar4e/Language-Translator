@@ -1,0 +1,54 @@
+function factorial (x: integer): integer;
+begin
+	if (x > 1) then
+		return x * factorial (x - 1);
+	return 1;
+end;
+
+procedure holaMundo;
+var s : string;
+begin
+	s := 'holamundo';
+    writeln(s);
+    return;	
+end;	
+
+PROGRAM pruebaSLoop;
+
+var x : integer;
+	y : integer;
+	n : integer;
+	b : boolean;
+
+begin
+	loop 
+  		n:= n + 1;
+  		loop 
+  			n:= n + 1;
+			while(x > 1) do
+			begin
+				x := x + factorial(y);
+			end;
+  			loop 
+  				n:= n + 1;
+  				exit when n > 32766; 
+  				write (n);
+			end;
+			repeat
+				y := y + 1;
+				holaMundo;
+			until y < 10;
+  			exit when n > 32766; 
+  			write (n);
+		end;
+		case n of
+			1: begin writeln (x); end;
+			2: begin writeln (y); end; 
+			3: begin writeln (x + y); end;
+			4: begin exit when n > 32766; end;
+			5: begin writeln ('viernes'); write('¡Llega el finde!'); end;
+			otherwise: begin write ('Fiesta'); end;
+		end;
+  		write (n);
+	end;
+end;

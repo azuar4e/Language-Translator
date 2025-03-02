@@ -1,0 +1,18 @@
+PROGRAM pruebaConstantes;
+
+var x : integer;
+	s : string;
+	b : boolean;
+
+begin
+    x := 32767;  { Maximo valor de entero valido }
+    x := -32767; { Minimo valor de entero valido }
+    x := 0;      { Entero valido }
+    
+    s := '123456789012345678901234567890123456789012345678901234567890123';	{ Maxima longitud de cadena }
+    s := '¡Hola, @Boreal#2023!'; 											{ Cadena con caracteres especiales }
+    s := ''; 																{ Cadena vacia }
+    
+    b := TRUE;
+    b := false;
+end;

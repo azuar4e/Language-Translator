@@ -1,0 +1,48 @@
+function factorial (x: integer): integer;
+begin
+	if (x > 1) then
+		return x * factorial (x - 1);
+	return 1;
+end;
+
+procedure holaMundo;
+var s : string;
+begin
+	s := 'holamundo';
+    writeln(s);
+    return;	
+end;	
+
+PROGRAM pruebaSWhile;
+
+var x : integer;
+	y : integer;
+	n : integer;
+	b : boolean;
+
+begin
+	while (n <= 10 AND b) OR factorial(x) < MIN(n, y) do
+	begin
+		n:= n + 1;
+		while (n < 10000) do
+		begin
+			n := n + 1;
+			while (n < 1000) do
+			begin
+				n := n + 2;
+				if(n > x) then return;
+			end;
+			loop 
+			  	x:= x + 1;
+			  	while(x < n) do
+			  	begin
+					holaMundo;
+			  		x := x * x;
+			  	end;
+			  	exit when x > 32766;
+			  	write (x);
+			end;
+		end;
+		writeln (n);
+	end; 
+end;

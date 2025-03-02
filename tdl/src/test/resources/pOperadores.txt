@@ -1,0 +1,46 @@
+function factorial (x: integer): integer;
+begin
+	if (x > 1) then
+		return x * factorial (x - 1);
+	return 1;
+end;
+
+PROGRAM pruebaOperadores;
+
+var x : integer;
+	y : integer;
+	b : boolean;
+	d : boolean;
+	s : string;
+
+begin
+    x := 10 + 5;			{ Operadores aritmeticos }
+    s := 'hola' + 'mundo';
+    x := 15 - 3;
+    x := 4 * 3;
+    x := 10 / 2;
+    x := 10 MOD 3;
+    x := -10;
+    x := +5;
+    
+    x := MAX(1, 2, MIN(2, factorial(x), (MAX(3, x)))); 
+    x := MIN(1, 2, MAX(1, x, y, x * y + ((1 + 2) * 3 - 4 / 2 MOD 3) ** 4 * MAX(1, 2, 3)));
+    
+    x := ((1 + 2) * 3 - 4 / 2 MOD 3) ** y * MAX(1, x, factorial(x), MIN(2, factorial(MAX(2, 3, factorial(x))))) * factorial(x);
+    
+    b := x = y;				{ Operadores relacionales }
+    b := x <> y;
+    b := x > y;
+    b := x < y;
+    b := x >= y;
+    b := x <= y;
+    
+    b := x IN (2, x, factorial(x), x-(y/2), MAX(1, x, factorial(y), MIN(x, y)), ((1 + 2) * 3 - 4 / 2 MOD 3) ** y * MAX(1, x, factorial(x), MIN(2, factorial(MAX(2, 3, factorial(x))))) * factorial(x));
+    
+    b := b OR d;			{ Operadores logicos }
+	b := b XOR d;
+	b := b AND d;
+	b := NOT b;
+	
+	b := NOT(x < y OR x IN (1, y)) AND -5 ** x >= MAX(1, x) XOR (true OR (2 = y AND 1 <> x - MIN(factorial(x), -10)));
+end;

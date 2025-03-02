@@ -1,6 +1,5 @@
 .dudas
-errores.txt
-parse.txt
-ts.txt
-tokens.txt
-prueba.py
+tdl/errores.txt
+tdl/parse.txt
+tdl/ts.txt
+tdl/tokens.txt

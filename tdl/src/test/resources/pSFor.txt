@@ -1,0 +1,51 @@
+function factorial (x: integer): integer;
+begin
+	if (x > 1) then
+		return x * factorial (x - 1);
+	return 1;
+end;
+
+procedure holaMundo;
+var s : string;
+begin
+	s := 'holamundo';
+    writeln(s);
+    return;	
+end;	
+
+PROGRAM pruebaSWhile;
+
+var x : integer;
+	y : integer;
+	n : integer;
+	b : boolean;
+	s : string;
+
+begin
+    for x := 1 to factorial(y) + MIN(x, y + x MOD n) do
+    begin
+		for x := 1 to factorial(y) + MIN(x, y + x MOD n) do
+		begin
+			for x := 1 to factorial(y) + MIN(x, y + x MOD n) do
+			begin
+				loop 
+					n:= n + 1;
+					for x := 1 to factorial(y) + MIN(x, y + x MOD n) do
+					begin
+					n := n - x;
+					exit when n > 32766; 
+					end;
+				end;
+			end;
+			x := x + factorial(y);
+		end;
+		case n of
+			1: begin writeln (x); end;
+			2: begin writeln (y); end; 
+			3: begin writeln (x + y); end;
+			4: begin writeln (s); end;
+			5: begin writeln ('viernes'); write('¡Llega el finde!'); end;
+			otherwise: begin write ('Fiesta'); end;
+		end;
+    end;
+end;
