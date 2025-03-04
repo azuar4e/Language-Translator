@@ -1,8 +1,13 @@
 package procesador;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 import tslib.TS_Gestor.*;
+
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -20,6 +25,13 @@ class Atributos {
 	private String referencia;
 	private String etiqueta;
 	private Integer program_count;
+	//variables para el codigo intermedio
+	private Integer lugar;
+	private ArrayList<Object> param;
+
+	//para las posibles etiquetas
+	private String falso;
+	private String siguiente;
 
 	public Atributos() {
 		this.pos = null;
@@ -32,7 +44,57 @@ class Atributos {
 		this.etiqueta = null;
 		this.program_count = null;
 
+		//atributos para la generacion de codigo intermedio
+		this.lugar = null;
+		this.param = null;
+		this.falso = null;
+		this.siguiente = null;
 	}
+
+	//____________________________________________________________
+	//funciones para los atributos de la generacion de codigo intermedio
+	public void setLugar(Integer lugar) {
+		this.lugar = lugar;
+	}
+
+	public Integer getLugar() {
+		return lugar;
+	}
+
+	public void initParam() {
+		this.param = new ArrayList<>();
+	}
+
+	public ArrayList<Object> parametros() {
+		return this.param;
+	}
+
+	public Object getParam(int i) {
+		return this.param.get(i);
+	}
+
+	public void addParam(Object param) {
+		this.param.add(param);
+	}
+
+	public void setFalso(String falso) {
+		this.falso = falso;
+	}
+
+	public String getFalso() {
+		return falso;
+	}
+
+	public void setSiguiente(String siguiente) {
+		this.siguiente = siguiente;
+	}
+
+	public String getSiguiente() {
+		return siguiente;
+	}
+
+	//____________________________________________________________
+	//____________________________________________________________
 
 	public void setPos(Integer pos) {
 		this.pos = pos;
@@ -657,6 +719,11 @@ public class ASem {
 		}
 		res.setExit(sAtb.getExit());
 		res.setRet(sAtb.getRet());
+		//____________________________________________________
+		//instrucciones para la generacion de codigo intermedio
+		res.setSiguiente(gci.nuevaetiq());
+		gci.emite("GOTO_IG", eeAtb.getLugar(), 0, res.getSiguiente());
+		gci.emite("ETIQ", res.getSiguiente(), null, null);
 		return res;
 	}
 
@@ -666,6 +733,9 @@ public class ASem {
 		Atributos eAtb = atb[1];
 		Atributos res = new Atributos();
 		res.setTipo(eAtb.getTipo());
+		//____________________________________________________
+		//instrucciones para la generacion de codigo intermedio
+		res.setLugar(eAtb.getLugar());
 		return res;
 	}
 
@@ -1010,6 +1080,14 @@ public class ASem {
 			res.setTipo("tipo_ok");
 			res.setExit(0);
 			res.setRet("tipo_ok");
+			//____________________________________________________
+			//instrucciones para la generacion de codigo intermedio
+			if (eTipo.equals("entero")) {
+				gci.emite("ASIG", atb[3].getLugar(), null, atb[7]);
+			} else {
+				gci.emite("ASIG_CAD", atb[3].getLugar(), null, atb[7]);
+			}
+
 			return res;
 		} else {
 			if (idTipo.equals("función") && eTipo.equals("función")) {
@@ -1103,6 +1181,17 @@ public class ASem {
 		}
 		res.setExit(0);
 		res.setRet(yATB.getTipo());
+		switch (yATB.getTipo()) {
+			case "entero":
+				gci.emite("RETURN_ENT", null, null, yATB.getLugar());
+				break;
+			case "cadena":
+				gci.emite("RETURN_CAD", null, null, yATB.getLugar());
+				break;
+			default:
+				gci.emite("RETURN", null, null, null);
+				break;
+		}		
 		return res;
 	}
 
@@ -1129,6 +1218,7 @@ public class ASem {
 		Atributos res = new Atributos();
 		res.setTipo(lATB.getTipo());
 		res.setLong(lATB.getLongs());
+		res.setLugar(lATB.getLugar());
 		return res;
 	}
 
@@ -1147,8 +1237,11 @@ public class ASem {
 		Atributos eATB = atb[3];
 		if (qATB.getTipo().equals("")) {
 			res.setTipo(eATB.getTipo());
+			res.addParam(eATB.getLugar());
 		} else {
 			res.setTipo(eATB.getTipo() + " " + qATB.getTipo());
+			res.addParam(eATB.getLugar());
+			res.addParam(qATB.getLugar());
 		}
 		res.setLong(1 + qATB.getLongs());
 		return res;
@@ -1164,8 +1257,11 @@ public class ASem {
 
 		if (q1ATB.getTipo().equals("")) {
 			res.setTipo(eATB.getTipo());
+			res.addParam(eATB.getLugar());
 		} else {
 			res.setTipo(eATB.getTipo() + " " + q1ATB.getTipo());
+			res.addParam(eATB.getLugar());
+			res.addParam(q1ATB.getLugar());
 		}
 		res.setLong(1 + q1ATB.getLongs());
 		return res;
@@ -1175,6 +1271,7 @@ public class ASem {
 		Atributos res = new Atributos();
 		res.setTipo("");
 		res.setLong(0);
+		res.initParam();
 		return res;
 	}
 
@@ -1223,6 +1320,9 @@ public class ASem {
 		Atributos eATB = atb[1];
 		Atributos res = new Atributos();
 		res.setTipo(eATB.getTipo());
+		//____________________________________________________
+		//instrucciones para la generacion de codigo intermedio
+		res.setLugar(eATB.getLugar());
 		return res;
 	}
 
@@ -1272,6 +1372,9 @@ public class ASem {
 		Atributos[] atb = ASin.pilaSem.toArray(new Atributos[reg.numElementos * 2]);
 		Atributos res = new Atributos();
 		res.setTipo(atb[1].getTipo());
+		//____________________________________________________
+		//instrucciones para la generacion de codigo intermedio
+		res.setLugar(atb[1].getLugar());
 		return res;
 	}
 
@@ -1283,6 +1386,18 @@ public class ASem {
 		Atributos gATB = atb[1];
 		if (f1ATB.getTipo().equals(gATB.getTipo()) && f1ATB.getTipo().equals("lógico")) {
 			res.setTipo("lógico");
+			//____________________________________________________
+			//instrucciones para la generacion de codigo intermedio
+			res.setLugar(gci.nuevatemp());
+			res.setFalso(gci.nuevaetiq());
+			res.setSiguiente(gci.nuevaetiq());
+			gci.emite("GOTO_IG", f1ATB.getLugar(), 0, res.getFalso());
+			gci.emite("GOTO_IG", gATB.getLugar(), 0, res.getFalso());
+			gci.emite("ASIG", 1, null, res.getLugar());
+			gci.emite("GOTO", null, null, res.getSiguiente());
+			gci.emite("ETIQ", res.getFalso(), null, null);
+			gci.emite("ASIG", 0, null, res.getLugar());
+			gci.emite("ETIQ", res.getSiguiente(), null, null);
 		} else {
 			GestorError.setError(Acciones.eSem2_tipo_incompatible,
 					"tipo actual: " + f1ATB.getTipo() + " y " + gATB.getTipo() + "; tipo esperado: lógico y lógico");
@@ -1298,6 +1413,9 @@ public class ASem {
 		Atributos gATB = atb[1];
 		Atributos res = new Atributos();
 		res.setTipo(gATB.getTipo());
+		//____________________________________________________
+		//instrucciones para la generacion de codigo intermedio
+		res.setLugar(gATB.getLugar());
 		return res;
 	}
 
@@ -1309,6 +1427,17 @@ public class ASem {
 		if (gTipo.equals(hTipo) && hTipo.equals("entero")) {
 			Atributos res = new Atributos();
 			res.setTipo("lógico");
+			//____________________________________________________
+			//instrucciones para la generacion de codigo intermedio
+			res.setFalso(gci.nuevaetiq());
+			res.setSiguiente(gci.nuevaetiq());
+			res.setLugar(gci.nuevatemp());
+			gci.emite("GOTO_DIST", atb[5].getLugar(), atb[1].getLugar(), res.getFalso());
+			gci.emite("ASIG", 1, null, res.getLugar());
+			gci.emite("GOTO", null, null, res.getSiguiente());
+			gci.emite("ETIQ", res.getFalso(), null, null);
+			gci.emite("ASIG", 0, null, res.getLugar());
+			gci.emite("ETIQ", res.getSiguiente(), null, null);
 			return res;
 		} else {
 			GestorError.setError(Acciones.eSem2_tipo_incompatible,
@@ -1414,6 +1543,9 @@ public class ASem {
 		Atributos[] atb = ASin.pilaSem.toArray(new Atributos[reg.numElementos * 2]);
 		Atributos res = new Atributos();
 		res.setTipo(atb[1].getTipo());
+		//____________________________________________________
+		//instrucciones para la generacion de codigo intermedio
+		res.setLugar(atb[1].getLugar());
 		return res;
 	}
 
@@ -1458,6 +1590,9 @@ public class ASem {
 		Atributos[] atb = ASin.pilaSem.toArray(new Atributos[reg.numElementos * 2]);
 		Atributos res = new Atributos();
 		res.setTipo(atb[1].getTipo());
+		//____________________________________________________
+		//instrucciones para la generacion de codigo intermedio
+		res.setLugar(atb[1].getLugar());
 		return res;
 	}
 
@@ -1469,6 +1604,10 @@ public class ASem {
 		if (iTipo.equals(jTipo) && jTipo.equals("entero")) {
 			Atributos res = new Atributos();
 			res.setTipo("entero");
+			//____________________________________________________
+			//instrucciones para la generacion de codigo intermedio
+			res.setLugar(gci.nuevatemp());
+			gci.emite("MUL", atb[5].getLugar(), atb[1].getLugar(), res.getLugar());
 			return res;
 		} else {
 			GestorError.setError(Acciones.eSem2_tipo_incompatible,
@@ -1520,6 +1659,9 @@ public class ASem {
 		Atributos[] atb = ASin.pilaSem.toArray(new Atributos[reg.numElementos * 2]);
 		Atributos res = new Atributos();
 		res.setTipo(atb[1].getTipo());
+		//____________________________________________________
+		//instrucciones para la generacion de codigo intermedio
+		res.setLugar(atb[1].getLugar());
 		return res;
 	}
 
@@ -1546,6 +1688,9 @@ public class ASem {
 		Atributos[] atb = ASin.pilaSem.toArray(new Atributos[reg.numElementos * 2]);
 		Atributos res = new Atributos();
 		res.setTipo(atb[1].getTipo());
+		//____________________________________________________
+		//instrucciones para la generacion de codigo intermedio
+		res.setLugar(atb[1].getLugar());
 		return res;
 	}
 
@@ -1602,18 +1747,31 @@ public class ASem {
 		Atributos[] atb = ASin.pilaSem.toArray(new Atributos[reg.numElementos * 2]);
 		Atributos res = new Atributos();
 		res.setTipo(atb[1].getTipo());
+		//____________________________________________________
+		//instrucciones para la generacion de codigo intermedio
+		res.setLugar(atb[1].getLugar());
 		return res;
 	}
 
 	private static Atributos acc90() {
 		Atributos res = new Atributos();
 		res.setTipo("entero");
+		//____________________________________________________
+		//instrucciones para la generacion de codigo intermedio
+		Integer valor = (Integer) ASin.token.getAtributo();
+		res.setLugar(gci.nuevatemp());
+		gci.emite("ASIG", valor, null, res.getLugar());
 		return res;
 	}
 
 	private static Atributos acc91() {
 		Atributos res = new Atributos();
 		res.setTipo("cadena");
+		//____________________________________________________
+		//instrucciones para la generacion de codigo intermedio
+		Integer valor = (Integer) ASin.token.getAtributo();
+		res.setLugar(gci.nuevatemp());
+		gci.emite("ASIG_CAD", valor, null, res.getLugar());
 		return res;
 	}
 
@@ -1684,6 +1842,20 @@ public class ASem {
 					"tipo actual: " + idTipo + "; tipo esperado: {entero, lógico, cadena}");
 			res.setTipo("tipo_error");
 		}
+
+		//____________________________________________________________
+		//instrucciones para la generacion de codigo intermedio
+		if (llAtb.parametros() == null) {
+			res.setLugar(idAtb.getPos());
+		} else {
+			res.setLugar(gci.nuevatemp());
+			if ("entero".equals(idAtb.getRet())) {
+				gci.emite("CALL_FUN", idAtb.getPos(), null, res.getLugar());
+			} else {
+				gci.emite("CALL_FUN_CAD", idAtb.getPos(), null, res.getLugar());
+			}
+		}
+
 		return res;
 	}
 
@@ -1692,6 +1864,9 @@ public class ASem {
 		Atributos[] atb = ASin.pilaSem.toArray(new Atributos[reg.numElementos * 2]);
 		Atributos res = new Atributos();
 		res.setTipo(atb[3].getTipo());
+		//____________________________________________________
+		//instrucciones para la generacion de codigo intermedio
+		res.setLugar(atb[3].getLugar());
 		return res;
 	}
 
@@ -1749,6 +1924,7 @@ public class ASem {
 		Atributos lAtb = atb[3];
 		res.setTipo("entero");
 		String[] tipos = lAtb.getTipo().split("\\s+");
+		int menor = (int) lAtb.getParam(0);
 		for (int i = 0; i < tipos.length; i++) {
 			String tipo = tipos[i];
 			if (!tipo.equals("entero")) {
@@ -1757,7 +1933,12 @@ public class ASem {
 						"tipo actual: " + tipo + "; tipo esperado: entero");
 				break;
 			}
+			//esto esta mal 100% preguntar en clase
+			if ((int) lAtb.getParam(i) < menor) {
+				menor = (int) lAtb.getParam(i);
+			}
 		}
+
 		return res;
 	}
 

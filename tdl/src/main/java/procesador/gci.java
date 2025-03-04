@@ -9,7 +9,7 @@ public class gci {
     private static int conttemp = 0;
     private static int contetiq = 0;
 
-    public cuarteto emite (String operador, Object arg1, Object arg2, Object resultado) {
+    public static cuarteto emite (String operador, Object arg1, Object arg2, Object resultado) {
         cuarteto c = new cuarteto(operador, arg1, arg2, resultado);
         printCuarteto(c);
         return c;

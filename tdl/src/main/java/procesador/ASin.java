@@ -16,6 +16,7 @@ public class ASin { // Hacer Bucle
 
 	private static Deque<Integer> pila;
 	public static Deque<Atributos> pilaSem;
+	public static Token<?> token;
 	private static BufferedWriter ptwParse;
 
 	public static void setOutputParseFile(BufferedWriter parsePtr) {
@@ -63,7 +64,7 @@ public class ASin { // Hacer Bucle
 		}
 
 		// Primer token devuelto en el analisis lexico
-		Token<?> token = ALex.generarToken();
+		token = ALex.generarToken();
 
 		while (true) {
 			int tokenId = token.getId();
