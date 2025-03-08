@@ -50,8 +50,8 @@ EdT = {
     S -> write LL ;
     S -> writeln LL ;
     S -> read ( V ) ;
-    S -> id := E ; { emite(buscats(id.pos), ':=', E.lugar) }
-    S -> id LL ; { if LL.lugar != vacio then emite('call', buscaetiqts(id.pos)) }
+    S -> id := E ; { emite(buscats(id.pos), ':=', E.lugar) } --
+    S -> id LL ; { if LL.lugar != vacio then emite('call', buscaetiqts(id.pos)) } --
     S -> return Y ; { emite('return', Y.lugar) }
     S -> exit when E ; //no tenemos esta opcion
     LL -> ( L ) { LL.lugar = L.lugar}
@@ -111,14 +111,14 @@ EdT = {
     Z -> id LL { if LL.lugar = vacio then
                     Z.lugar = nuevatemp();
                     emite(Z.lugar,':=','call',buscaetiqts(id.pos)) 
-                    else Z.lugar = buscats(id.pos) } aqui igual hay q comprobar q sea logico
+                    else Z.lugar = buscats(id.pos) } --
 
     Z -> ( E ) { Z.lugar = E.lugar }
     Z -> Z in ( L ) //no tenemos esta opcion
     Z -> max ( L ) //no tenemos esta opcion
 
     //comprobar respuesta de aurora
-    Z -> min ( L ) { for i in L.long aux = min(L.param[i]) emite('param', aux) }
+    Z -> min ( L ) { for i in L.long aux = min(L.param[i]) emite('param', aux) } --
 
     X -> var
     X -> Lambda

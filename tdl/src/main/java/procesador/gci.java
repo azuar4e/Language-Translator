@@ -2,6 +2,8 @@ package procesador;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class gci {
@@ -9,26 +11,59 @@ public class gci {
     private static int conttemp = 0;
     private static int contetiq = 0;
 
+    public static class tupla<A, B> {
+        private final A primerElemento;
+        private final B segundoElemento;
+
+        public tupla(A primerElemento, B segundoElemento) {
+            this.primerElemento = primerElemento;
+            this.segundoElemento = segundoElemento;
+        }
+
+        public A getPrimerElemento() {
+            return primerElemento;
+        }
+    
+        public B getSegundoElemento() {
+            return segundoElemento;
+        }
+
+        @Override
+        public String toString() {
+            return "{" + primerElemento + ", " + segundoElemento + "}";
+        }
+    }
+
     public static cuarteto emite (String operador, Object arg1, Object arg2, Object resultado) {
         cuarteto c = new cuarteto(operador, arg1, arg2, resultado);
         printCuarteto(c);
         return c;
     }
 
-    public static Integer nuevatemp() {
+    public static tupla<String, Integer> nuevatemp() {
         String nuevatemp = "t" + conttemp;
         conttemp++;
+        
         if (ASem.tsGlobal) {
-			return Procesador.gestorTS.addEntradaTSGlobal(nuevatemp);
+            tupla<String, Integer> tupla = new tupla<>("VAR_GLOBAL", Procesador.gestorTS.addEntradaTSGlobal(nuevatemp));
+            return tupla;
 		} else {
-			return Procesador.gestorTS.addEntradaTSLocal(nuevatemp);
+            tupla<String, Integer> tupla = new tupla<>("VAR_LOCAL", Procesador.gestorTS.addEntradaTSLocal(nuevatemp));
+            return tupla;
 		}
     }
 
-    public static String nuevaetiq() {
-        String nuevaetiq = "Etiq" + contetiq;
-        contetiq++;
-        return nuevaetiq;
+    public static tupla<String, String> nuevaetiq(String nombre) {
+        String nuevaetiq;
+        if (nombre == null){
+            nuevaetiq = "Etiq" + contetiq;
+            contetiq++;
+        } else {
+            nuevaetiq = nombre;
+        }
+
+        tupla<String, String> tupla = new tupla<>("ETIQ", nuevaetiq);
+        return tupla;
     }
 
     private static void printCuarteto(cuarteto c) {
