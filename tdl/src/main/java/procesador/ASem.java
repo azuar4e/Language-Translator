@@ -1,15 +1,14 @@
 package procesador;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-
-import tslib.TS_Gestor.*;
-
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
+
+import tslib.TS_Gestor.DescripcionAtributo;
+import tslib.TS_Gestor.Tabla;
+import tslib.TS_Gestor.TipoDatoAtributo;
 
 //Clase que almacena todos los atributos de los simbolos gramaticales
 //Cada atrbuto con su setter y getter correspondiente
@@ -455,6 +454,7 @@ public class ASem {
 		Procesador.gestorTS.setTipo(pidAtb.getPos(), "procedimiento"); // Checkear error de gestor TS.
 		Procesador.gestorTS.setValorAtributoEnt(pidAtb.getPos(), "numParametro", 0);
 		Procesador.gestorTS.setValorAtributoCad(pidAtb.getPos(), "etiqueta", "main");
+		gci.emite("ETIQ", "main", null, null);
 		return new Atributos();
 	}
 
@@ -510,7 +510,9 @@ public class ASem {
 			Procesador.gestorTS.setValorAtributoEnt(pidAtb.getPos(), "numParametro", 0);
 		}
 		res.setEtiqueta(numEtiq.toString());
-		Procesador.gestorTS.setValorAtributoCad(pidAtb.getPos(), "etiqueta", "EtiqProc" + numEtiq++);
+		String etiq = "EtiqProc" + numEtiq++;
+		Procesador.gestorTS.setValorAtributoCad(pidAtb.getPos(), "etiqueta", etiq);
+		gci.emite("ETIQ", etiq, null, null); //emitimos la etiqueta del procedimiento
 		return res;
 	}
 
@@ -553,7 +555,9 @@ public class ASem {
 		}
 		res.setTipo(tAtb.getTipo());
 		res.setEtiqueta(numEtiq.toString());
-		Procesador.gestorTS.setValorAtributoCad(pidAtb.getPos(), "etiqueta", "EtiqFunc" + numEtiq++);
+		String etiq = "EtiqFunc" + numEtiq++;
+		Procesador.gestorTS.setValorAtributoCad(pidAtb.getPos(), "etiqueta", etiq);
+		gci.emite("ETIQ", etiq, null, null);
 		return res;
 	}
 
