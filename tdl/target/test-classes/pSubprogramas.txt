@@ -1,0 +1,52 @@
+var x : integer;
+    y : integer;
+
+function factorial (x: integer): integer;		{ Funcion con parametro }
+begin
+	if (x > 1) then
+		return x * factorial (x - 1);
+	return 1;
+end;
+
+function Suma (aux: integer; fin: integer; b: boolean): boolean;
+begin
+    for x:= 1 to fin do
+    begin
+      x:= x + 2;
+      aux:= aux+factorial(aux-1);
+    end;
+    return aux > 10000;
+end;	
+
+function siempreTrue : boolean;					{ Function sin parametro }
+begin
+    writeln ('TRUE');
+    if(1 < 2) then return false OR true AND 1 < MIN(2, 3);
+    return false;
+end;
+
+procedure holaMundo;							{ Procedure sin parametro }
+var s : string;
+begin
+	s := 'holamundo';
+    writeln(s);
+    return;	
+end;	
+
+procedure leer (var a: integer; x: integer);	{ Procedure con parametro }
+begin
+    read (a);
+    a:= a - 1 + x;
+end;
+
+PROGRAM pruebaSubprogramas; 					{ Programa principal }
+var z : integer;
+	b : boolean;
+	d : boolean;
+begin
+	x := factorial(y);
+	leer(x, factorial(x));
+	b := siempreTrue;
+	d := Suma(MAX(x, factorial(factorial(factorial(x)))), y + factorial(x), x IN (factorial(y)) AND x = 1 OR x >= 3);
+	if(Suma(x, y + factorial(y), false) AND b OR d) then holaMundo;
+end;

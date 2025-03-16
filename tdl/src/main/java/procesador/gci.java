@@ -2,8 +2,6 @@ package procesador;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 
 public class gci {
@@ -40,16 +38,50 @@ public class gci {
         return c;
     }
 
-    public static tupla<String, Integer> nuevatemp() {
+    public static tupla<String, Integer> nuevatemp(String tipo) {
         String nuevatemp = "t" + conttemp;
         conttemp++;
         
         if (ASem.tsGlobal) {
-            tupla<String, Integer> tupla = new tupla<>("VAR_GLOBAL", Procesador.gestorTS.addEntradaTSGlobal(nuevatemp));
-            return tupla;
+            Integer pos = Procesador.gestorTS.addEntradaTSGlobal(nuevatemp);
+            if (!tipo.equals("tipo_error")) {
+                Procesador.gestorTS.setTipo(pos, tipo);
+            }
+            Procesador.gestorTS.setValorAtributoEnt(pos, "desplazamiento", ASem.despGlobal);
+            switch (tipo) {
+                case "lógico":
+                    ASem.despGlobal += 1;
+                    break;
+                case "entero":
+                    ASem.despGlobal += 4;
+                    break;
+                case "cadena":
+                    ASem.despGlobal += 64;
+                    break;
+                default:
+                    break;
+            }
+            return new tupla<>("VAR_Global", ASem.despGlobal);
 		} else {
-            tupla<String, Integer> tupla = new tupla<>("VAR_LOCAL", Procesador.gestorTS.addEntradaTSLocal(nuevatemp));
-            return tupla;
+            Integer pos = Procesador.gestorTS.addEntradaTSLocal(nuevatemp);
+            if (!tipo.equals("tipo_error")) {
+                Procesador.gestorTS.setTipo(pos, tipo);
+            }
+            Procesador.gestorTS.setValorAtributoEnt(pos, "desplazamiento", ASem.despLocal);
+            switch (tipo) {
+                case "lógico":
+                    ASem.despLocal += 1;
+                    break;
+                case "entero":
+                    ASem.despLocal += 4;
+                    break;
+                case "cadena":
+                    ASem.despLocal += 64;
+                    break;
+                default:
+                    break;
+            }
+            return new tupla<>("VAR_LOCAL", ASem.despLocal);
 		}
     }
 
@@ -62,7 +94,7 @@ public class gci {
             nuevaetiq = nombre;
         }
 
-        tupla<String, String> tupla = new tupla<>("ETIQ", nuevaetiq);
+        tupla<String, String> tupla = new tupla<>("ET", nuevaetiq);
         return tupla;
     }
 

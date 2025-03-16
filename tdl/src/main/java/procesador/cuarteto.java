@@ -1,7 +1,5 @@
 package procesador;
 
-import java.util.Map;
-
 public class cuarteto {
     public String operador;
     public Object arg1;
@@ -26,6 +24,6 @@ public class cuarteto {
         if (resultado instanceof gci.tupla){
             resultado = resultado.toString();
         }
-        return "(" + operador + ", " + arg1 + ", " + arg2 + ", " + resultado + ")";
+        return "(" + operador + ", " + arg1 + ", " + arg2 + ", " + resultado + ")\n";
     }
 }

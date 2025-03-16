@@ -1,0 +1,51 @@
+var a : integer;
+    b : integer;
+	c : string;
+	d : string;
+	n : integer;
+
+program switch;
+
+var d : integer;
+
+begin
+    case d of
+        1: begin writeln (a); end;
+        2: begin writeln (b); end; 
+        3: begin
+			loop 
+  				n:= n + 1;
+				case n of
+					1: begin writeln (a); end;
+					2: begin writeln (b); end; 
+					3: begin writeln (a + b); end;
+					32767: begin exit when n > 32766; end;
+					5: begin writeln ('viernes'); write('¡Llega el finde!'); end;
+					otherwise: begin write ('Fiesta'); end;
+				end;
+  				write (n);
+			end;
+			end;
+        4: begin 
+			case d of
+				1: begin writeln (a); end;
+				2: begin writeln (b); end; 
+				3: begin 
+					case d of
+						1: begin writeln (a); end;
+						2: begin writeln (b); end; 
+						3: begin writeln (a + b); end;
+						4: begin writeln (c); end;
+						5: begin writeln ('viernes'); write('¡Llega el finde!'); end;
+						otherwise: begin write ('Fiesta'); end;
+					end;
+					end;
+				4: begin writeln (c); end;
+				5: begin writeln ('viernes'); write('¡Llega el finde!'); end;
+				otherwise: begin write ('Fiesta'); end;
+			end;
+			end;
+        5: begin writeln ('viernes'); write('¡Llega el finde!'); end;
+        otherwise: begin write ('Fiesta'); end;
+    end;
+end;

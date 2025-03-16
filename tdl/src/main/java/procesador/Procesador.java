@@ -94,7 +94,7 @@ public class Procesador {
 							"\n \t - Tokens en \t\t\t'" + currDir +"\\" +tokensFile + "'" +
 							"\n \t - Tabla de símbolos en \t'"+currDir +"\\" +tsFile + "'"
 							+"\n \t - Errores en \t\t\t'" + currDir +"\\" +errorFile + "'"+
-							"\n \t - Cuartetos en \t\t\t'" + currDir +"\\" +cuartetos + "'" );
+							"\n \t - Cuartetos en \t\t'" + currDir +"\\" +cuartetos + "'" );
 
 	}
 

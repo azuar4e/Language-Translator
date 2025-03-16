@@ -1,0 +1,25 @@
+function factorial (x: integer): integer;
+begin
+	if (x > 1) then
+		return x * factorial (x - 1);
+	return 1;
+end;
+
+PROGRAM pruebaEntradaSalida;
+var s : string;
+	x : integer;
+begin
+	read(s);
+	read(x);
+	read(s, x);
+	
+	write;
+	write(s);
+	write(x);
+	write('el factorial del numero %d es %d, en letra: %s\n', x, factorial(x), s);
+	
+	writeln;
+	writeln(s);
+	writeln(x);
+	write('el factorial del numero %d es %d, en letra: %s\n', x, factorial(x), s);
+end;

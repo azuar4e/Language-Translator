@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.List;
 
 public class ASin { // Hacer Bucle
 
@@ -16,7 +17,8 @@ public class ASin { // Hacer Bucle
 
 	private static Deque<Integer> pila;
 	public static Deque<Atributos> pilaSem;
-	public static Token<?> token;
+	private static Token<?> token;
+	public static List<Token<?>> listaTokens = new ArrayList<>();
 	private static BufferedWriter ptwParse;
 
 	public static void setOutputParseFile(BufferedWriter parsePtr) {
@@ -65,6 +67,7 @@ public class ASin { // Hacer Bucle
 
 		// Primer token devuelto en el analisis lexico
 		token = ALex.generarToken();
+		listaTokens.add(token);
 
 		while (true) {
 			int tokenId = token.getId();
@@ -123,6 +126,7 @@ public class ASin { // Hacer Bucle
 
 				// Pedir siguiente token
 				token = ALex.generarToken();
+				listaTokens.add(token);
 				if (token == null) {
 					break;
 				}

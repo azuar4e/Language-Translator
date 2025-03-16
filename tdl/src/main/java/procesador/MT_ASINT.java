@@ -208,15 +208,15 @@ public class MT_ASINT {
 		processRule(5, "R -> PR R");
 		processRule(6, "R -> Lambda");
 		processRule(7, "PP -> program PPid ; D M2 Bloque ;");
-		processRule(8, "PPid -> Pid");
+		processRule(8, "PPid -> Pid"); //done
 		processRule(9, "Pid -> id");
 		processRule(10, "M2 -> Lambda");
 		
 		processRule(11, "PR -> procedure PRidA ; D M2 Bloque ;");
-		processRule(12, "PRidA -> Pid A");
+		processRule(12, "PRidA -> Pid A"); //done
 		processRule(13, "PF -> function PFidAT ; D M2 Bloque ;");
-		processRule(14, "PFidAT -> Pid A : T");
-		processRule(15, "D -> var id : T ; DD");			
+		processRule(14, "PFidAT -> Pid A : T"); //done
+		processRule(15, "D -> var id : T ; DD");
 		processRule(16, "D -> Lambda");
 		processRule(17, "DD -> id : T ; DD");				
 		processRule(18, "DD -> Lambda");
@@ -231,13 +231,13 @@ public class MT_ASINT {
 		processRule(26, "Bloque -> begin C end");
 		processRule(27, "C -> B C");
 		processRule(28, "C -> Lambda");
-		processRule(29, "B -> if EE then S");
-		processRule(30, "EE -> E");
+		processRule(29, "B -> if EE then S"); //done
+		processRule(30, "EE -> E"); //done
 		
-		processRule(31, "B -> S");
-		processRule(32, "B -> if EE then Bloque ;");
-		processRule(33, "B -> if THEN else Bloque ;");
-		processRule(34, "THEN -> EE then Bloque ;");
+		processRule(31, "B -> S"); //done
+		processRule(32, "B -> if EE then Bloque ;"); //done
+		processRule(33, "B -> if THEN else Bloque ;"); //done
+		processRule(34, "THEN -> EE then Bloque ;"); //done
 		processRule(35, "B -> while M3 EE do Bloque ;");
 		processRule(36, "M3 -> Lambda");
 		processRule(37, "B -> repeat M3 C until E ;");
@@ -252,62 +252,62 @@ public class MT_ASINT {
 		processRule(45, "N -> Lambda");
 		processRule(46, "O -> otherwise : M3 Bloque ;");
 		processRule(47, "O -> Lambda");
-		processRule(48, "S -> write LL ;");
-		processRule(49, "S -> writeln LL ;");
-		processRule(50, "S -> read ( V ) ;");
+		processRule(48, "S -> write LL ;"); //done
+		processRule(49, "S -> writeln LL ;"); //done
+		processRule(50, "S -> read ( V ) ;"); //done pro ns q hay q emitir exactamente
 		
-		processRule(51, "S -> id := E ;");				 
-		processRule(52, "S -> id LL ;");				
-		processRule(53, "S -> return Y ;");
+		processRule(51, "S -> id := E ;"); //done		 
+		processRule(52, "S -> id LL ;"); //done
+		processRule(53, "S -> return Y ;"); //done
 		processRule(54, "S -> exit when E ;");
-		processRule(55, "LL -> ( L )");
+		processRule(55, "LL -> ( L )"); //done
 		processRule(56, "LL -> Lambda");
-		processRule(57, "L -> E Q");
-		processRule(58, "Q -> , E Q");
-		processRule(59, "Q -> Lambda");
-		processRule(60, "V -> id W"); 				
+		processRule(57, "L -> E Q"); //done
+		processRule(58, "Q -> , E Q"); //done
+		processRule(59, "Q -> Lambda"); //done
+		processRule(60, "V -> id W"); //done			
 		
-		processRule(61, "W -> , id W");
-		processRule(62, "W -> Lambda");
-		processRule(63, "Y -> E");
+		processRule(61, "W -> , id W"); //done
+		processRule(62, "W -> Lambda"); //done
+		processRule(63, "Y -> E"); //done
 		processRule(64, "Y -> Lambda");
 		processRule(65, "E -> E or F");
 		processRule(66, "E -> E xor F");
-		processRule(67, "E -> F");
-		processRule(68, "F -> F and G");
-		processRule(69, "F -> G");
-		processRule(70, "G -> G = H");
+		processRule(67, "E -> F"); //done
+		processRule(68, "F -> F and G"); //done
+		processRule(69, "F -> G"); //done
+		processRule(70, "G -> G = H"); //done
 		
 		processRule(71, "G -> G <> H");
 		processRule(72, "G -> G > H");
 		processRule(73, "G -> G >= H");
 		processRule(74, "G -> G < H");
 		processRule(75, "G -> G <= H");
-		processRule(76, "G -> H");
+		processRule(76, "G -> H"); //done
 		processRule(77, "H -> H + I");
 		processRule(78, "H -> H - I");
-		processRule(79, "H -> I");
-		processRule(80, "I -> I * J");
+		processRule(79, "H -> I"); //done
+		processRule(80, "I -> I * J"); //done
 		
 		processRule(81, "I -> I / J");
 		processRule(82, "I -> I mod J");
-		processRule(83, "I -> J");
+		processRule(83, "I -> J"); //done
 		processRule(84, "J -> J ** K");
-		processRule(85, "J -> K");
+		processRule(85, "J -> K"); //done
 		processRule(86, "K -> not K");
 		processRule(87, "K -> + K");
 		processRule(88, "K -> - K");
-		processRule(89, "K -> Z");
-		processRule(90, "Z -> entero");
+		processRule(89, "K -> Z"); //done
+		processRule(90, "Z -> entero"); //done
 		
-		processRule(91, "Z -> cadena");
+		processRule(91, "Z -> cadena"); //done
 		processRule(92, "Z -> true");
 		processRule(93, "Z -> false");
-		processRule(94, "Z -> id LL"); 		
+		processRule(94, "Z -> id LL"); //done
 		processRule(95, "Z -> ( E )"); 
 		processRule(96, "Z -> Z in ( L )"); 
 		processRule(97, "Z -> max ( L )");
-		processRule(98, "Z -> min ( L )");
+		processRule(98, "Z -> min ( L )"); //done
 		processRule(99, "X -> var");
 		processRule(100, "X -> Lambda");
 				
