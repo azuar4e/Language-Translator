@@ -18,11 +18,20 @@ public class cuarteto {
         if (arg1 instanceof gci.tupla){
             arg1 = arg1.toString();
         }
+        if (arg1 == null){
+            arg1 = "";
+        }
         if (arg2 instanceof gci.tupla){
             arg2 = arg2.toString();
         }
+        if (arg2 == null){
+            arg2 = "";
+        }
         if (resultado instanceof gci.tupla){
             resultado = resultado.toString();
+        }
+        if (resultado == null){
+            resultado = "";
         }
         return "(" + operador + ", " + arg1 + ", " + arg2 + ", " + resultado + ")\n";
     }
