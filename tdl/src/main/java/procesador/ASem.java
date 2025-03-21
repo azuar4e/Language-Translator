@@ -1264,8 +1264,10 @@ public class ASem {
 			}
 			if ("entero".equals(llATB.getRet())) {
 				gci.emite("CALL_FUN", llATB.getPos(), null, res.getLugar());
-			} else {
+			} else if ("cadena".equals(llATB.getRet())) {
 				gci.emite("CALL_FUN_CAD", llATB.getPos(), null, res.getLugar());
+			} else {
+				gci.emite("CALL", llATB.getPos(), null, null);
 			}
 		}
 		return res;
@@ -1965,8 +1967,10 @@ public class ASem {
 			}
 			if ("entero".equals(idAtb.getRet())) {
 				gci.emite("CALL_FUN", idAtb.getPos(), null, res.getLugar());
-			} else {
+			} else if ("cadena".equals(idAtb.getRet())) {
 				gci.emite("CALL_FUN_CAD", idAtb.getPos(), null, res.getLugar());
+			} else {
+				gci.emite("CALL", idAtb.getPos(), null, null);
 			}
 		}
 
