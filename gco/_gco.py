@@ -44,6 +44,19 @@ def procesar_linea(linea):
 
 def main():
     linea = leer()
+
+    # escribimos la cabecera para el fichero de codigo objeto
+    # tenemos que hacer una primera pasada para dar valor a etiquetas
+    # registros de activacion etc etc para que en la segunda ya conozcamos 
+    # las direcciones de memorial, los tamaños, etc
+    # ver si hay alguna informacion que nos pueda indicar que el return esta
+    # en la funcion principal, y si no implementarlo porque no parece q aurora
+    # tenga mucha idea y puede haber mas de un return, por ejemplo dentro de un if
+
+    cabecera_ens = "DE: RES 200\n"
+    cabecera_ens += "PILA: NOP\n"
+
+    escribir(cabecera_ens)
     
     while linea:
         if re.match(patron_mul, linea):
