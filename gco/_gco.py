@@ -2,9 +2,10 @@
 #imports 
 import sys
 import subprocess
-import re
+# import re
 from _ens import escribir
-import _segundapasada 
+import _segundapasada
+import _primerapasada
 
 #________________________________________________________________________
 # resto de variables
@@ -24,7 +25,7 @@ def leer():
 # main
 
 def main():
-    linea = leer()
+    # linea = leer()
 
     # escribimos la cabecera para el fichero de codigo objeto
     # tenemos que hacer una primera pasada para dar valor a etiquetas
@@ -48,10 +49,8 @@ def main():
     # esto lo leera en la segunda pasada y se generara una lista de errores y 
     # el codigo maquina
     
-    while linea:
-        # llamar a primera pasada
-        break
-    
+    _primerapasada.main()
+    archivo = None    
     
     # para la segunda vuelta hacemos esto aunque igual es mejor hacerlo directamente
     # en el main en lugar de usar una funcion auxiliar

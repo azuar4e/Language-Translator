@@ -3,6 +3,7 @@
 
 from _ens import escribir
 from _gco import leer
+import re
 
 #________________________________________________________________________
 # patrones
