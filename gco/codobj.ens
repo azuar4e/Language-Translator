@@ -1,0 +1,25 @@
+inicio_pila: NOP
+inicio_estaticas: RES 8
+MOVE #inicio_estaticas, .IY
+MOVE #inicio_pila, .IX
+ra1: EQU 29
+ra2: EQU 30
+ra3: EQU 90
+ra4: EQU 129
+ra5: EQU 13
+ra6: EQU 52
+main:
+MOVE 1, {VAR_LOCAL, 74}
+MOVE , {VAR_LOCAL, 134}
+CMP {VAR_LOCAL, -1}, 0
+BZ /{ET, Etiq0}
+CMP {VAR_LOCAL, -4}, 0
+BZ /{ET, Etiq0}
+MOVE 1, {VAR_LOCAL, 75}
+BR /
+Etiq0:
+MOVE 0, {VAR_LOCAL, 75}
+Etiq1:
+MOVE {VAR_LOCAL, 75}, {VAR_LOCAL, 129}
+MOVE hola mundo, {VAR_LOCAL, 139}
+MOVE , {VAR_LOCAL, 64}

@@ -33,6 +33,6 @@ public class cuarteto {
         if (resultado == null){
             resultado = "";
         }
-        return "(" + operador + ", " + arg1 + ", " + arg2 + ", " + resultado + ")\n";
+        return "(" + operador + "; " + arg1 + "; " + arg2 + "; " + resultado + ")\n";
     }
 }

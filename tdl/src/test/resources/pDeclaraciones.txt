@@ -10,9 +10,10 @@ PROGRAM pruebaDeclaraciones;
 var y : boolean;
 	d : string;
 	c : integer;
+	n : boolean;
 
 begin
 	x := c + 1;
-	b := y AND false;
+	b := y AND n;
 	s := d + 'hola mundo';
 end;

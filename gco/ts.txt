@@ -1,0 +1,76 @@
+TABLA LOCAL #2:
+*LEXEMA: 'Y'
+	Atributos:
+	+ Tipo: 'logico'
+	+ Despl: 69
+	+ Param: 0
+*LEXEMA: 'D'
+	Atributos:
+	+ Tipo: 'cadena'
+	+ Despl: 5
+	+ Param: 0
+*LEXEMA: 'C'
+	Atributos:
+	+ Tipo: 'entero'
+	+ Despl: 1
+	+ Param: 0
+*LEXEMA: 'N'
+	Atributos:
+	+ Tipo: 'logico'
+	+ Despl: 0
+	+ Param: 0
+*LEXEMA: 't0'
+	Atributos:
+	+ Tipo: 'entero'
+	+ Despl: 70
+	+ Param: 0
+*LEXEMA: 't1'
+	Atributos:
+	+ Tipo: 'logico'
+	+ Despl: 74
+	+ Param: 0
+*LEXEMA: 't2'
+	Atributos:
+	+ Tipo: 'cadena'
+	+ Despl: 75
+	+ Param: 0
+----------------------------------------
+TABLA PRINCIPAL #1:
+*LEXEMA: 'X'
+	Atributos:
+	+ Tipo: 'entero'
+	+ Despl: 134
+	+ Param: 0
+*LEXEMA: 'Y'
+	Atributos:
+	+ Tipo: 'entero'
+	+ Despl: 130
+	+ Param: 0
+*LEXEMA: 'B'
+	Atributos:
+	+ Tipo: 'logico'
+	+ Despl: 129
+	+ Param: 0
+*LEXEMA: 'D'
+	Atributos:
+	+ Tipo: 'logico'
+	+ Despl: 128
+	+ Param: 0
+*LEXEMA: 'S'
+	Atributos:
+	+ Tipo: 'cadena'
+	+ Despl: 64
+	+ Param: 0
+*LEXEMA: 'C'
+	Atributos:
+	+ Tipo: 'cadena'
+	+ Despl: 0
+	+ Param: 0
+*LEXEMA: 'PRUEBADECLARACIONES'
+	Atributos:
+	+ Tipo: 'procedimiento'
+	+ numParam: 0
+	+ TipoParam: '-'
+	+ ModoParam: '-'
+	+ TipoRetorno: '-'
+	+ EtiqFuncion: 'main'
