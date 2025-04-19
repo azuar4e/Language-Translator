@@ -22,6 +22,7 @@ class Atributos {
 	private Integer ancho;
 	private Integer longs;
 	private String referencia;
+	private boolean esGlobal;
 	private String etiqueta;
 	private Integer program_count;
 	//variables para el codigo intermedio
@@ -46,7 +47,6 @@ class Atributos {
 		this.referencia = null;
 		this.etiqueta = null;
 		this.program_count = null;
-
 		//atributos para la generacion de codigo intermedio
 		this.lugar = null;
 		this.param = null;
@@ -217,6 +217,7 @@ public class ASem {
 	private static boolean zonaDeclaracion;
 	public static Integer despGlobal, despLocal;
 	private static Integer numEtiq;
+	private static Map<Integer, Boolean> identificadores = new HashMap<>();
 	private static final Map<Integer, Supplier<Atributos>> ruleMap = new HashMap<>();
 
 	// Destruir tabla y imprimirlo en el fichero asignado
@@ -568,6 +569,7 @@ public class ASem {
 		Atributos idAtb = atb[9];
 		Atributos tAtb = atb[5];
 		Procesador.gestorTS.setTipo(idAtb.getPos(), tAtb.getTipo());
+		identificadores.put(idAtb.getPos(), tsGlobal);
 		if (tsGlobal) {
 			Procesador.gestorTS.setValorAtributoEnt(idAtb.getPos(), "desplazamiento", despGlobal);
 			despGlobal += tAtb.getAncho();
@@ -588,6 +590,7 @@ public class ASem {
 		Atributos idAtb = atb[9];
 		Atributos tAtb = atb[5];
 		Procesador.gestorTS.setTipo(idAtb.getPos(), tAtb.getTipo());
+		identificadores.put(idAtb.getPos(), tsGlobal);
 		if (tsGlobal) {
 			Procesador.gestorTS.setValorAtributoEnt(idAtb.getPos(), "desplazamiento", despGlobal);
 			despGlobal += tAtb.getAncho();
@@ -1162,15 +1165,18 @@ public class ASem {
 			//____________________________________________________
 			//instrucciones para la generacion de codigo intermedio
 			gci.tupla<String, Integer> tupla;
-			if (tsGlobal) {
+			
+			if (identificadores.get(idPos)) {
 				tupla = new gci.tupla<>("VAR_GLOBAL", Procesador.gestorTS.getValorAtributoEnt(idPos, "desplazamiento"));
 			} else {
 				tupla = new gci.tupla<>("VAR_LOCAL", Procesador.gestorTS.getValorAtributoEnt(idPos, "desplazamiento"));
 			}
 
+			System.out.println(atb[3].getLugar());
+
 			if (eTipo.equals("cadena")) {
 				gci.emite("ASIG_CAD", atb[3].getLugar(), null, tupla);
-			} else {
+			} else {	
 				gci.emite("ASIG", atb[3].getLugar(), null, tupla);
 			}
 
@@ -1432,6 +1438,8 @@ public class ASem {
 		//____________________________________________________
 		//instrucciones para la generacion de codigo intermedio
 		res.setLugar(eATB.getLugar());
+		System.out.println(res.getLugar());
+
 		return res;
 	}
 
@@ -1484,6 +1492,8 @@ public class ASem {
 		//____________________________________________________
 		//instrucciones para la generacion de codigo intermedio
 		res.setLugar(atb[1].getLugar());
+		System.out.println(res.getLugar());
+
 		return res;
 	}
 
@@ -1525,6 +1535,8 @@ public class ASem {
 		//____________________________________________________
 		//instrucciones para la generacion de codigo intermedio
 		res.setLugar(gATB.getLugar());
+		System.out.println(res.getLugar());
+
 		return res;
 	}
 
@@ -1655,6 +1667,8 @@ public class ASem {
 		//____________________________________________________
 		//instrucciones para la generacion de codigo intermedio
 		res.setLugar(atb[1].getLugar());
+		System.out.println(res.getLugar());
+
 		return res;
 	}
 
@@ -1702,6 +1716,8 @@ public class ASem {
 		//____________________________________________________
 		//instrucciones para la generacion de codigo intermedio
 		res.setLugar(atb[1].getLugar());
+		System.out.println(res.getLugar());
+
 		return res;
 	}
 
@@ -1771,6 +1787,7 @@ public class ASem {
 		//____________________________________________________
 		//instrucciones para la generacion de codigo intermedio
 		res.setLugar(atb[1].getLugar());
+		System.out.println(res.getLugar());
 		return res;
 	}
 
@@ -1800,6 +1817,7 @@ public class ASem {
 		//____________________________________________________
 		//instrucciones para la generacion de codigo intermedio
 		res.setLugar(atb[1].getLugar());
+		System.out.println(res.getLugar());
 		return res;
 	}
 
@@ -1859,6 +1877,7 @@ public class ASem {
 		//____________________________________________________
 		//instrucciones para la generacion de codigo intermedio
 		res.setLugar(atb[1].getLugar());
+		System.out.println(res.getLugar());
 		return res;
 	}
 
@@ -1955,11 +1974,13 @@ public class ASem {
 		//____________________________________________________________
 		//instrucciones para la generacion de codigo intermedio
 		if (llAtb.parametros() == null) {
-			if (tsGlobal) {
+			
+			if (identificadores.get(idAtb.getPos())) {
 				res.setLugar(new gci.tupla<>("VAR_GLOBAL", idAtb.getPos()));
 			} else {
 				res.setLugar(new gci.tupla<>("VAR_LOCAL", idAtb.getPos()));
-			}			
+			}
+			System.out.println(res.getLugar());		
 		} else {
 			res.setLugar(gci.nuevatemp(res.getTipo()));
 			for (int i = 0; i < llAtb.getLongs(); i++) {

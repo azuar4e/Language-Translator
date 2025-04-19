@@ -113,7 +113,8 @@ def main():
 
         elif re.match(patron_goto, linea):
             coincidencia = re.match(patron_goto, linea)
-            cadena = "BR /"+coincidencia.group(1)
+            aux = coincidencia.group(3)
+            cadena = "BR /"+re.match(etiqueta, aux).group(1)
             escribir(cadena)
             escribir("\n")
             
@@ -122,7 +123,8 @@ def main():
             cadena = "CMP "+coincidencia.group(1)+", "+ coincidencia.group(2)
             escribir(cadena)
             escribir("\n")
-            cadena = "BP /"+coincidencia.group(3)
+            aux = coincidencia.group(3)
+            cadena = "BP /"+re.match(etiqueta, aux).group(1)
             escribir(cadena)
             escribir("\n")
             
@@ -131,7 +133,8 @@ def main():
             cadena = "CMP "+coincidencia.group(1)+", "+ coincidencia.group(2)
             escribir(cadena)
             escribir("\n")
-            cadena = "BN /"+coincidencia.group(3)
+            aux = coincidencia.group(3)
+            cadena = "BN /"+re.match(etiqueta, aux).group(1)
             escribir(cadena)
             escribir("\n")
             
@@ -140,7 +143,8 @@ def main():
             cadena = "CMP "+coincidencia.group(1)+", "+ coincidencia.group(2)
             escribir(cadena)
             escribir("\n")
-            cadena = "BZ /"+coincidencia.group(3)
+            aux = coincidencia.group(3)
+            cadena = "BZ /"+re.match(etiqueta, aux).group(1)
             escribir(cadena)
             escribir("\n")
             
@@ -149,7 +153,8 @@ def main():
             cadena = "CMP "+coincidencia.group(1)+", "+ coincidencia.group(2)
             escribir(cadena)
             escribir("\n")
-            cadena = "BNZ /"+coincidencia.group(3)
+            aux = coincidencia.group(3)
+            cadena = "BNZ /"+re.match(etiqueta, aux).group(1)
             escribir(cadena)
             escribir("\n")
             
@@ -158,10 +163,12 @@ def main():
             cadena = "CMP "+coincidencia.group(1)+", "+ coincidencia.group(2)
             escribir(cadena)
             escribir("\n")
-            cadena = "BZ /"+coincidencia.group(3)
+            aux = coincidencia.group(3)
+            cadena = "BZ /"+re.match(etiqueta, aux).group(1)
             escribir(cadena)
             escribir("\n")
-            cadena = "BP /"+coincidencia.group(3)
+            aux = coincidencia.group(3)
+            cadena = "BP /"+re.match(etiqueta, aux).group(1)
             escribir(cadena)
             escribir("\n")
             
@@ -170,10 +177,12 @@ def main():
             cadena = "CMP "+coincidencia.group(1)+", "+ coincidencia.group(2)
             escribir(cadena)
             escribir("\n")
-            cadena = "BZ /"+coincidencia.group(3)
+            aux = coincidencia.group(3)
+            cadena = "BZ /"+re.match(etiqueta, aux).group(1)
             escribir(cadena)
             escribir("\n")
-            cadena = "BN /"+coincidencia.group(3)
+            aux = coincidencia.group(3)
+            cadena = "BN /"+re.match(etiqueta, aux).group(1)
             escribir(cadena)
             escribir("\n")
 

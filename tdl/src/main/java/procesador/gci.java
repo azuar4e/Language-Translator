@@ -41,7 +41,7 @@ public class gci {
     public static tupla<String, Integer> nuevatemp(String tipo) {
         String nuevatemp = "t" + conttemp;
         conttemp++;
-        
+    
         if (ASem.tsGlobal) {
             Integer pos = Procesador.gestorTS.addEntradaTSGlobal(nuevatemp);
             if (!tipo.equals("tipo_error")) {
@@ -61,7 +61,7 @@ public class gci {
                 default:
                     break;
             }
-            return new tupla<>("VAR_Global", ASem.despGlobal);
+            return new tupla<>("VAR_GLOBAL", ASem.despGlobal);
 		} else {
             Integer pos = Procesador.gestorTS.addEntradaTSLocal(nuevatemp);
             if (!tipo.equals("tipo_error")) {

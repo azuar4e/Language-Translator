@@ -47,7 +47,7 @@
 <ID,1>
 <ASIGNACION,->
 <ID,-3>
-<MAS,->
+<PRODUCTO,->
 <ENTERO,1>
 <PYC,->
 <ID,3>
@@ -58,8 +58,6 @@
 <PYC,->
 <ID,5>
 <ASIGNACION,->
-<ID,-2>
-<MAS,->
 <CADENA,'hola mundo'>
 <PYC,->
 <END,->

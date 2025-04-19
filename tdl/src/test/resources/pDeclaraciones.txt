@@ -13,7 +13,7 @@ var y : boolean;
 	n : boolean;
 
 begin
-	x := c + 1;
+	x := c * 1;
 	b := y AND n;
-	s := d + 'hola mundo';
+	s := 'hola mundo';
 end;

@@ -26,13 +26,18 @@ TABLA LOCAL #2:
 	+ Param: 0
 *LEXEMA: 't1'
 	Atributos:
-	+ Tipo: 'logico'
+	+ Tipo: 'entero'
 	+ Despl: 74
 	+ Param: 0
 *LEXEMA: 't2'
 	Atributos:
+	+ Tipo: 'logico'
+	+ Despl: 78
+	+ Param: 0
+*LEXEMA: 't3'
+	Atributos:
 	+ Tipo: 'cadena'
-	+ Despl: 75
+	+ Despl: 79
 	+ Param: 0
 ----------------------------------------
 TABLA PRINCIPAL #1:
