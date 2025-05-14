@@ -38,7 +38,7 @@ def main():
     linea = leer()
     tamestaticos = 0
     ras = 1
-    
+
     while linea:
         if re.match(locales, linea):
             coleccion[f"ra{ras}"] = {}
@@ -69,7 +69,7 @@ def main():
 
                         aux = coleccion[f"ra{rasaux}"]
                         aux += reserva(re.match(retorno, linea).group(1))
-                        
+
                         # pprint(coleccion)
                         coleccion[f"ra{rasaux}"] = aux
                         rasaux += 1

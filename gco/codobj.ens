@@ -9,19 +9,87 @@ ra4: EQU 129
 ra5: EQU 13
 ra6: EQU 52
 main:
-MOVE 1, {VAR_LOCAL, 74}
-MUL {VAR_LOCAL, -3}, {VAR_LOCAL, 74}
-MOVE .A, {VAR_LOCAL, 78}
-MOVE {VAR_LOCAL, 78}, {VAR_GLOBAL, 134}
-CMP {VAR_LOCAL, -1}, 0
+
+ADD #74, .IX
+MOVE .A, .R2
+
+MOVE .R2, .R3
+
+ADD #-3, .IX
+MOVE .A, .R2
+ADD #74, .IX
+MOVE .A, .R3
+ADD #78, .IX
+MOVE .A, .R4
+
+MUL .R2, .R3
+MOVE .A, .R4
+
+ADD #78, .IX
+MOVE .A, .R2
+ADD #134, .IY
+MOVE .A, .R3
+
+MOVE .R2, .R3
+
+ADD #-1, .IX
+MOVE .A, .R2
+
+CMP .R2, .R3
 BZ /Etiq0
-CMP {VAR_LOCAL, -4}, 0
+
+ADD #-4, .IX
+MOVE .A, .R2
+
+CMP .R2, .R3
 BZ /Etiq0
-MOVE 1, {VAR_LOCAL, 79}
+
+ADD #79, .IX
+MOVE .A, .R2
+
+MOVE .R2, .R3
 BR /Etiq1
-Etiq0: 
-MOVE 0, {VAR_LOCAL, 79}
+Etiq0:
+
+ADD #79, .IX
+MOVE .A, .R2
+
+MOVE .R2, .R3
 Etiq1:
-MOVE {VAR_LOCAL, 79}, {VAR_GLOBAL, 129}
-MOVE hola mundo, {VAR_LOCAL, 143}
-MOVE {VAR_LOCAL, 143}, {VAR_GLOBAL, 64}
+
+ADD #79, .IX
+MOVE .A, .R2
+ADD #129, .IY
+MOVE .A, .R3
+
+MOVE .R2, .R3
+
+ADD #143, .IX
+MOVE .A, .R2
+
+
+            cad: DATA "hola mundo"
+            MOVE /cad, .R7
+            DEC .R2
+            DEC .R7
+    bucle:	INC .R2
+            INC .R7
+            MOVE [.R7], [.R2]
+            CMP [.R7], #0
+            BNZ /bucle
+        
+
+ADD #143, .IX
+MOVE .A, .R2
+ADD #64, .IY
+MOVE .A, .R3
+
+
+            DEC .R3
+            DEC .R2
+    bucle:	INC .R3
+            INC .R2
+            MOVE [.R2], [.R3]
+            CMP [.R2], #0
+            BNZ /bucle
+        

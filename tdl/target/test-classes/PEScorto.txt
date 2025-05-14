@@ -1,0 +1,7 @@
+programa prueba {
+    principal() {
+        entero x;
+        read(x);
+        write(x);
+    }
+}

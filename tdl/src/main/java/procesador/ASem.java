@@ -1080,9 +1080,9 @@ public class ASem {
 
 		for(int i = 0; i < llATB.getLongs(); i++) {
 			if (llATB.getParam(i) instanceof String) {
-				gci.emite("PARAM_CAD", llATB.getParam(i), null, null);
+				gci.emite("WRITE_CAD", llATB.getParam(i), null, null);
 			} else {
-				gci.emite("PARAM", llATB.getParam(i), null, null);
+				gci.emite("WRITE", llATB.getParam(i), null, null);
 			}
 		}
 
@@ -1114,11 +1114,14 @@ public class ASem {
 
 		for(int i = 0; i < llATB.getLongs(); i++) {
 			if (llATB.getParam(i) instanceof String) {
-				gci.emite("PARAM_CAD", llATB.getParam(i), null, null);
+				gci.emite("WRITE_CAD", llATB.getParam(i), null, null);
 			} else {
-				gci.emite("PARAM", llATB.getParam(i), null, null);
+				gci.emite("WRITE", llATB.getParam(i), null, null);
 			}	
 		}
+		// Agregar el salto de línea al final
+   		gci.emite("WRITELN", null, null, null);
+
 
 		return res;
 	}
@@ -1138,13 +1141,13 @@ public class ASem {
 				break;
 			}
 		}
-
 		for(int i = 0; i < vATB.parametros().size(); i++) {
+			Object destino = vATB.getParam(i);
 			if (tipos[i].equals("cadena")) {
-				gci.emite("ASIG_CAD", "valor stdin", null, null);
+				gci.emite("READ_CAD", null, null, destino);
 			} else {
-				gci.emite("ASIG", "valor stdin", null, null);
-			}	
+				gci.emite("READ", null, null, destino);
+			}
 		}
 		res.setExit(0);
 		res.setRet("tipo_ok");

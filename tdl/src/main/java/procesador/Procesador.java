@@ -16,6 +16,7 @@ public class Procesador {
 
 	public static void main(String[] args) {
 
+
 		if(args.length != 1) {
 			System.out.println("Debes introducir un fichero para analizar");
 			System.exit(1);
