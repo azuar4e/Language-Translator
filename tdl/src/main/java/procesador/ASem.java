@@ -1301,7 +1301,13 @@ public class ASem {
 				gci.emite("RETURN_CAD", null, null, yATB.getLugar());
 				break;
 			default:
-				gci.emite("RETURN", null, null, null);
+				//sacar la tabla actual
+				Integer idPos = atb[7].getPos();
+				if (identificadores.get(idPos)) {
+					gci.emite("RETURN", "-", "-", "-");//HALT ya que es la funcion ppal
+				} else {
+					gci.emite("RETURN", null, null, null);//return de la funcion
+				}
 				break;
 		}
 		return res;

@@ -1,45 +1,65 @@
 			inicio_pila: NOP
-			inicio_estaticas: RES 0
+			inicio_estaticas: RES 138
 			MOVE #inicio_estaticas, .IY
 			MOVE #inicio_pila, .IX
-			ra1: EQU 274
+			ra1: EQU 208
 main:
 
-			ADD #73, .IX
+			ADD #74, .IX
 			MOVE .A, .R2
 
 			MOVE .R2, .R3
 
-			ADD #73, .IX
+			ADD #1, .IX
 			MOVE .A, .R2
-			ADD #65, .IX
+			ADD #74, .IX
+			MOVE .A, .R3
+			ADD #78, .IX
+			MOVE .A, .R4
+
+			MUL .R2, .R3
+			MOVE .A, .R4
+
+			ADD #78, .IX
+			MOVE .A, .R2
+			ADD #134, .IY
 			MOVE .A, .R3
 
 			MOVE .R2, .R3
 
-			ADD #77, .IX
+			ADD #69, .IX
+			MOVE .A, .R2
+
+			CMP .R2, .R3
+			BZ $Etiq0
+
+			ADD #0, .IX
+			MOVE .A, .R2
+
+			CMP .R2, .R3
+			BZ $Etiq0
+
+			ADD #79, .IX
 			MOVE .A, .R2
 
 			MOVE .R2, .R3
+			BR $Etiq1
+Etiq0:
 
-			ADD #65, .IX
+			ADD #79, .IX
 			MOVE .A, .R2
 
 			MOVE .R2, .R3
+Etiq1:
 
-			ADD #81, .IX
+			ADD #79, .IX
 			MOVE .A, .R2
-
-			MOVE .R2, .R3
-
-			ADD #81, .IX
-			MOVE .A, .R2
-			ADD #65, .IX
+			ADD #129, .IY
 			MOVE .A, .R3
 
 			MOVE .R2, .R3
 
-			ADD #145, .IX
+			ADD #143, .IX
 			MOVE .A, .R2
 
 
@@ -53,9 +73,9 @@ bucle0:	    INC .R2
             BNZ $bucle0
         
 
-			ADD #145, .IX
+			ADD #143, .IX
 			MOVE .A, .R2
-			ADD #1, .IX
+			ADD #64, .IY
 			MOVE .A, .R3
 
 
@@ -68,7 +88,7 @@ bucle1:	    INC .R3
             BNZ $bucle1
         
 
-			ADD #209, .IX
+			ADD #207, .IX
 			MOVE .A, .R2
 
 
@@ -81,62 +101,9 @@ bucle2:	    INC .R2
             CMP [.R7], #0
             BNZ $bucle2
         
-
-			ADD #209, .IX
-			MOVE .A, .R2
-			ADD #1, .IX
-			MOVE .A, .R3
-
-
-            DEC .R3
-            DEC .R2
-bucle3:	    INC .R3
-            INC .R2
-            MOVE [.R2], [.R3]
-            CMP [.R2], #0
-            BNZ $bucle3
-        
-
-			ADD #273, .IX
-			MOVE .A, .R2
-
-
-            MOVE #cadena2, .R7
-            DEC .R2
-            DEC .R7
-bucle4:	    INC .R2
-            INC .R7
-            MOVE [.R7], [.R2]
-            CMP [.R7], #0
-            BNZ $bucle4
-        
-
-			ADD #273, .IX
-			MOVE .A, .R2
-			ADD #1, .IX
-			MOVE .A, .R3
-
-
-            DEC .R3
-            DEC .R2
-bucle5:	    INC .R3
-            INC .R2
-            MOVE [.R2], [.R3]
-            CMP [.R2], #0
-            BNZ $bucle5
-        
-
-			ADD #0, .IX
-			MOVE .A, .R2
-
-			MOVE .R2, .R3
-
-			ADD #0, .IX
-			MOVE .A, .R2
-
-			MOVE .R2, .R3
+			WRINT {VAR_LOCAL, 207}
 			HALT
-cadena0:	DATA "123456789012345678901234567890123456789012345678901234567890123"
-cadena1:	DATA "¡Hola, @Boreal#2023!"
-cadena2:	DATA ""
+
+cadena0:	DATA "hola mundo"
+cadena1:	DATA "todo al semen"
 			END

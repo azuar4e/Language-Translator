@@ -129,6 +129,14 @@ patron_ret = r"""
 \)
 """
 
+patron_ret_halt = r"""
+\(RETURN,\s*
+    (-)  ,\s*
+    (-)  ,\s*
+    (-) 
+\)
+"""
+
 patron_ret_cad = r"""
 \(RETURN_CAD,\s*
     ((?:\{[^{}]*\}|[^,()])+)  ,\s*
@@ -236,6 +244,8 @@ def declarar_cads(cadena, write):
     global cads, cds
     
     if cadena is not None:
+        # if cds >= 1:
+        #     cads += "\n\t\t\tDATA 0"
         if cads is None:
             cads = f"\ncadena{cds}:\tDATA " + cadena
         else:
@@ -300,6 +310,8 @@ def transformar_dir(dir1, dir2, dir3):
 def main():
     global cds
     _calcprev.main() # calculo de la cabecera del ensamblador
+
+    esFuncion = 0
     
     linea = leer()
     while linea:
@@ -459,20 +471,22 @@ def main():
             # *********************************************************************
             # *********************************************************************
             # *********************************************************************
-            if linea == None:
-                cadena = "\t\t\tHALT"
+            if coincidencia.group(2) != "_":
+                cadena = "\t\t\tMOVE "+coincidencia.group(2)+", .A"
                 escribir(cadena)
                 escribir("\n")
-                break
-            else :
-                if coincidencia.group(2) != "_":
-                    cadena = "\t\t\tMOVE "+coincidencia.group(2)+", .A"
-                    escribir(cadena)
-                    escribir("\n")
-                cadena = "\t\t\tRET"
-                escribir(cadena)
-                escribir("\n")
-                continue
+            cadena = "\t\t\tRET"
+            escribir(cadena)
+            escribir("\n")
+            continue
+
+        elif re.match(patron_ret_halt, linea, re.VERBOSE):  #chequea si es el del main o de una funcion
+            coincidencia = re.match(patron_ret_halt, linea, re.VERBOSE)
+            cadena = "\t\t\tHALT"
+            escribir(cadena)
+            escribir("\n")
+            break
+            
 
         elif re.match(patron_ret_cad, linea, re.VERBOSE):
             coincidencia = re.match(patron_ret_cad, linea, re.VERBOSE)
@@ -584,53 +598,55 @@ def main():
             escribir(cadena)
             escribir("\n")
 
+        # Para la sección de procesamiento de READ
         elif re.match(patron_read, linea, re.VERBOSE):
             coincidencia = re.match(patron_read, linea, re.VERBOSE)
-            # Código para leer un valor entero
+            # Usar ININT en lugar de IN para leer enteros
             cadena = """
-                MOVE #0, .R1
-                IN .R1
-                MOVE .R1, """ + coincidencia.group(3)
+                ININT """ + coincidencia.group(3)
             escribir(cadena)
             escribir("\n")
 
         elif re.match(patron_read_cad, linea, re.VERBOSE):
             coincidencia = re.match(patron_read_cad, linea, re.VERBOSE)
-            # Código para leer una cadena
+            # Usar INSTR en lugar de IN_STR para leer cadenas
             cadena = """
-                IN_STR """ + coincidencia.group(3)
+                INSTR """ + coincidencia.group(3)
             escribir(cadena)
             escribir("\n")
 
         elif re.match(patron_write, linea, re.VERBOSE):
             coincidencia = re.match(patron_write, linea, re.VERBOSE)
-            # Código para escribir un valor entero
-            cadena = "\t\t\tOUT " + coincidencia.group(1)
+            # Usar WRINT en lugar de OUT para escribir enteros
+            cadena = "\t\t\tWRINT " + coincidencia.group(1)
             escribir(cadena)
             escribir("\n")
 
         elif re.match(patron_write_cad, linea, re.VERBOSE):
             coincidencia = re.match(patron_write_cad, linea, re.VERBOSE)
-            # Código para escribir una cadena
-            cadena = "\t\t\tOUT_STR " + coincidencia.group(1)
+            # Usar WRSTR en lugar de OUT_STR para escribir cadenas
+            cadena = "\t\t\tWRSTR " + coincidencia.group(1)
             escribir(cadena)
             escribir("\n")
 
         elif re.match(patron_writeln, linea, re.VERBOSE):
-            # Código para escribir un salto de línea
+            # Usar WRSTR con una cadena de salto de línea
+            # Declaramos la cadena de salto de línea en la sección de datos
             cadena = """
-                nl: DATA "\\n"
-                OUT_STR /nl
+                WRSTR /nl
             """
             escribir(cadena)
             escribir("\n")
-
-        else:
-            print (linea)
-            escribir("ramon de mon")
+            # Asegurarse de que "nl" esté declarado en la sección de datos
+            if cads is None:
+                cads = "\nnl:\tDATA \"\\n\\0\""
+            else:
+                # Verificar si ya está declarado para evitar duplicados
+                if "\nnl:" not in cads:
+                    cads += "\nnl:\tDATA \"\\n\\0\""
         
         linea = leer()
-    escribir("\t\t\tHALT")
+    escribir("\t\t\tHALT\n")
     declarar_cads(None, True)
 
 if __name__ == '__main__':
