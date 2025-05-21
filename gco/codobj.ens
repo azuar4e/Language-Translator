@@ -1,95 +1,142 @@
-inicio_pila: NOP
-inicio_estaticas: RES 8
-MOVE #inicio_estaticas, .IY
-MOVE #inicio_pila, .IX
-ra1: EQU 29
-ra2: EQU 30
-ra3: EQU 90
-ra4: EQU 129
-ra5: EQU 13
-ra6: EQU 52
+			inicio_pila: NOP
+			inicio_estaticas: RES 0
+			MOVE #inicio_estaticas, .IY
+			MOVE #inicio_pila, .IX
+			ra1: EQU 274
 main:
 
-ADD #74, .IX
-MOVE .A, .R2
+			ADD #73, .IX
+			MOVE .A, .R2
 
-MOVE .R2, .R3
+			MOVE .R2, .R3
 
-ADD #-3, .IX
-MOVE .A, .R2
-ADD #74, .IX
-MOVE .A, .R3
-ADD #78, .IX
-MOVE .A, .R4
+			ADD #73, .IX
+			MOVE .A, .R2
+			ADD #65, .IX
+			MOVE .A, .R3
 
-MUL .R2, .R3
-MOVE .A, .R4
+			MOVE .R2, .R3
 
-ADD #78, .IX
-MOVE .A, .R2
-ADD #134, .IY
-MOVE .A, .R3
+			ADD #77, .IX
+			MOVE .A, .R2
 
-MOVE .R2, .R3
+			MOVE .R2, .R3
 
-ADD #-1, .IX
-MOVE .A, .R2
+			ADD #65, .IX
+			MOVE .A, .R2
 
-CMP .R2, .R3
-BZ /Etiq0
+			MOVE .R2, .R3
 
-ADD #-4, .IX
-MOVE .A, .R2
+			ADD #81, .IX
+			MOVE .A, .R2
 
-CMP .R2, .R3
-BZ /Etiq0
+			MOVE .R2, .R3
 
-ADD #79, .IX
-MOVE .A, .R2
+			ADD #81, .IX
+			MOVE .A, .R2
+			ADD #65, .IX
+			MOVE .A, .R3
 
-MOVE .R2, .R3
-BR /Etiq1
-Etiq0:
+			MOVE .R2, .R3
 
-ADD #79, .IX
-MOVE .A, .R2
-
-MOVE .R2, .R3
-Etiq1:
-
-ADD #79, .IX
-MOVE .A, .R2
-ADD #129, .IY
-MOVE .A, .R3
-
-MOVE .R2, .R3
-
-ADD #143, .IX
-MOVE .A, .R2
+			ADD #145, .IX
+			MOVE .A, .R2
 
 
-            cad: DATA "hola mundo"
-            MOVE /cad, .R7
+            MOVE #cadena0, .R7
             DEC .R2
             DEC .R7
-    bucle:	INC .R2
+bucle0:	    INC .R2
             INC .R7
             MOVE [.R7], [.R2]
             CMP [.R7], #0
-            BNZ /bucle
+            BNZ $bucle0
         
 
-ADD #143, .IX
-MOVE .A, .R2
-ADD #64, .IY
-MOVE .A, .R3
+			ADD #145, .IX
+			MOVE .A, .R2
+			ADD #1, .IX
+			MOVE .A, .R3
 
 
             DEC .R3
             DEC .R2
-    bucle:	INC .R3
+bucle1:	    INC .R3
             INC .R2
             MOVE [.R2], [.R3]
             CMP [.R2], #0
-            BNZ /bucle
+            BNZ $bucle1
         
+
+			ADD #209, .IX
+			MOVE .A, .R2
+
+
+            MOVE #cadena1, .R7
+            DEC .R2
+            DEC .R7
+bucle2:	    INC .R2
+            INC .R7
+            MOVE [.R7], [.R2]
+            CMP [.R7], #0
+            BNZ $bucle2
+        
+
+			ADD #209, .IX
+			MOVE .A, .R2
+			ADD #1, .IX
+			MOVE .A, .R3
+
+
+            DEC .R3
+            DEC .R2
+bucle3:	    INC .R3
+            INC .R2
+            MOVE [.R2], [.R3]
+            CMP [.R2], #0
+            BNZ $bucle3
+        
+
+			ADD #273, .IX
+			MOVE .A, .R2
+
+
+            MOVE #cadena2, .R7
+            DEC .R2
+            DEC .R7
+bucle4:	    INC .R2
+            INC .R7
+            MOVE [.R7], [.R2]
+            CMP [.R7], #0
+            BNZ $bucle4
+        
+
+			ADD #273, .IX
+			MOVE .A, .R2
+			ADD #1, .IX
+			MOVE .A, .R3
+
+
+            DEC .R3
+            DEC .R2
+bucle5:	    INC .R3
+            INC .R2
+            MOVE [.R2], [.R3]
+            CMP [.R2], #0
+            BNZ $bucle5
+        
+
+			ADD #0, .IX
+			MOVE .A, .R2
+
+			MOVE .R2, .R3
+
+			ADD #0, .IX
+			MOVE .A, .R2
+
+			MOVE .R2, .R3
+			HALT
+cadena0:	DATA "123456789012345678901234567890123456789012345678901234567890123"
+cadena1:	DATA "¡Hola, @Boreal#2023!"
+cadena2:	DATA ""
+			END

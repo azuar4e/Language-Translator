@@ -19,7 +19,7 @@ separador = "----------------------------------------"
 def leer():
     global archivo
     if archivo is None:
-        archivo = open("../tdl/ts.txt", 'r')
+        archivo = open("ts.txt", 'r')
         
     return archivo.readline() 
 
@@ -79,14 +79,14 @@ def main():
 
         linea = leer()
 
-    escribir("inicio_pila: NOP\n")
-    escribir(f"inicio_estaticas: RES {tamestaticos}\n")
-    escribir("MOVE #inicio_estaticas, .IY\n")
-    escribir("MOVE #inicio_pila, .IX\n")
+    escribir("\t\t\tinicio_pila: NOP\n")
+    escribir(f"\t\t\tinicio_estaticas: RES {tamestaticos}\n")
+    escribir("\t\t\tMOVE #inicio_estaticas, .IY\n")
+    escribir("\t\t\tMOVE #inicio_pila, .IX\n")
     
     # generamos las etiquetas para los registros de activacion
     for ra in coleccion:
-        escribir(f"{ra}: EQU {coleccion[ra]}\n")
+        escribir(f"\t\t\t{ra}: EQU {coleccion[ra]}\n")
 
 
 if __name__=='__main__':

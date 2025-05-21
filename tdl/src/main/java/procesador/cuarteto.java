@@ -15,6 +15,16 @@ public class cuarteto {
 
     @Override
     public String toString() {
+
+        if (operador.equals("ASIG_CAD")){
+            if (arg1 instanceof String && arg1 != null){
+                arg1 = "\"" + arg1 + "\"";
+            }
+            if (arg2 instanceof String && arg2 != null){
+                arg2 = "\"" + arg2 + "\"";
+            }
+        }
+
         if (arg1 instanceof gci.tupla){
             arg1 = arg1.toString();
         }
@@ -33,6 +43,7 @@ public class cuarteto {
         if (resultado == null){
             resultado = "";
         }
+        
         return "(" + operador + ", " + arg1 + ", " + arg2 + ", " + resultado + ")\n";
     }
 }
