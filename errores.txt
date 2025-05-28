@@ -1,0 +1,8 @@
+Error en la linea [4]: La lectura de VAR no respeta las reglas sintacticas.
+Posibles tokens aceptados: 
+ 	 - PROGRAM
+ 	 - FUNCTION
+ 	 - PROCEDURE
+ 	 - BEGIN
+ 	 - ID
+ 	 - EOF

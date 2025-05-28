@@ -3,6 +3,7 @@ package procesador;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -217,8 +218,10 @@ public class ASem {
 	private static boolean zonaDeclaracion;
 	public static Integer despGlobal, despLocal;
 	private static Integer numEtiq;
-	private static Map<Integer, Boolean> identificadores = new HashMap<>();
+	private static final Map<Integer, Boolean> identificadores = new HashMap<>();
 	private static final Map<Integer, Supplier<Atributos>> ruleMap = new HashMap<>();
+	private static final Map<Integer, LinkedList<Integer>> paramRef = new HashMap<>();
+
 
 	// Destruir tabla y imprimirlo en el fichero asignado
 	private static void destroy(Tabla tabla) {
@@ -502,9 +505,19 @@ public class ASem {
 		Atributos pidAtb = atb[3];
 		Atributos aAtb = atb[1];
 		Procesador.gestorTS.setTipo(pidAtb.getPos(), "procedimiento");
+
 		if (aAtb.getLongs() > 0) {
 			String[] tipos = aAtb.getTipo().split(" ");
 			String[] parametros = aAtb.getReferencia().split(" ");
+			LinkedList<Integer> paramRefAux = new LinkedList<>();
+			for (String modo: parametros) {
+				if (modo.equals("valor")){
+					paramRefAux.add(0);
+				} else {
+					paramRefAux.add(1);
+				}
+			}
+			paramRef.put(pidAtb.getPos(), paramRefAux);
 			Procesador.gestorTS.setValorAtributoLista(pidAtb.getPos(), "tipoParametros", tipos);
 			Procesador.gestorTS.setValorAtributoLista(pidAtb.getPos(), "PasoParametros", parametros);
 			Procesador.gestorTS.setValorAtributoEnt(pidAtb.getPos(), "numParametro", aAtb.getLongs());
@@ -512,7 +525,8 @@ public class ASem {
 			Procesador.gestorTS.setValorAtributoEnt(pidAtb.getPos(), "numParametro", 0);
 		}
 		res.setEtiqueta(numEtiq.toString());
-		String etiq = "EtiqProc" + numEtiq++;
+		String etiq = "EtiqProc" + numEtiq;
+		numEtiq++;
 		Procesador.gestorTS.setValorAtributoCad(pidAtb.getPos(), "etiqueta", etiq);
 		gci.emite("ETIQ", gci.nuevaetiq(etiq), null, null); //emitimos la etiqueta del procedimiento
 		return res;
@@ -547,6 +561,15 @@ public class ASem {
 		if (aAtb.getLongs() > 0) {
 			String[] tipos = aAtb.getTipo().split(" ");
 			String[] parametros = aAtb.getReferencia().split(" ");
+			LinkedList<Integer> paramRefAux = new LinkedList<>();
+			for (String modo: parametros) {
+				if (modo.equals("valor")){
+					paramRefAux.add(0);
+				} else {
+					paramRefAux.add(1);
+				}
+			}
+			paramRef.put(pidAtb.getPos(), paramRefAux);
 			Procesador.gestorTS.setValorAtributoLista(pidAtb.getPos(), "tipoParametros", tipos);
 			Procesador.gestorTS.setValorAtributoLista(pidAtb.getPos(), "PasoParametros", parametros);
 			Procesador.gestorTS.setValorAtributoEnt(pidAtb.getPos(), "numParametro", aAtb.getLongs());
@@ -557,7 +580,8 @@ public class ASem {
 		}
 		res.setTipo(tAtb.getTipo());
 		res.setEtiqueta(numEtiq.toString());
-		String etiq = "EtiqFunc" + numEtiq++;
+		String etiq = "EtiqFunc" + numEtiq;
+		numEtiq++;
 		Procesador.gestorTS.setValorAtributoCad(pidAtb.getPos(), "etiqueta", etiq);
 		gci.emite("ETIQ", gci.nuevaetiq(etiq), null, null);
 		return res;
@@ -569,6 +593,7 @@ public class ASem {
 		Atributos idAtb = atb[9];
 		Atributos tAtb = atb[5];
 		Procesador.gestorTS.setTipo(idAtb.getPos(), tAtb.getTipo());
+		System.out.println("checkpoint");
 		identificadores.put(idAtb.getPos(), tsGlobal);
 		if (tsGlobal) {
 			Procesador.gestorTS.setValorAtributoEnt(idAtb.getPos(), "desplazamiento", despGlobal);
@@ -590,6 +615,7 @@ public class ASem {
 		Atributos idAtb = atb[9];
 		Atributos tAtb = atb[5];
 		Procesador.gestorTS.setTipo(idAtb.getPos(), tAtb.getTipo());
+		System.out.println("checkpoint");
 		identificadores.put(idAtb.getPos(), tsGlobal);
 		if (tsGlobal) {
 			Procesador.gestorTS.setValorAtributoEnt(idAtb.getPos(), "desplazamiento", despGlobal);
@@ -1967,17 +1993,29 @@ public class ASem {
 
 		//____________________________________________________________
 		//instrucciones para la generacion de codigo intermedio
-		if (llAtb.parametros() == null) {
-			
-			if (identificadores.get(idAtb.getPos())) {
-				res.setLugar(new gci.tupla<>("VAR_GLOBAL", procesador.Procesador.gestorTS.getValorAtributoEnt(idAtb.getPos(), "desplazamiento")));
-			} else {
-				res.setLugar(new gci.tupla<>("VAR_LOCAL", procesador.Procesador.gestorTS.getValorAtributoEnt(idAtb.getPos(), "desplazamiento")));
+		System.out.println("checkpoint: "+ llAtb.getTipo());
+
+		if (llAtb.getTipo().equals("")) {
+
+			if (identificadores.get(idAtb.getPos()) == null) {
+				System.out.println("problemas");
+			}else {
+				if (identificadores.get(idAtb.getPos())) {
+					res.setLugar(new gci.tupla<>("VAR_GLOBAL", procesador.Procesador.gestorTS.getValorAtributoEnt(idAtb.getPos(), "desplazamiento")));
+				} else {
+					res.setLugar(new gci.tupla<>("VAR_LOCAL", procesador.Procesador.gestorTS.getValorAtributoEnt(idAtb.getPos(), "desplazamiento")));
+				}
 			}
+			
 		} else {
 			res.setLugar(gci.nuevatemp(res.getTipo()));
+			LinkedList<Integer> referencias = paramRef.get(idAtb.getPos());
 			for (int i = 0; i < llAtb.getLongs(); i++) {
-				gci.emite("PARAM", llAtb.getParam(i), null, null);
+				if (referencias.get(i) == 0) {
+					gci.emite("PARAM", llAtb.getParam(i), null, null);
+				} else {
+					gci.emite("PARAM_REF", llAtb.getParam(i), null, null);
+				}
 			}
 			if ("entero".equals(idAtb.getRet())) {
 				gci.emite("CALL_FUN", idAtb.getPos(), null, res.getLugar());

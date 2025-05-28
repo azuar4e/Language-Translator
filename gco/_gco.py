@@ -12,6 +12,11 @@ archivo = None
 bucles = 0
 cads = None
 cds = 0
+contador_llamadas = 0 # Para generar etiquetas unicas de retorno
+tam_ra_actual = 32 # Para calcular el tamaño del RA actual
+tamraact = None
+es_vacia = False
+contparam = 0
 
 #________________________________________________________________________
 # patrones
@@ -107,6 +112,14 @@ patron_goto_may = r"""
 
 patron_param = r"""
 \(PARAM,\s*
+    ((?:\{[^{}]*\}|[^,()])+)  ,\s*
+    ((?:\{[^{}]*\}|[^,()])+)  ,\s*
+    ((?:\{[^{}]*\}|[^,()])+) 
+\)
+"""
+
+patron_param_ref = r"""
+\(PARAM_REF,\s*
     ((?:\{[^{}]*\}|[^,()])+)  ,\s*
     ((?:\{[^{}]*\}|[^,()])+)  ,\s*
     ((?:\{[^{}]*\}|[^,()])+) 
@@ -229,6 +242,14 @@ patron_writeln = r"""
 \)
 """
 
+p = r"\"\s*\""
+ptloc = r"{VAR_LOCAL, (.+)}"
+ptglob = r"{VAR_GLOBAL, (.+)}"
+ptp = r"EtiqProc(\d+)"
+ptf = r"EtiqFunc(\d+)"
+ptm = r"main"
+
+
 #________________________________________________________________________
 # funciones
 
@@ -239,21 +260,23 @@ def leer():
 
     return archivo.readline()
 
+
 # para las de escribir por terminal poner una reserva de memoria con RES
 def declarar_cads(cadena, write):
     global cads, cds
-    
-    if cadena is not None:
-        # if cds >= 1:
-        #     cads += "\n\t\t\tDATA 0"
+        
+    if cadena is not None and not re.match(p, cadena):
+
         if cads is None:
             cads = f"\ncadena{cds}:\tDATA " + cadena
         else:
             cads = cads + f"\ncadena{cds}:\tDATA " + cadena
 
-    if write:
+    if write and cads is not None:
         cads += "\n\t\t\tEND"
         escribir(cads)
+
+
 
 
 def leer_cadena_ens(cadena, escad):
@@ -282,7 +305,9 @@ bucle{bucles}:	    INC .R3
 
     bucles += 1
     escribir(codobj)
-    
+
+
+
 def transformar_dir(dir1, dir2, dir3):
     ptglob = r"{VAR_GLOBAL, (.+)}"
     ptloc = r"{VAR_LOCAL, (.+)}"
@@ -304,11 +329,12 @@ def transformar_dir(dir1, dir2, dir3):
             escribir(cad)
     escribir("\n")
 
+
 #________________________________________________________________________
 # main
 
 def main():
-    global cds
+    global cds, contador_llamadas, tam_ra_actual, contparam  # Añadir estas variables globales
     _calcprev.main() # calculo de la cabecera del ensamblador
 
     esFuncion = 0
@@ -318,10 +344,10 @@ def main():
         if re.match(patron_mul, linea, re.VERBOSE):
             coincidencia = re.match(patron_mul, linea, re.VERBOSE)
             transformar_dir(coincidencia.group(1), coincidencia.group(2), coincidencia.group(3))
-            cadena = "\t\t\tMUL .R2, .R3"
+            cadena = "\t\t\tMUL [.R2], [.R3]"
             escribir(cadena)
             escribir("\n")
-            cadena = "\t\t\tMOVE .A, .R4"
+            cadena = "\t\t\tMOVE .A, [.R4]"
             escribir(cadena)
             escribir("\n")
         
@@ -338,30 +364,52 @@ def main():
         elif re.match(patron_etiq, linea, re.VERBOSE):
             coincidencia = re.match(patron_etiq, linea, re.VERBOSE)
             aux = coincidencia.group(1)
-            cadena = re.match(etiqueta, aux).group(1) +":"
+            et = re.match(etiqueta, aux).group(1)
+            if re.match(ptp, et):
+                tamraact = _calcprev.coleccion[f"ra{int(re.match(ptp, et).group(1)) - 1}"]
+                
+            if re.match(ptf, et):
+                tamraact = _calcprev.coleccion[f"ra{int(re.match(ptf, et).group(1)) - 1}"]
+                
+            if re.match(ptm, et):
+                uc = list(_calcprev.coleccion.keys())[-1]
+                tamraact = _calcprev.coleccion[uc]
+
+            cadena = et +":"
             escribir(cadena)
             escribir("\n")
             
         elif re.match(patron_asig, linea, re.VERBOSE):
             coincidencia = re.match(patron_asig, linea, re.VERBOSE)
-            transformar_dir(coincidencia.group(1), None, coincidencia.group(3))
-            cadena = "\t\t\tMOVE .R2, .R3"
-            escribir(cadena)
+            if re.match(ptglob, coincidencia.group(1)) or re.match(ptloc, coincidencia.group(1)):
+                transformar_dir(coincidencia.group(1), None, coincidencia.group(3))
+                cadena = "\t\t\tMOVE [.R2], [.R3]"
+                escribir(cadena)
+            else:
+                transformar_dir(None, None, coincidencia.group(3))
+                escribir(f"\t\t\tMOVE #{coincidencia.group(1)}, [.R2]")
             escribir("\n")
             
         elif re.match(patron_asig_cad, linea, re.VERBOSE):
             coincidencia = re.match(patron_asig_cad, linea, re.VERBOSE)
-            ptloc = r"{VAR_LOCAL, (.+)}"
-            ptglob = r"{VAR_GLOBAL, (.+)}"
-            if re.match(ptglob, coincidencia.group(1)) or re.match(ptloc, coincidencia.group(1)):  
+            if re.match(ptglob, coincidencia.group(1)) or re.match(ptloc, coincidencia.group(1)):
                 transformar_dir(coincidencia.group(1), None, coincidencia.group(3))
-                leer_cadena_ens(None, False)
+                if not es_vacia:
+                    # transformar_dir(coincidencia.group(1), None, coincidencia.group(3))
+                    leer_cadena_ens(None, False)
+                else:
+                    # transformar_dir(None, None, coincidencia.group(3))
+                    escribir("\t\t\tMOVE #0, [.R2]\n")
+                    escribir("\t\t\tMOVE [.R2], [.R3]\n")
                 
             else:
-                transformar_dir(None, None, coincidencia.group(3))
-                leer_cadena_ens(f"cadena{cds}", True)
-                declarar_cads(coincidencia.group(1), False)
-                cds += 1
+                c = coincidencia.group(1)
+                es_vacia = re.match(p, c)
+                if not es_vacia:
+                    transformar_dir(None, None, coincidencia.group(3))
+                    leer_cadena_ens(f"cadena{cds}", True)
+                    declarar_cads(coincidencia.group(1), False)
+                    cds += 1
 
             escribir("\n")
 
@@ -449,18 +497,33 @@ def main():
 
         elif re.match(patron_param, linea, re.VERBOSE):
             coincidencia = re.match(patron_param, linea, re.VERBOSE)
-            transformar_dir(None, coincidencia.group(2), None)
-            cadena = "\t\t\tMOVE .R2"
+            transformar_dir(coincidencia.group(1), None, None)
+            t = 2 + contparam
+            contparam += 1
+            cadena = f"\t\t\tADD #{tamraact}, .IX\n\t\t\tADD #{t}, .A\n\t\t\tMOVE [.R2], [.A]\n"
+
+            escribir(cadena)
+            escribir("\n")
+            
+        elif re.match(patron_param_ref, linea, re.VERBOSE):
+            coincidencia = re.match(patron_param_ref, linea, re.VERBOSE)
+            transformar_dir(coincidencia.group(1), None, None)
+            t = 2 + contparam
+            contparam += 1
+            cadena = f"\t\t\tADD #{tamraact}, .IX\n\t\t\tADD #{t}, .A\n\t\t\tMOVE .R2, [.A]\n"
+
             escribir(cadena)
             escribir("\n")
         
         elif re.match(patron_param_cad, linea, re.VERBOSE):
             coincidencia = re.match(patron_param_cad, linea, re.VERBOSE)
             # MIRAR ESTO PORQUE CREO QUE HAY QUE COPIAR LA CADENA EN LUGAR DEL MOVE
+            # creo q no se tiene en cuenta para la practica
             # *********************************************************************
             # *********************************************************************
             # *********************************************************************
-            transformar_dir(None, coincidencia.group(2), None)
+            transformar_dir(coincidencia.group(1), None, None)
+            
             cadena = "\t\t\tMOVE .R2"
             escribir(cadena)
             escribir("\n")
@@ -500,15 +563,22 @@ def main():
         
         elif re.match(patron_ret_ent, linea, re.VERBOSE):
             coincidencia = re.match(patron_ret_ent, linea, re.VERBOSE)
+            c = re.match(ptglob, coincidencia.group(3))
+            if c is None:
+                c = re.match(ptloc, coincidencia.group(3))
             # *********************************************************************
             # *********************************************************************
             # *********************************************************************
-            if coincidencia.group(2) != "_":
-                cadena = "\t\t\tMOVE "+coincidencia.group(2)+", .A"
-                escribir(cadena)
-                escribir("\n")
-            cadena = "\t\t\tRET"
+            cadena = f"\t\t\tSUB #{tamraact}, #1\n\t\t\tADD .A, .IX\n\t\t\tMOVE #{c.group(1)}[.IX], [.A]\n"
             escribir(cadena)
+            
+            # if coincidencia.group(2) != "_":
+                
+            #     cadena = "\t\t\tMOVE "+coincidencia.group(3)+", .A"
+            #     escribir(cadena)
+            #     escribir("\n")
+            # cadena = "\t\t\tRET"
+            # escribir(cadena)
             escribir("\n")
             
         elif re.match(patron_call, linea, re.VERBOSE):
@@ -516,87 +586,95 @@ def main():
             # *********************************************************************
             # *********************************************************************
             # *********************************************************************
+            nombre_funcion = coincidencia.group(1)
+            tam_ra_llamado = 32
             cadena = f"""
-            \t\t\t\tMOVE #dir_ret1, #Tam_RA_llamador[.IX]
-            \t\t\t\tMOVE #1[.IX], .R9 
-            \t\t\t\tMOVE [.R9], .R9
-            
+            MOVE #dir_ret{contador_llamadas}, #{tam_ra_actual}[.IX]
+            MOVE #{tam_ra_actual + 1}[.IX], .R9 
+            MOVE [.R9], .R9
 
-            \t\t\t\tMOVE [.R9], .R9
-            \t\t\t\tADD #Tam_RA_llamador, .IX
-            \t\t\t\tINC .A
-            \t\t\t\tMOVE .R9, [.A]
-            \t\t\t\tADD #Tam_RA_llamador, .IX
-            \t\t\t\tMOVE .A, .IX
-            \t\t\t\tBR /{coincidencia.group(1)}
+            MOVE [.R9], .R9
+            ADD #{tam_ra_llamado}, .IX
+            INC .A
+            MOVE .R9, [.A]
+            ADD #{tam_ra_llamado}, .IX
+            MOVE .A, .IX
+            BR /{nombre_funcion}
 
-            dir_ret1:   SUB .IX, #Tam_RA_llamador
-            \t\t\t\tMOVE .A, .IX
+dir_ret{contador_llamadas}:   SUB .IX, #{tam_ra_llamado}
+            MOVE .A, .IX
             """
             escribir(cadena)
             escribir("\n")
+            contador_llamadas += 1
             
         elif re.match(patron_call_fun, linea, re.VERBOSE):
             coincidencia = re.match(patron_call_fun, linea, re.VERBOSE)
             # *********************************************************************
             # *********************************************************************
             # *********************************************************************
+            nombre_funcion = coincidencia.group(1)
+            tam_ra_llamado = 32
             cadena = f"""
-            \t\t\t\tMOVE #dir_ret, #Tam_RA_llamador[.IX]
-            \t\t\t\tMOVE #1[.IX], .R9 
-            \t\t\t\tMOVE [.R9], .R9
+            MOVE #dir_ret{contador_llamadas}, #{tam_ra_actual}[.IX]
+            MOVE #{tam_ra_actual + 1}[.IX], .R9 
+            MOVE [.R9], .R9
 
-            \t\t\t\tMOVE [.R9], .R9
+            MOVE [.R9], .R9
 
-            \t\t\t\tADD #Tam_RA_llamador, .IX
-            \t\t\t\tINC .A
-            \t\t\t\tMOVE .R9, [.A]
-            \t\t\t\tADD #Tam_RA_llamador, .IX
-            \t\t\t\tMOVE .A, .IX
-            \t\t\t\tBR /{coincidencia.group(1)}
+            ADD #{tam_ra_llamado}, .IX
+            INC .A
+            MOVE .R9, [.A]
+            ADD #{tam_ra_llamado}, .IX
+            MOVE .A, .IX
+            BR /{nombre_funcion}
 
-            dir_ret1:   SUB #Tam_RA_p, #1
-            \t\t\t\tADD .A, .IX
-            \t\t\t\tMOVE [.A], .R9
-            
-            \t\t\t\tSUB .IX, #Tam_RA_llamador
-            \t\t\t\tMOVE .A, .IX
-            
-            \t\t\t\tMOVE .R9, #32[.IX]
+dir_ret{contador_llamadas}:   SUB #{tam_ra_llamado}, #1
+            ADD .A, .IX
+            MOVE [.A], .R9
+
+            SUB .IX, #{tam_ra_llamado}
+            MOVE .A, .IX
+
+            MOVE .R9, #32[.IX]
             """
             escribir(cadena)
             escribir("\n")
+            contador_llamadas += 1
         
         elif re.match(patron_call_fun_cad, linea, re.VERBOSE):
             coincidencia = re.match(patron_call_fun_cad, linea, re.VERBOSE)
             # *********************************************************************
             # *********************************************************************
             # *********************************************************************
+            nombre_funcion = coincidencia.group(1)
+            tam_ra_llamado = 32
             cadena = f"""
-            \t\t\t\tMOVE #dir_ret, #Tam_RA_llamador[.IX]
-            \t\t\t\tMOVE #1[.IX], .R9 
-            \t\t\t\tMOVE [.R9], .R9
+            MOVE #dir_ret{contador_llamadas}, #{tam_ra_actual}[.IX]
+            MOVE #{tam_ra_actual + 1}[.IX], .R9 
+            MOVE [.R9], .R9
 
-            \t\t\t\tMOVE [.R9], .R9
+            MOVE [.R9], .R9
 
-            \t\t\t\tADD #Tam_RA_llamador, .IX
-            \t\t\t\tINC .A
-            \t\t\t\tMOVE .R9, [.A]
-            \t\t\t\tADD #Tam_RA_llamador, .IX
-            \t\t\t\tMOVE .A, .IX
-            \t\t\t\tBR /{coincidencia.group(1)}
+            ADD #{tam_ra_llamado}, .IX
+            INC .A
+            MOVE .R9, [.A]
+            ADD #{tam_ra_llamado}, .IX
+            MOVE .A, .IX
+            BR /{nombre_funcion}
 
-            dir_ret1:   SUB #Tam_RA_p, #1
-            \t\t\t\tADD .A, .IX
-            \t\t\t\tMOVE [.A], .R9
-            
-            \t\t\t\tSUB .IX, #Tam_RA_llamador
-            \t\t\t\tMOVE .A, .IX
-            
-            \t\t\t\tMOVE .R9, #32[.IX]
+dir_ret{contador_llamadas}:   SUB #{tam_ra_llamado}, #1
+            ADD .A, .IX
+            MOVE [.A], .R9
+
+            SUB .IX, #{tam_ra_llamado}
+            MOVE .A, .IX
+
+            MOVE .R9, #32[.IX]
             """
             escribir(cadena)
             escribir("\n")
+            contador_llamadas += 1
 
         # Para la sección de procesamiento de READ
         elif re.match(patron_read, linea, re.VERBOSE):

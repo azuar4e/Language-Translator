@@ -79,8 +79,12 @@ def main():
 
         linea = leer()
 
+    escribir("\t\t\tORG 1000\n")
     escribir("\t\t\tinicio_pila: NOP\n")
+    escribir("\t\t\tORG 0\n")
     escribir(f"\t\t\tinicio_estaticas: RES {tamestaticos}\n")
+    if tamestaticos > 0:
+        escribir(f"\t\t\tORG {tamestaticos}\n")
     escribir("\t\t\tMOVE #inicio_estaticas, .IY\n")
     escribir("\t\t\tMOVE #inicio_pila, .IX\n")
     

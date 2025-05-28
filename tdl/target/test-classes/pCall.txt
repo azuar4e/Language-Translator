@@ -1,0 +1,9 @@
+procedure incrementar(var x: integer);
+begin
+    x := x * 2;
+end;
+
+PROGRAM pruebaCallSimple;
+begin    { Llamada a procedimiento }
+    incrementar (5); 
+end;

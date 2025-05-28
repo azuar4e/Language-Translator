@@ -1,0 +1,9 @@
+<PROGRAM,->
+<ID,1>
+<PYC,->
+<VAR,->
+<ID,-1>
+<DOSPUNTOS,->
+<INTEGER,->
+<PYC,->
+<VAR,->
