@@ -35,6 +35,7 @@ def reserva(tipo) -> int:
 
 # calculamos el tamaño a reservar para los datos estaticos y el tamaño de cada RA
 def main():
+    global cadfinal
     linea = leer()
     tamestaticos = 0
     ras = 1
@@ -79,18 +80,24 @@ def main():
 
         linea = leer()
 
-    escribir("\t\t\tORG 1000\n")
-    escribir("\t\t\tinicio_pila: NOP\n")
-    escribir("\t\t\tORG 0\n")
-    escribir(f"\t\t\tinicio_estaticas: RES {tamestaticos}\n")
+    # escribir("\t\t\tORG 1000\n")
+    # escribir("\t\t\tinicio_pila: NOP\n")
+    # escribir("\t\t\tORG 0\n")
+    # escribir(f"\t\t\tinicio_estaticas: RES {tamestaticos}\n")
+    cadfinal = ""
     if tamestaticos > 0:
-        escribir(f"\t\t\tORG {tamestaticos}\n")
-    escribir("\t\t\tMOVE #inicio_estaticas, .IY\n")
+        cadfinal = f"\t\t\tinicio_estaticas: RES {tamestaticos}\n"
+    cadfinal += "\t\t\tinicio_pila: NOP\n"
+    # if tamestaticos > 0:
+    #     escribir(f"\t\t\tORG {tamestaticos}\n")
+    if tamestaticos > 0:
+        escribir("\t\t\tMOVE #inicio_estaticas, .IY\n")
     escribir("\t\t\tMOVE #inicio_pila, .IX\n")
     
     # generamos las etiquetas para los registros de activacion
     for ra in coleccion:
         escribir(f"\t\t\t{ra}: EQU {coleccion[ra]}\n")
+    escribir("\n\t\t\tBR /main\n")
 
 
 if __name__=='__main__':

@@ -1,0 +1,168 @@
+			MOVE #inicio_pila, .IX
+			ra1: EQU 17
+			ra2: EQU 97
+
+			BR /main
+EtiqFunc2:
+
+			ADD #10, .IX
+			MOVE .A, .R2
+
+			MOVE #2, [.R2]
+
+			ADD #2, .IX
+			MOVE .A, .R2
+			ADD #10, .IX
+			MOVE .A, .R3
+			ADD #14, .IX
+			MOVE .A, .R4
+
+			MUL [.R2], [.R3]
+			MOVE .A, [.R4]
+			SUB #17, #1
+			ADD .A, .IX
+			MOVE #14[.IX], [.A]
+			BR [.IX]
+
+main:
+
+			ADD #80, .IX
+			MOVE .A, .R2
+
+			MOVE #2, [.R2]
+
+			ADD #80, .IX
+			MOVE .A, .R2
+			ADD #68, .IX
+			MOVE .A, .R3
+
+			MOVE [.R2], [.R3]
+
+			ADD #84, .IX
+			MOVE .A, .R2
+
+			MOVE #4, [.R2]
+
+			ADD #88, .IX
+			MOVE .A, .R2
+
+			MOVE #3, [.R2]
+
+			ADD #84, .IX
+			MOVE .A, .R2
+			ADD #88, .IX
+			MOVE .A, .R3
+			ADD #92, .IX
+			MOVE .A, .R4
+
+			MUL [.R2], [.R3]
+			MOVE .A, [.R4]
+
+			ADD #92, .IX
+			MOVE .A, .R2
+			ADD #72, .IX
+			MOVE .A, .R3
+
+			MOVE [.R2], [.R3]
+
+			ADD #72, .IX
+			MOVE .A, .R2
+			ADD #68, .IX
+			MOVE .A, .R3
+
+			CMP .R2, .R3
+			BNZ $Etiq0
+
+			ADD #93, .IX
+			MOVE .A, .R2
+
+			MOVE #1, [.R2]
+			BR $Etiq1
+Etiq0:
+
+			ADD #93, .IX
+			MOVE .A, .R2
+
+			MOVE #0, [.R2]
+Etiq1:
+
+			ADD #93, .IX
+			MOVE .A, .R2
+			ADD #67, .IX
+			MOVE .A, .R3
+
+			MOVE [.R2], [.R3]
+
+			ADD #67, .IX
+			MOVE .A, .R2
+
+			CMP .R2, .R3
+			BZ $Etiq2
+
+			ADD #66, .IX
+			MOVE .A, .R2
+
+			CMP .R2, .R3
+			BZ $Etiq2
+
+			ADD #94, .IX
+			MOVE .A, .R2
+
+			MOVE #1, [.R2]
+			BR $Etiq3
+Etiq2:
+
+			ADD #94, .IX
+			MOVE .A, .R2
+
+			MOVE #0, [.R2]
+Etiq3:
+
+			ADD #94, .IX
+			MOVE .A, .R2
+			ADD #67, .IX
+			MOVE .A, .R3
+
+			MOVE [.R2], [.R3]
+
+			ADD #72, .IX
+			MOVE .A, .R2
+
+			ADD #97, .IX
+			ADD #2, .A
+			MOVE [.R2], [.A]
+
+
+            MOVE #dir_ret0, #97[.IX]
+            MOVE #98[.IX], .R9 
+            MOVE [.R9], .R9
+
+            MOVE [.R9], .R9
+
+            ADD #97, .IX
+            INC .A
+            MOVE .R9, [.A]
+            ADD #97, .IX
+            MOVE .A, .IX
+            BR /EtiqFunc2
+
+dir_ret0:   SUB #17, #1
+            ADD .A, .IX
+            MOVE [.A], .R9
+
+            SUB .IX, #97
+            MOVE .A, .IX
+
+            MOVE .R9, #98[.IX]
+            
+
+			ADD #98, .IX
+			MOVE .A, .R2
+			ADD #68, .IX
+			MOVE .A, .R3
+
+			MOVE [.R2], [.R3]
+			HALT
+
+			inicio_pila: NOP
+

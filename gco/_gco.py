@@ -322,8 +322,9 @@ def transformar_dir(dir1, dir2, dir3):
             nreg += 1
             escribir(cad)
         
-        elif re.match(ptloc, dir):
-            cad = f"\t\t\tADD #{re.match(ptloc, dir).group(1)}, .IX\n\t\t\tMOVE .A, .R{nreg}\n"
+        elif re.match(ptloc, dir): # al ser local se le suma el tamaño del EM y PA
+            desp = int(re.match(ptloc, dir).group(1)) + 2
+            cad = f"\t\t\tADD #{desp}, .IX\n\t\t\tMOVE .A, .R{nreg}\n"
             nreg += 1
             escribir(cad)
     escribir("\n")
@@ -515,7 +516,7 @@ def main():
             escribir("\n")
         
         elif re.match(patron_param_cad, linea, re.VERBOSE):
-            coincidencia = re.match(patron_param_cad, linea, re.VERBOSE)
+            '''coincidencia = re.match(patron_param_cad, linea, re.VERBOSE)
             # MIRAR ESTO PORQUE CREO QUE HAY QUE COPIAR LA CADENA EN LUGAR DEL MOVE
             # creo q no se tiene en cuenta para la practica
             # *********************************************************************
@@ -525,6 +526,24 @@ def main():
             
             cadena = "\t\t\tMOVE .R2"
             escribir(cadena)
+            escribir("\n")'''
+
+            coincidencia = re.match(patron_param_cad, linea, re.VERBOSE)
+            if re.match(ptglob, coincidencia.group(1)) or re.match(ptloc, coincidencia.group(1)):
+                transformar_dir(coincidencia.group(1), None, coincidencia.group(3))
+                transformar_dir(None, None, coincidencia.group(3))
+                escribir("\t\t\tMOVE #0, [.R2]\n")
+                escribir("\t\t\tMOVE [.R2], [.R3]\n")
+                
+            else:
+                c = coincidencia.group(1)
+                es_vacia = re.match(p, c)
+                if not es_vacia:
+                    transformar_dir(None, None, coincidencia.group(3))
+                    leer_cadena_ens(f"cadena{cds}", True)
+                    declarar_cads(coincidencia.group(1), False)
+                    cds += 1
+
             escribir("\n")
         
         elif re.match(patron_ret, linea, re.VERBOSE):  #chequea si es el del main o de una funcion
@@ -560,7 +579,8 @@ def main():
             # *********************************************************************
             # *********************************************************************
             # *********************************************************************
-            cadena = f"\t\t\tSUB #{tamraact}, #1\n\t\t\tADD .A, .IX\n\t\t\tMOVE #{c.group(1)}[.IX], [.A]\n\t\t\tBR [.IX]\n"
+            desp = int(c.group(1)) + 2
+            cadena = f"\t\t\tSUB #{tamraact}, #1\n\t\t\tADD .A, .IX\n\t\t\tMOVE #{desp}[.IX], [.A]\n\t\t\tBR [.IX]\n"
             escribir(cadena)
             escribir("\n")
             
@@ -582,14 +602,14 @@ def main():
             MOVE [.R9], .R9
 
             MOVE [.R9], .R9
-            ADD #{tam_ra_llamado}, .IX
+            ADD #{tamraact}, .IX
             INC .A
             MOVE .R9, [.A]
-            ADD #{tam_ra_llamado}, .IX
+            ADD #{tamraact}, .IX
             MOVE .A, .IX
             BR /{et}
 
-dir_ret{contador_llamadas}:   SUB .IX, #{tam_ra_llamado}
+dir_ret{contador_llamadas}:   SUB .IX, #{tamraact}
             MOVE .A, .IX
             """
             escribir(cadena)
@@ -602,7 +622,7 @@ dir_ret{contador_llamadas}:   SUB .IX, #{tam_ra_llamado}
             # *********************************************************************
             # *********************************************************************
             et = coincidencia.group(1)
-            desp = re.match(ptloc, coincidencia.group(3)).group(1)
+            desp = int(re.match(ptloc, coincidencia.group(3)).group(1)) + 2
             if re.match(ptp, et):
                 tam_ra_llamado = _calcprev.coleccion[f"ra{int(re.match(ptp, et).group(1)) - 1}"]
                 
@@ -616,10 +636,10 @@ dir_ret{contador_llamadas}:   SUB .IX, #{tam_ra_llamado}
 
             MOVE [.R9], .R9
 
-            ADD #{tam_ra_llamado}, .IX
+            ADD #{tamraact}, .IX
             INC .A
             MOVE .R9, [.A]
-            ADD #{tam_ra_llamado}, .IX
+            ADD #{tamraact}, .IX
             MOVE .A, .IX
             BR /{et}
 
@@ -627,7 +647,7 @@ dir_ret{contador_llamadas}:   SUB #{tam_ra_llamado}, #1
             ADD .A, .IX
             MOVE [.A], .R9
 
-            SUB .IX, #{tam_ra_llamado}
+            SUB .IX, #{tamraact}
             MOVE .A, .IX
 
             MOVE .R9, #{desp}[.IX]
@@ -655,10 +675,10 @@ dir_ret{contador_llamadas}:   SUB #{tam_ra_llamado}, #1
 
             MOVE [.R9], .R9
 
-            ADD #{tam_ra_llamado}, .IX
+            ADD #{tamraact}, .IX
             INC .A
             MOVE .R9, [.A]
-            ADD #{tam_ra_llamado}, .IX
+            ADD #{tamraact}, .IX
             MOVE .A, .IX
             BR /{et}
 
@@ -666,7 +686,7 @@ dir_ret{contador_llamadas}:   SUB #{tam_ra_llamado}, #1
             ADD .A, .IX
             MOVE [.A], .R9
 
-            SUB .IX, #{tam_ra_llamado}
+            SUB .IX, #{tamraact}
             MOVE .A, .IX
 
             MOVE .R9, #32[.IX]
@@ -723,7 +743,8 @@ dir_ret{contador_llamadas}:   SUB #{tam_ra_llamado}, #1
                     cads += "\nnl:\tDATA \"\\n\\0\""
         
         linea = leer()
-    escribir("\t\t\tHALT\n")
+    escribir("\t\t\tHALT\n\n")
+    escribir(_calcprev.cadfinal)
     declarar_cads(None, True)
 
 if __name__ == '__main__':

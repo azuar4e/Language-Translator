@@ -16,5 +16,5 @@ begin
 	x := c * 1;
 	b := y AND n;
 	s := 'hola mundo';
-	write('todo al semen');
+	{write('todo al semen');}
 end;
