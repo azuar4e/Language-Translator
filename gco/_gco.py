@@ -13,7 +13,6 @@ bucles = 0
 cads = None
 cds = 0
 contador_llamadas = 0 # Para generar etiquetas unicas de retorno
-tam_ra_actual = 32 # Para calcular el tamaño del RA actual
 tamraact = None
 es_vacia = False
 contparam = 0
@@ -334,7 +333,7 @@ def transformar_dir(dir1, dir2, dir3):
 # main
 
 def main():
-    global cds, contador_llamadas, tam_ra_actual, contparam  # Añadir estas variables globales
+    global cds, contador_llamadas, contparam  # Añadir estas variables globales
     _calcprev.main() # calculo de la cabecera del ensamblador
 
     esFuncion = 0
@@ -531,24 +530,16 @@ def main():
         elif re.match(patron_ret, linea, re.VERBOSE):  #chequea si es el del main o de una funcion
             coincidencia = re.match(patron_ret, linea, re.VERBOSE)
             linea = leer()
-            # *********************************************************************
-            # *********************************************************************
-            # *********************************************************************
-            if coincidencia.group(2) != "_":
-                cadena = "\t\t\tMOVE "+coincidencia.group(2)+", .A"
-                escribir(cadena)
-                escribir("\n")
-            cadena = "\t\t\tRET"
+            cadena = "\n\t\t\tBR [.IX]\n"
             escribir(cadena)
-            escribir("\n")
-            continue
+            # continue
 
         elif re.match(patron_ret_halt, linea, re.VERBOSE):  #chequea si es el del main o de una funcion
             coincidencia = re.match(patron_ret_halt, linea, re.VERBOSE)
             cadena = "\t\t\tHALT"
             escribir(cadena)
             escribir("\n")
-            break
+            # break
             
 
         elif re.match(patron_ret_cad, linea, re.VERBOSE):
@@ -569,16 +560,8 @@ def main():
             # *********************************************************************
             # *********************************************************************
             # *********************************************************************
-            cadena = f"\t\t\tSUB #{tamraact}, #1\n\t\t\tADD .A, .IX\n\t\t\tMOVE #{c.group(1)}[.IX], [.A]\n"
+            cadena = f"\t\t\tSUB #{tamraact}, #1\n\t\t\tADD .A, .IX\n\t\t\tMOVE #{c.group(1)}[.IX], [.A]\n\t\t\tBR [.IX]\n"
             escribir(cadena)
-            
-            # if coincidencia.group(2) != "_":
-                
-            #     cadena = "\t\t\tMOVE "+coincidencia.group(3)+", .A"
-            #     escribir(cadena)
-            #     escribir("\n")
-            # cadena = "\t\t\tRET"
-            # escribir(cadena)
             escribir("\n")
             
         elif re.match(patron_call, linea, re.VERBOSE):
@@ -586,11 +569,16 @@ def main():
             # *********************************************************************
             # *********************************************************************
             # *********************************************************************
-            nombre_funcion = coincidencia.group(1)
-            tam_ra_llamado = 32
+            et = coincidencia.group(1)
+            if re.match(ptp, et):
+                tam_ra_llamado = _calcprev.coleccion[f"ra{int(re.match(ptp, et).group(1)) - 1}"]
+                
+            if re.match(ptf, et):
+                tam_ra_llamado = _calcprev.coleccion[f"ra{int(re.match(ptf, et).group(1)) - 1}"]
+
             cadena = f"""
-            MOVE #dir_ret{contador_llamadas}, #{tam_ra_actual}[.IX]
-            MOVE #{tam_ra_actual + 1}[.IX], .R9 
+            MOVE #dir_ret{contador_llamadas}, #{tamraact}[.IX]
+            MOVE #{tamraact + 1}[.IX], .R9 
             MOVE [.R9], .R9
 
             MOVE [.R9], .R9
@@ -599,7 +587,7 @@ def main():
             MOVE .R9, [.A]
             ADD #{tam_ra_llamado}, .IX
             MOVE .A, .IX
-            BR /{nombre_funcion}
+            BR /{et}
 
 dir_ret{contador_llamadas}:   SUB .IX, #{tam_ra_llamado}
             MOVE .A, .IX
@@ -613,11 +601,17 @@ dir_ret{contador_llamadas}:   SUB .IX, #{tam_ra_llamado}
             # *********************************************************************
             # *********************************************************************
             # *********************************************************************
-            nombre_funcion = coincidencia.group(1)
-            tam_ra_llamado = 32
+            et = coincidencia.group(1)
+            desp = re.match(ptloc, coincidencia.group(3)).group(1)
+            if re.match(ptp, et):
+                tam_ra_llamado = _calcprev.coleccion[f"ra{int(re.match(ptp, et).group(1)) - 1}"]
+                
+            if re.match(ptf, et):
+                tam_ra_llamado = _calcprev.coleccion[f"ra{int(re.match(ptf, et).group(1)) - 1}"]
+
             cadena = f"""
-            MOVE #dir_ret{contador_llamadas}, #{tam_ra_actual}[.IX]
-            MOVE #{tam_ra_actual + 1}[.IX], .R9 
+            MOVE #dir_ret{contador_llamadas}, #{tamraact}[.IX]
+            MOVE #{tamraact + 1}[.IX], .R9 
             MOVE [.R9], .R9
 
             MOVE [.R9], .R9
@@ -627,7 +621,7 @@ dir_ret{contador_llamadas}:   SUB .IX, #{tam_ra_llamado}
             MOVE .R9, [.A]
             ADD #{tam_ra_llamado}, .IX
             MOVE .A, .IX
-            BR /{nombre_funcion}
+            BR /{et}
 
 dir_ret{contador_llamadas}:   SUB #{tam_ra_llamado}, #1
             ADD .A, .IX
@@ -636,7 +630,7 @@ dir_ret{contador_llamadas}:   SUB #{tam_ra_llamado}, #1
             SUB .IX, #{tam_ra_llamado}
             MOVE .A, .IX
 
-            MOVE .R9, #32[.IX]
+            MOVE .R9, #{desp}[.IX]
             """
             escribir(cadena)
             escribir("\n")
@@ -647,11 +641,16 @@ dir_ret{contador_llamadas}:   SUB #{tam_ra_llamado}, #1
             # *********************************************************************
             # *********************************************************************
             # *********************************************************************
-            nombre_funcion = coincidencia.group(1)
-            tam_ra_llamado = 32
+            et = coincidencia.group(1)
+            if re.match(ptp, et):
+                tam_ra_llamado = _calcprev.coleccion[f"ra{int(re.match(ptp, et).group(1)) - 1}"]
+                
+            if re.match(ptf, et):
+                tam_ra_llamado = _calcprev.coleccion[f"ra{int(re.match(ptf, et).group(1)) - 1}"]
+
             cadena = f"""
-            MOVE #dir_ret{contador_llamadas}, #{tam_ra_actual}[.IX]
-            MOVE #{tam_ra_actual + 1}[.IX], .R9 
+            MOVE #dir_ret{contador_llamadas}, #{tamraact}[.IX]
+            MOVE #{tamraact + 1}[.IX], .R9 
             MOVE [.R9], .R9
 
             MOVE [.R9], .R9
@@ -661,7 +660,7 @@ dir_ret{contador_llamadas}:   SUB #{tam_ra_llamado}, #1
             MOVE .R9, [.A]
             ADD #{tam_ra_llamado}, .IX
             MOVE .A, .IX
-            BR /{nombre_funcion}
+            BR /{et}
 
 dir_ret{contador_llamadas}:   SUB #{tam_ra_llamado}, #1
             ADD .A, .IX

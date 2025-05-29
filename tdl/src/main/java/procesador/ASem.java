@@ -458,7 +458,7 @@ public class ASem {
 		Procesador.gestorTS.setTipo(pidAtb.getPos(), "procedimiento"); // Checkear error de gestor TS.
 		Procesador.gestorTS.setValorAtributoEnt(pidAtb.getPos(), "numParametro", 0);
 		Procesador.gestorTS.setValorAtributoCad(pidAtb.getPos(), "etiqueta", "main");
-		
+		pidAtb.setEtiqueta("main");
 		gci.emite("ETIQ", gci.nuevaetiq("main"), null, null);
 		return new Atributos();
 	}
@@ -593,7 +593,6 @@ public class ASem {
 		Atributos idAtb = atb[9];
 		Atributos tAtb = atb[5];
 		Procesador.gestorTS.setTipo(idAtb.getPos(), tAtb.getTipo());
-		System.out.println("checkpoint");
 		identificadores.put(idAtb.getPos(), tsGlobal);
 		if (tsGlobal) {
 			Procesador.gestorTS.setValorAtributoEnt(idAtb.getPos(), "desplazamiento", despGlobal);
@@ -615,7 +614,6 @@ public class ASem {
 		Atributos idAtb = atb[9];
 		Atributos tAtb = atb[5];
 		Procesador.gestorTS.setTipo(idAtb.getPos(), tAtb.getTipo());
-		System.out.println("checkpoint");
 		identificadores.put(idAtb.getPos(), tsGlobal);
 		if (tsGlobal) {
 			Procesador.gestorTS.setValorAtributoEnt(idAtb.getPos(), "desplazamiento", despGlobal);
@@ -1296,11 +1294,11 @@ public class ASem {
 				gci.emite("PARAM", llATB.getParam(i), null, null);
 			}
 			if ("entero".equals(llATB.getRet())) {
-				gci.emite("CALL_FUN", llATB.getPos(), null, res.getLugar());
+				gci.emite("CALL_FUN", Procesador.gestorTS.getValorAtributoCad(idATB.getPos(), "etiqueta"), null, res.getLugar());
 			} else if ("cadena".equals(llATB.getRet())) {
-				gci.emite("CALL_FUN_CAD", llATB.getPos(), null, res.getLugar());
+				gci.emite("CALL_FUN_CAD", Procesador.gestorTS.getValorAtributoCad(idATB.getPos(), "etiqueta"), null, res.getLugar());
 			} else {
-				gci.emite("CALL", llATB.getPos(), null, null);
+				gci.emite("CALL", Procesador.gestorTS.getValorAtributoCad(idATB.getPos(), "etiqueta"), null, null);
 			}
 		}
 		return res;
@@ -1993,13 +1991,11 @@ public class ASem {
 
 		//____________________________________________________________
 		//instrucciones para la generacion de codigo intermedio
-		System.out.println("checkpoint: "+ llAtb.getTipo());
-
 		if (llAtb.getTipo().equals("")) {
 
 			if (identificadores.get(idAtb.getPos()) == null) {
-				System.out.println("problemas");
-			}else {
+				res.setLugar(new gci.tupla<>("VAR_LOCAL", procesador.Procesador.gestorTS.getValorAtributoEnt(idAtb.getPos(), "desplazamiento")));
+			} else {
 				if (identificadores.get(idAtb.getPos())) {
 					res.setLugar(new gci.tupla<>("VAR_GLOBAL", procesador.Procesador.gestorTS.getValorAtributoEnt(idAtb.getPos(), "desplazamiento")));
 				} else {
@@ -2008,7 +2004,6 @@ public class ASem {
 			}
 			
 		} else {
-			res.setLugar(gci.nuevatemp(res.getTipo()));
 			LinkedList<Integer> referencias = paramRef.get(idAtb.getPos());
 			for (int i = 0; i < llAtb.getLongs(); i++) {
 				if (referencias.get(i) == 0) {
@@ -2017,12 +2012,15 @@ public class ASem {
 					gci.emite("PARAM_REF", llAtb.getParam(i), null, null);
 				}
 			}
-			if ("entero".equals(idAtb.getRet())) {
-				gci.emite("CALL_FUN", idAtb.getPos(), null, res.getLugar());
-			} else if ("cadena".equals(idAtb.getRet())) {
-				gci.emite("CALL_FUN_CAD", idAtb.getPos(), null, res.getLugar());
+			String ret = Procesador.gestorTS.getValorAtributoCad(idAtb.getPos(), "tipoRetorno");
+			if ("entero".equals(ret)) {
+				res.setLugar(gci.nuevatemp(res.getTipo()));
+				gci.emite("CALL_FUN", Procesador.gestorTS.getValorAtributoCad(idAtb.getPos(), "etiqueta"), null, res.getLugar());
+			} else if ("cadena".equals(ret)) {
+				res.setLugar(gci.nuevatemp(res.getTipo()));
+				gci.emite("CALL_FUN_CAD", Procesador.gestorTS.getValorAtributoCad(idAtb.getPos(), "etiqueta"), null, res.getLugar());
 			} else {
-				gci.emite("CALL", idAtb.getPos(), null, null);
+				gci.emite("CALL", Procesador.gestorTS.getValorAtributoCad(idAtb.getPos(), "etiqueta"), null, null);
 			}
 		}
 
