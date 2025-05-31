@@ -221,6 +221,8 @@ public class ASem {
 	private static final Map<Integer, Boolean> identificadores = new HashMap<>();
 	private static final Map<Integer, Supplier<Atributos>> ruleMap = new HashMap<>();
 	private static final Map<Integer, LinkedList<Integer>> paramRef = new HashMap<>();
+	private static final Map<Integer, LinkedList<String>> paramTipo = new HashMap<>();
+
 
 
 	// Destruir tabla y imprimirlo en el fichero asignado
@@ -510,6 +512,10 @@ public class ASem {
 			String[] tipos = aAtb.getTipo().split(" ");
 			String[] parametros = aAtb.getReferencia().split(" ");
 			LinkedList<Integer> paramRefAux = new LinkedList<>();
+			LinkedList<String> paramTipoAux = new LinkedList<>();
+			for (String tipo: tipos) {		
+				paramTipoAux.add(tipo);
+			}
 			for (String modo: parametros) {
 				if (modo.equals("valor")){
 					paramRefAux.add(0);
@@ -517,6 +523,7 @@ public class ASem {
 					paramRefAux.add(1);
 				}
 			}
+			paramTipo.put(pidAtb.getPos(), paramTipoAux);
 			paramRef.put(pidAtb.getPos(), paramRefAux);
 			Procesador.gestorTS.setValorAtributoLista(pidAtb.getPos(), "tipoParametros", tipos);
 			Procesador.gestorTS.setValorAtributoLista(pidAtb.getPos(), "PasoParametros", parametros);
@@ -562,6 +569,10 @@ public class ASem {
 			String[] tipos = aAtb.getTipo().split(" ");
 			String[] parametros = aAtb.getReferencia().split(" ");
 			LinkedList<Integer> paramRefAux = new LinkedList<>();
+			LinkedList<String> paramTipoAux = new LinkedList<>();
+			for (String tipo: tipos) {
+				paramTipoAux.add(tipo);
+			}
 			for (String modo: parametros) {
 				if (modo.equals("valor")){
 					paramRefAux.add(0);
@@ -569,6 +580,7 @@ public class ASem {
 					paramRefAux.add(1);
 				}
 			}
+			paramTipo.put(pidAtb.getPos(), paramTipoAux);
 			paramRef.put(pidAtb.getPos(), paramRefAux);
 			Procesador.gestorTS.setValorAtributoLista(pidAtb.getPos(), "tipoParametros", tipos);
 			Procesador.gestorTS.setValorAtributoLista(pidAtb.getPos(), "PasoParametros", parametros);
@@ -1289,10 +1301,22 @@ public class ASem {
 				res.setLugar(new gci.tupla<>("VAR_LOCAL", procesador.Procesador.gestorTS.getValorAtributoEnt(idATB.getPos(), "desplazamiento")));
 			}			
 		} else {
-			res.setLugar(gci.nuevatemp(res.getTipo()));
+			// res.setLugar(gci.nuevatemp(res.getTipo()));
+			LinkedList<Integer> referencias = paramRef.get(idATB.getPos());
+			LinkedList<String> tipos = paramTipo.get(idATB.getPos());
+
 			for (int i = 0; i < llATB.getLongs(); i++) {
-				gci.emite("PARAM", llATB.getParam(i), null, null);
+				if (referencias.get(i) == 0) {
+					if (tipos.get(i).equals("cadena")) {
+						gci.emite("PARAM_CAD", llATB.getParam(i), null, null);
+					} else {
+						gci.emite("PARAM", llATB.getParam(i), null, null);
+					}
+				} else {
+					gci.emite("PARAM_REF", llATB.getParam(i), null, null);
+				}
 			}
+
 			if ("entero".equals(llATB.getRet())) {
 				gci.emite("CALL_FUN", Procesador.gestorTS.getValorAtributoCad(idATB.getPos(), "etiqueta"), null, res.getLugar());
 			} else if ("cadena".equals(llATB.getRet())) {
@@ -1325,13 +1349,7 @@ public class ASem {
 				gci.emite("RETURN_CAD", null, null, yATB.getLugar());
 				break;
 			default:
-				//sacar la tabla actual
-				Integer idPos = atb[7].getPos();
-				if (identificadores.get(idPos)) {
-					gci.emite("RETURN", "-", "-", "-");//HALT ya que es la funcion ppal
-				} else {
-					gci.emite("RETURN", null, null, null);//return de la funcion
-				}
+				gci.emite("RETURN", null, null, null);//return de la funcion
 				break;
 		}
 		return res;
@@ -2005,9 +2023,15 @@ public class ASem {
 			
 		} else {
 			LinkedList<Integer> referencias = paramRef.get(idAtb.getPos());
+			LinkedList<String> tipos = paramTipo.get(idAtb.getPos());
+
 			for (int i = 0; i < llAtb.getLongs(); i++) {
 				if (referencias.get(i) == 0) {
-					gci.emite("PARAM", llAtb.getParam(i), null, null);
+					if (tipos.get(i).equals("cadena")) {
+						gci.emite("PARAM_CAD", llAtb.getParam(i), null, null);
+					} else {
+						gci.emite("PARAM", llAtb.getParam(i), null, null);
+					}
 				} else {
 					gci.emite("PARAM_REF", llAtb.getParam(i), null, null);
 				}

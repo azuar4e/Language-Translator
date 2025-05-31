@@ -16,6 +16,7 @@ contador_llamadas = 0 # Para generar etiquetas unicas de retorno
 tamraact = None
 es_vacia = False
 contparam = 0
+where = ""
 
 #________________________________________________________________________
 # patrones
@@ -138,14 +139,6 @@ patron_ret = r"""
     ((?:\{[^{}]*\}|[^,()])+)  ,\s*
     ((?:\{[^{}]*\}|[^,()])+)  ,\s*
     ((?:\{[^{}]*\}|[^,()])+) 
-\)
-"""
-
-patron_ret_halt = r"""
-\(RETURN,\s*
-    (-)  ,\s*
-    (-)  ,\s*
-    (-) 
 \)
 """
 
@@ -334,7 +327,7 @@ def transformar_dir(dir1, dir2, dir3):
 # main
 
 def main():
-    global cds, contador_llamadas, contparam  # Añadir estas variables globales
+    global cds, contador_llamadas, contparam, where  # Añadir estas variables globales
     _calcprev.main() # calculo de la cabecera del ensamblador
 
     esFuncion = 0
@@ -367,13 +360,16 @@ def main():
             et = re.match(etiqueta, aux).group(1)
             if re.match(ptp, et):
                 tamraact = _calcprev.coleccion[f"ra{int(re.match(ptp, et).group(1)) - 1}"]
+                where = "procedure"
                 
             if re.match(ptf, et):
                 tamraact = _calcprev.coleccion[f"ra{int(re.match(ptf, et).group(1)) - 1}"]
+                where = "function"
                 
             if re.match(ptm, et):
                 uc = list(_calcprev.coleccion.keys())[-1]
                 tamraact = _calcprev.coleccion[uc]
+                where = "main"
 
             cadena = et +":"
             escribir(cadena)
@@ -395,10 +391,8 @@ def main():
             if re.match(ptglob, coincidencia.group(1)) or re.match(ptloc, coincidencia.group(1)):
                 transformar_dir(coincidencia.group(1), None, coincidencia.group(3))
                 if not es_vacia:
-                    # transformar_dir(coincidencia.group(1), None, coincidencia.group(3))
                     leer_cadena_ens(None, False)
                 else:
-                    # transformar_dir(None, None, coincidencia.group(3))
                     escribir("\t\t\tMOVE #0, [.R2]\n")
                     escribir("\t\t\tMOVE [.R2], [.R3]\n")
                 
@@ -516,25 +510,13 @@ def main():
             escribir("\n")
         
         elif re.match(patron_param_cad, linea, re.VERBOSE):
-            '''coincidencia = re.match(patron_param_cad, linea, re.VERBOSE)
-            # MIRAR ESTO PORQUE CREO QUE HAY QUE COPIAR LA CADENA EN LUGAR DEL MOVE
-            # creo q no se tiene en cuenta para la practica
-            # *********************************************************************
-            # *********************************************************************
-            # *********************************************************************
-            transformar_dir(coincidencia.group(1), None, None)
-            
-            cadena = "\t\t\tMOVE .R2"
-            escribir(cadena)
-            escribir("\n")'''
 
             coincidencia = re.match(patron_param_cad, linea, re.VERBOSE)
             if re.match(ptglob, coincidencia.group(1)) or re.match(ptloc, coincidencia.group(1)):
-                transformar_dir(coincidencia.group(1), None, coincidencia.group(3))
-                transformar_dir(None, None, coincidencia.group(3))
-                escribir("\t\t\tMOVE #0, [.R2]\n")
-                escribir("\t\t\tMOVE [.R2], [.R3]\n")
+                transformar_dir(coincidencia.group(1), None, None)
+                leer_cadena_ens(None, False)
                 
+
             else:
                 c = coincidencia.group(1)
                 es_vacia = re.match(p, c)
@@ -548,18 +530,12 @@ def main():
         
         elif re.match(patron_ret, linea, re.VERBOSE):  #chequea si es el del main o de una funcion
             coincidencia = re.match(patron_ret, linea, re.VERBOSE)
-            linea = leer()
-            cadena = "\n\t\t\tBR [.IX]\n"
+            # linea = leer()
+            if where == "main":
+                cadena = "\n\t\t\tHALT\n"
+            else:
+                cadena = "\n\t\t\tBR [.IX]\n"
             escribir(cadena)
-            # continue
-
-        elif re.match(patron_ret_halt, linea, re.VERBOSE):  #chequea si es el del main o de una funcion
-            coincidencia = re.match(patron_ret_halt, linea, re.VERBOSE)
-            cadena = "\t\t\tHALT"
-            escribir(cadena)
-            escribir("\n")
-            # break
-            
 
         elif re.match(patron_ret_cad, linea, re.VERBOSE):
             coincidencia = re.match(patron_ret_cad, linea, re.VERBOSE)

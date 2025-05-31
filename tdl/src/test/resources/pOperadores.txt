@@ -1,6 +1,11 @@
-function factorial (x: integer): integer;
+{function factorial (x: integer): integer;
 begin
 	return x * 2;
+end;}
+
+procedure ramon (x: string);
+begin
+	return;
 end;
 
 PROGRAM pruebaOperadores;
@@ -16,10 +21,13 @@ begin
 
     x := 4 * 3;
     
-    b := x = y;				
+    b := x = y;
+
+	return;		
      
 	b := b AND d;
 
-	y := factorial(x);
-	
+	s := 'sexo drogas rock and roll';
+	ramon(s);
+{	y := factorial(x);}	
 end;
