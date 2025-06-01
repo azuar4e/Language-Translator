@@ -47,13 +47,15 @@ public class gci {
             if (!tipo.equals("tipo_error")) {
                 Procesador.gestorTS.setTipo(pos, tipo);
             }
+            Procesador.gestorTS.setTipo(pos, tipo);
             Procesador.gestorTS.setValorAtributoEnt(pos, "desplazamiento", ASem.despGlobal);
+            tupla<String, Integer> tupla = new tupla<>("VAR_GLOBAL", ASem.despLocal);
             switch (tipo) {
                 case "lógico":
                     ASem.despGlobal += 1;
                     break;
                 case "entero":
-                    ASem.despGlobal += 4;
+                    ASem.despGlobal += 1;
                     break;
                 case "cadena":
                     ASem.despGlobal += 64;
@@ -61,19 +63,21 @@ public class gci {
                 default:
                     break;
             }
-            return new tupla<>("VAR_GLOBAL", ASem.despGlobal);
+            return tupla;
 		} else {
             Integer pos = Procesador.gestorTS.addEntradaTSLocal(nuevatemp);
             if (!tipo.equals("tipo_error")) {
                 Procesador.gestorTS.setTipo(pos, tipo);
             }
+            Procesador.gestorTS.setTipo(pos, tipo);
             Procesador.gestorTS.setValorAtributoEnt(pos, "desplazamiento", ASem.despLocal);
+            tupla<String, Integer> tupla = new tupla<>("VAR_LOCAL", ASem.despLocal);
             switch (tipo) {
                 case "lógico":
                     ASem.despLocal += 1;
                     break;
                 case "entero":
-                    ASem.despLocal += 4;
+                    ASem.despLocal += 1;
                     break;
                 case "cadena":
                     ASem.despLocal += 64;
@@ -81,7 +85,7 @@ public class gci {
                 default:
                     break;
             }
-            return new tupla<>("VAR_LOCAL", ASem.despLocal);
+            return tupla;
 		}
     }
 

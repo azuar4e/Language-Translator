@@ -13,8 +13,12 @@ var y : boolean;
 	n : boolean;
 
 begin
-	x := c * 1;
+	c := 1975;
+	x := c * 2;
 	b := y AND n;
 	s := 'hola mundo';
-	{write('todo al semen');}
+	s := 'ramondinocl';
+	read(s);
+	writeln(s);
+	write(1945);
 end;

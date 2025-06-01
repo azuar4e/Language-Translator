@@ -25,7 +25,7 @@ def leer():
 
 def reserva(tipo) -> int:
     if tipo == 'entero':
-        return 4
+        return 1
     elif tipo == 'logico':
         return 1
     elif tipo == 'cadena':
@@ -80,16 +80,12 @@ def main():
 
         linea = leer()
 
-    # escribir("\t\t\tORG 1000\n")
-    # escribir("\t\t\tinicio_pila: NOP\n")
-    # escribir("\t\t\tORG 0\n")
-    # escribir(f"\t\t\tinicio_estaticas: RES {tamestaticos}\n")
+
     cadfinal = ""
     if tamestaticos > 0:
         cadfinal = f"\t\t\tinicio_estaticas: RES {tamestaticos}\n"
     cadfinal += "\t\t\tinicio_pila: NOP\n"
-    # if tamestaticos > 0:
-    #     escribir(f"\t\t\tORG {tamestaticos}\n")
+
     if tamestaticos > 0:
         escribir("\t\t\tMOVE #inicio_estaticas, .IY\n")
     escribir("\t\t\tMOVE #inicio_pila, .IX\n")

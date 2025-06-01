@@ -651,7 +651,7 @@ public class ASem {
 	private static Atributos acc20() {
 		Atributos res = new Atributos();
 		res.setTipo("entero");
-		res.setAncho(4);
+		res.setAncho(1);
 		return res;
 	}
 
@@ -877,7 +877,7 @@ public class ASem {
 			res.setRet("tipo_error");
 			GestorError.writeError("Instrucciones de retorno de diferentes tipos en sentencia condicional compuesta");
 		}
-		gci.emite("ETIQ", thenAtb.getSiguiente(), null, null);
+		// gci.emite("ETIQ", thenAtb.getSiguiente(), null, null);
 		return res;
 	}
 
@@ -897,7 +897,7 @@ public class ASem {
 		res.setExit(bloqueATB.getExit());
 		res.setRet(bloqueATB.getRet());
 		res.setSiguiente(gci.nuevaetiq(null));
-		gci.emite("GOTO", null, null, res.getAux());
+		// gci.emite("GOTO", null, null, res.getAux());
 		gci.emite("ETIQ", eeATB.getSiguiente(), null, null);
 		return res;
 	}
@@ -1107,20 +1107,18 @@ public class ASem {
 								"la sentencia WRITE solo acepta entero o cadena, " + "pero ha recibido " + tipo);
 						res.setTipo("tipo_error");
 						break;
+					} else {
+						if (tipo.equals("cadena")) {
+							gci.emite("PRINT_CAD", llATB.getParam(i), null, null);
+						} else {
+							gci.emite("PRINT_ENT", llATB.getParam(i), null, null);
+						}	
 					}
 				}
 			}
 		}
 		res.setExit(0);
 		res.setRet("tipo_ok");
-
-		for(int i = 0; i < llATB.getLongs(); i++) {
-			if (llATB.getParam(i) instanceof String) {
-				gci.emite("WRITE_CAD", llATB.getParam(i), null, null);
-			} else {
-				gci.emite("WRITE", llATB.getParam(i), null, null);
-			}
-		}
 
 		return res;
 	}
@@ -1141,23 +1139,18 @@ public class ASem {
 								"la sentencia WRITELN solo acepta entero o cadena, " + "pero ha recibido" + tipo);
 						res.setTipo("tipo_error");
 						break;
+					} else {
+						if (tipo.equals("cadena")) {
+							gci.emite("PRINT_CAD_LN", llATB.getParam(i), null, null);
+						} else {
+							gci.emite("PRINT_ENT_LN", llATB.getParam(i), null, null);
+						}	
 					}
 				}
 			}
 		}
 		res.setExit(0);
 		res.setRet("tipo_ok");
-
-		for(int i = 0; i < llATB.getLongs(); i++) {
-			if (llATB.getParam(i) instanceof String) {
-				gci.emite("WRITE_CAD", llATB.getParam(i), null, null);
-			} else {
-				gci.emite("WRITE", llATB.getParam(i), null, null);
-			}	
-		}
-		// Agregar el salto de línea al final
-   		gci.emite("WRITELN", null, null, null);
-
 
 		return res;
 	}
@@ -1176,15 +1169,14 @@ public class ASem {
 				res.setTipo("tipo_error");
 				break;
 			}
-		}
-		for(int i = 0; i < vATB.parametros().size(); i++) {
 			Object destino = vATB.getParam(i);
-			if (tipos[i].equals("cadena")) {
-				gci.emite("READ_CAD", null, null, destino);
+			if (tipo.equals("cadena")) {
+				gci.emite("INPUT_CAD", null, null, destino);
 			} else {
-				gci.emite("READ", null, null, destino);
+				gci.emite("INPUT_ENT", null, null, destino);
 			}
 		}
+		
 		res.setExit(0);
 		res.setRet("tipo_ok");
 		return res;
@@ -1448,7 +1440,13 @@ public class ASem {
 		}
 		res.setLong(1 + wATB.getLongs());
 		res.setParam(wATB.parametros());
-		res.addParam(idATB);
+		gci.tupla<String, Integer> tupla;
+		if (identificadores.get(idATB.getPos())) {
+			tupla = new gci.tupla<>("VAR_GLOBAL", procesador.Procesador.gestorTS.getValorAtributoEnt(idATB.getPos(), "desplazamiento"));
+		} else {
+			tupla = new gci.tupla<>("VAR_LOCAL", procesador.Procesador.gestorTS.getValorAtributoEnt(idATB.getPos(), "desplazamiento"));
+		}
+		res.addParam(tupla);
 		return res;
 	}
 
@@ -1466,7 +1464,13 @@ public class ASem {
 		}
 		res.setLong(1 + w1ATB.getLongs());
 		res.setParam(w1ATB.parametros());
-		res.addParam(idATB);
+		gci.tupla<String, Integer> tupla;
+		if (identificadores.get(idATB.getPos())) {
+			tupla = new gci.tupla<>("VAR_GLOBAL", procesador.Procesador.gestorTS.getValorAtributoEnt(idATB.getPos(), "desplazamiento"));
+		} else {
+			tupla = new gci.tupla<>("VAR_LOCAL", procesador.Procesador.gestorTS.getValorAtributoEnt(idATB.getPos(), "desplazamiento"));
+		}
+		res.addParam(tupla);
 		return res;
 	}
 
@@ -2116,6 +2120,8 @@ public class ASem {
 		Atributos lAtb = atb[3];
 		res.setTipo("entero");
 		String[] tipos = lAtb.getTipo().split("\\s+");
+		res.setLugar(gci.nuevatemp("entero"));
+		gci.emite("MIN", null, null, res.getLugar());
 		for (int i = 0; i < tipos.length; i++) {
 			String tipo = tipos[i];
 			if (!tipo.equals("entero")) {
@@ -2124,26 +2130,10 @@ public class ASem {
 						"tipo actual: " + tipo + "; tipo esperado: entero");
 				break;
 			}
+			gci.emite("PARAM_MIN", lAtb.getParam(i), null, null);
+			gci.emite("ETIQ", gci.nuevaetiq("EtiqMin"+i), null, null);
 		}
 
-		//_____________________________________________________
-		//instrucciones para la generacion de codigo intermedio
-		res.setInicio(gci.nuevaetiq(null));
-		res.setTemp(gci.nuevatemp(lAtb.getTipo()));
-		res.setCont(gci.nuevatemp("entero"));
-		res.setSiguiente(gci.nuevaetiq(null));
-
-		// siguen sin cuadrar cosas
-		gci.emite("ASIG", 0, null, res.getCont());
-		gci.emite("ASIG", "L.param[0]", null, res.getTemp());
-		gci.emite("ETIQ", res.getInicio(), null, null);
-		gci.emite("SUMA", res.getCont(), 1, res.getCont());
-		gci.emite("GOTO_MAY_IG", res.getCont(), lAtb.getLongs(), res.getSiguiente());
-		gci.emite("GOTO_MAY_IG", res.getTemp(), "L.param["+res.getCont()+"]", res.getInicio());
-		gci.emite("ASIG", "L.param["+res.getCont()+"]", null, res.getTemp());
-		gci.emite("GOTO", null, null, res.getInicio());
-		gci.emite("ETIQ", res.getSiguiente(), null, null);
-		gci.emite("PARAM", res.getTemp(), null, null);
 		return res;
 	}
 

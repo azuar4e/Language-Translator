@@ -17,6 +17,11 @@ tamraact = None
 es_vacia = False
 contparam = 0
 where = ""
+sumra = 0
+contmin = 0
+param_min = []
+# diccionario con cadenas y las variables que la contienen
+# cadsdict = {}
 
 #________________________________________________________________________
 # patrones
@@ -95,7 +100,7 @@ patron_goto_men_ig = r"""
 """
 
 patron_goto_men = r"""
-\(GOT_MEN,\s*
+\(GOTO_MEN,\s*
     ((?:\{[^{}]*\}|[^,()])+)  ,\s*
     ((?:\{[^{}]*\}|[^,()])+)  ,\s*
     ((?:\{[^{}]*\}|[^,()])+) 
@@ -195,7 +200,7 @@ etiqueta = r"\{ET, (.*)\}"
 
 # Añadir patrones para reconocer los cuartetos de I/O
 patron_read = r"""
-\(READ,\s*
+\(INPUT_ENT,\s*
     ((?:\{[^{}]*\}|[^,()])+)  ,\s*
     ((?:\{[^{}]*\}|[^,()])+)  ,\s*
     ((?:\{[^{}]*\}|[^,()])+) 
@@ -203,7 +208,7 @@ patron_read = r"""
 """
 
 patron_read_cad = r"""
-\(READ_CAD,\s*
+\(INPUT_CAD,\s*
     ((?:\{[^{}]*\}|[^,()])+)  ,\s*
     ((?:\{[^{}]*\}|[^,()])+)  ,\s*
     ((?:\{[^{}]*\}|[^,()])+) 
@@ -211,7 +216,7 @@ patron_read_cad = r"""
 """
 
 patron_write = r"""
-\(WRITE,\s*
+\(PRINT_ENT,\s*
     ((?:\{[^{}]*\}|[^,()])+)  ,\s*
     ((?:\{[^{}]*\}|[^,()])+)  ,\s*
     ((?:\{[^{}]*\}|[^,()])+) 
@@ -219,7 +224,7 @@ patron_write = r"""
 """
 
 patron_write_cad = r"""
-\(WRITE_CAD,\s*
+\(PRINT_CAD,\s*
     ((?:\{[^{}]*\}|[^,()])+)  ,\s*
     ((?:\{[^{}]*\}|[^,()])+)  ,\s*
     ((?:\{[^{}]*\}|[^,()])+) 
@@ -227,7 +232,31 @@ patron_write_cad = r"""
 """
 
 patron_writeln = r"""
-\(WRITELN,\s*
+\(PRINT_ENT_LN,\s*
+    ((?:\{[^{}]*\}|[^,()])+)  ,\s*
+    ((?:\{[^{}]*\}|[^,()])+)  ,\s*
+    ((?:\{[^{}]*\}|[^,()])+) 
+\)
+"""
+
+patron_writeln_cad = r"""
+\(PRINT_CAD_LN,\s*
+    ((?:\{[^{}]*\}|[^,()])+)  ,\s*
+    ((?:\{[^{}]*\}|[^,()])+)  ,\s*
+    ((?:\{[^{}]*\}|[^,()])+) 
+\)
+"""
+
+patron_min = r"""
+\(MIN,\s*
+    ((?:\{[^{}]*\}|[^,()])+)  ,\s*
+    ((?:\{[^{}]*\}|[^,()])+)  ,\s*
+    ((?:\{[^{}]*\}|[^,()])+)
+\)
+"""
+
+patron_param_min = r"""
+\(PARAM_MIN,\s*
     ((?:\{[^{}]*\}|[^,()])+)  ,\s*
     ((?:\{[^{}]*\}|[^,()])+)  ,\s*
     ((?:\{[^{}]*\}|[^,()])+) 
@@ -260,13 +289,15 @@ def declarar_cads(cadena, write):
     if cadena is not None and not re.match(p, cadena):
 
         if cads is None:
-            cads = f"\ncadena{cds}:\tDATA " + cadena
+            cads = f"\ncadena{cds}:\t" + cadena
         else:
-            cads = cads + f"\ncadena{cds}:\tDATA " + cadena
+            cads = cads + f"\ncadena{cds}:\t" + cadena
 
     if write and cads is not None:
-        cads += "\n\t\t\tEND"
+        # cads += "\n\t\t\tEND"
+        cads += "\n\n"
         escribir(cads)
+        return True
 
 
 
@@ -297,7 +328,24 @@ bucle{bucles}:	    INC .R3
 
     bucles += 1
     escribir(codobj)
-
+    
+def paramcad(des, desra):
+    global bucles
+    codobj = f"""
+            ADD #{des}, .IX
+            MOVE .A, .R2
+            ADD #{desra}, .IX
+            MOVE .A, .R3
+            DEC .R3
+            DEC .R2
+bucle{bucles}:	    INC .R3
+            INC .R2
+            MOVE [.R2], [.R3]
+            CMP [.R2], #0
+            BNZ $bucle{bucles}
+        """
+    bucles += 1
+    escribir(codobj)
 
 
 def transformar_dir(dir1, dir2, dir3):
@@ -316,7 +364,7 @@ def transformar_dir(dir1, dir2, dir3):
             escribir(cad)
         
         elif re.match(ptloc, dir): # al ser local se le suma el tamaño del EM y PA
-            desp = int(re.match(ptloc, dir).group(1)) + 2
+            desp = int(re.match(ptloc, dir).group(1)) + 1
             cad = f"\t\t\tADD #{desp}, .IX\n\t\t\tMOVE .A, .R{nreg}\n"
             nreg += 1
             escribir(cad)
@@ -327,11 +375,9 @@ def transformar_dir(dir1, dir2, dir3):
 # main
 
 def main():
-    global cds, contador_llamadas, contparam, where  # Añadir estas variables globales
+    global cds, contador_llamadas, contparam, where, contmin, param_min#, cadsdict  # Añadir estas variables globales
     _calcprev.main() # calculo de la cabecera del ensamblador
 
-    esFuncion = 0
-    
     linea = leer()
     while linea:
         if re.match(patron_mul, linea, re.VERBOSE):
@@ -365,7 +411,7 @@ def main():
             if re.match(ptf, et):
                 tamraact = _calcprev.coleccion[f"ra{int(re.match(ptf, et).group(1)) - 1}"]
                 where = "function"
-                
+
             if re.match(ptm, et):
                 uc = list(_calcprev.coleccion.keys())[-1]
                 tamraact = _calcprev.coleccion[uc]
@@ -390,6 +436,7 @@ def main():
             coincidencia = re.match(patron_asig_cad, linea, re.VERBOSE)
             if re.match(ptglob, coincidencia.group(1)) or re.match(ptloc, coincidencia.group(1)):
                 transformar_dir(coincidencia.group(1), None, coincidencia.group(3))
+                # cadsdict[coincidencia.group(3)] = cadsdict[coincidencia.group(1)]
                 if not es_vacia:
                     leer_cadena_ens(None, False)
                 else:
@@ -402,7 +449,8 @@ def main():
                 if not es_vacia:
                     transformar_dir(None, None, coincidencia.group(3))
                     leer_cadena_ens(f"cadena{cds}", True)
-                    declarar_cads(coincidencia.group(1), False)
+                    declarar_cads("DATA "+coincidencia.group(1), False)
+                    # cadsdict[coincidencia.group(3)] = f"cadena{cds}"
                     cds += 1
 
             escribir("\n")
@@ -416,9 +464,17 @@ def main():
             
         elif re.match(patron_goto_may, linea, re.VERBOSE):
             coincidencia = re.match(patron_goto_may, linea, re.VERBOSE)
-            transformar_dir(coincidencia.group(1), coincidencia.group(2), None)
-
-            cadena = "\t\t\tCMP .R2, .R3"
+            if (not re.match(ptglob, coincidencia.group(1)) and not re.match(ptloc, coincidencia.group(1))) or (not re.match(ptglob, coincidencia.group(2)) and not re.match(ptloc, coincidencia.group(2))):
+                if re.match(ptglob, coincidencia.group(1)) or re.match(ptloc, coincidencia.group(1)):
+                    transformar_dir(coincidencia.group(1), None, None)
+                    ent = coincidencia.group(2)
+                else:
+                    transformar_dir(None, coincidencia.group(2), None)
+                    ent = coincidencia.group(1)
+                cadena = f"\t\t\tCMP [.R2], #{ent}"
+            else:
+                transformar_dir(coincidencia.group(1), coincidencia.group(2), None)
+                cadena = "\t\t\tCMP [.R2], [.R3]"
             escribir(cadena)
             escribir("\n")
             aux = coincidencia.group(3)
@@ -428,8 +484,17 @@ def main():
             
         elif re.match(patron_goto_men, linea, re.VERBOSE):
             coincidencia = re.match(patron_goto_men, linea, re.VERBOSE)
-            transformar_dir(coincidencia.group(1), coincidencia.group(2), None)
-            cadena = "\t\t\tCMP .R2, .R3"
+            if (not re.match(ptglob, coincidencia.group(1)) and not re.match(ptloc, coincidencia.group(1))) or (not re.match(ptglob, coincidencia.group(2)) and not re.match(ptloc, coincidencia.group(2))):
+                if re.match(ptglob, coincidencia.group(1)) or re.match(ptloc, coincidencia.group(1)):
+                    transformar_dir(coincidencia.group(1), None, None)
+                    ent = coincidencia.group(2)
+                else:
+                    transformar_dir(None, coincidencia.group(2), None)
+                    ent = coincidencia.group(1)
+                cadena = f"\t\t\tCMP [.R2], #{ent}"
+            else:
+                transformar_dir(coincidencia.group(1), coincidencia.group(2), None)
+                cadena = "\t\t\tCMP [.R2], [.R3]"
             escribir(cadena)
             escribir("\n")
             aux = coincidencia.group(3)
@@ -439,8 +504,17 @@ def main():
             
         elif re.match(patron_goto_ig, linea, re.VERBOSE):
             coincidencia = re.match(patron_goto_ig, linea, re.VERBOSE)
-            transformar_dir(coincidencia.group(1), coincidencia.group(2), None)
-            cadena = "\t\t\tCMP .R2, .R3"
+            if (not re.match(ptglob, coincidencia.group(1)) and not re.match(ptloc, coincidencia.group(1))) or (not re.match(ptglob, coincidencia.group(2)) and not re.match(ptloc, coincidencia.group(2))):
+                if re.match(ptglob, coincidencia.group(1)) or re.match(ptloc, coincidencia.group(1)):
+                    transformar_dir(coincidencia.group(1), None, None)
+                    ent = coincidencia.group(2)
+                else:
+                    transformar_dir(None, coincidencia.group(2), None)
+                    ent = coincidencia.group(1)
+                cadena = f"\t\t\tCMP [.R2], #{ent}"
+            else:
+                transformar_dir(coincidencia.group(1), coincidencia.group(2), None)
+                cadena = "\t\t\tCMP [.R2], [.R3]"
             escribir(cadena)
             escribir("\n")
             aux = coincidencia.group(3)
@@ -450,8 +524,17 @@ def main():
             
         elif re.match(patron_goto_dist, linea, re.VERBOSE):
             coincidencia = re.match(patron_goto_dist, linea, re.VERBOSE)
-            transformar_dir(coincidencia.group(1), coincidencia.group(2), None)
-            cadena = "\t\t\tCMP .R2, .R3"
+            if (not re.match(ptglob, coincidencia.group(1)) and not re.match(ptloc, coincidencia.group(1))) or (not re.match(ptglob, coincidencia.group(2)) and not re.match(ptloc, coincidencia.group(2))):
+                if re.match(ptglob, coincidencia.group(1)) or re.match(ptloc, coincidencia.group(1)):
+                    transformar_dir(coincidencia.group(1), None, None)
+                    ent = coincidencia.group(2)
+                else:
+                    transformar_dir(None, coincidencia.group(2), None)
+                    ent = coincidencia.group(1)
+                cadena = f"\t\t\tCMP [.R2], #{ent}"
+            else:
+                transformar_dir(coincidencia.group(1), coincidencia.group(2), None)
+                cadena = "\t\t\tCMP [.R2], [.R3]"
             escribir(cadena)
             escribir("\n")
             aux = coincidencia.group(3)
@@ -461,8 +544,17 @@ def main():
             
         elif re.match(patron_goto_may_ig, linea, re.VERBOSE):
             coincidencia = re.match(patron_goto_may_ig, linea, re.VERBOSE)
-            transformar_dir(coincidencia.group(1), coincidencia.group(2), None)
-            cadena = "\t\t\tCMP .R2, .R3"
+            if (not re.match(ptglob, coincidencia.group(1)) and not re.match(ptloc, coincidencia.group(1))) or (not re.match(ptglob, coincidencia.group(2)) and not re.match(ptloc, coincidencia.group(2))):
+                if re.match(ptglob, coincidencia.group(1)) or re.match(ptloc, coincidencia.group(1)):
+                    transformar_dir(coincidencia.group(1), None, None)
+                    ent = coincidencia.group(2)
+                else:
+                    transformar_dir(None, coincidencia.group(2), None)
+                    ent = coincidencia.group(1)
+                cadena = f"\t\t\tCMP [.R2], #{ent}"
+            else:
+                transformar_dir(coincidencia.group(1), coincidencia.group(2), None)
+                cadena = "\t\t\tCMP [.R2], [.R3]"
             escribir(cadena)
             escribir("\n")
             aux = coincidencia.group(3)
@@ -476,8 +568,17 @@ def main():
             
         elif re.match(patron_goto_men_ig, linea, re.VERBOSE):
             coincidencia = re.match(patron_goto_men_ig, linea, re.VERBOSE)
-            transformar_dir(coincidencia.group(1), coincidencia.group(2), None)
-            cadena = "\t\t\tCMP .R2, .R3"            
+            if (not re.match(ptglob, coincidencia.group(1)) and not re.match(ptloc, coincidencia.group(1))) or (not re.match(ptglob, coincidencia.group(2)) and not re.match(ptloc, coincidencia.group(2))):
+                if re.match(ptglob, coincidencia.group(1)) or re.match(ptloc, coincidencia.group(1)):
+                    transformar_dir(coincidencia.group(1), None, None)
+                    ent = coincidencia.group(2)
+                else:
+                    transformar_dir(None, coincidencia.group(2), None)
+                    ent = coincidencia.group(1)
+                cadena = f"\t\t\tCMP [.R2], #{ent}"
+            else:
+                transformar_dir(coincidencia.group(1), coincidencia.group(2), None)
+                cadena = "\t\t\tCMP [.R2], [.R3]"          
             escribir(cadena)
             escribir("\n")
             aux = coincidencia.group(3)
@@ -492,7 +593,7 @@ def main():
         elif re.match(patron_param, linea, re.VERBOSE):
             coincidencia = re.match(patron_param, linea, re.VERBOSE)
             transformar_dir(coincidencia.group(1), None, None)
-            t = 2 + contparam
+            t = 1 + contparam
             contparam += 1
             cadena = f"\t\t\tADD #{tamraact}, .IX\n\t\t\tADD #{t}, .A\n\t\t\tMOVE [.R2], [.A]\n"
 
@@ -502,7 +603,7 @@ def main():
         elif re.match(patron_param_ref, linea, re.VERBOSE):
             coincidencia = re.match(patron_param_ref, linea, re.VERBOSE)
             transformar_dir(coincidencia.group(1), None, None)
-            t = 2 + contparam
+            t = 1 + contparam
             contparam += 1
             cadena = f"\t\t\tADD #{tamraact}, .IX\n\t\t\tADD #{t}, .A\n\t\t\tMOVE .R2, [.A]\n"
 
@@ -512,19 +613,15 @@ def main():
         elif re.match(patron_param_cad, linea, re.VERBOSE):
 
             coincidencia = re.match(patron_param_cad, linea, re.VERBOSE)
-            if re.match(ptglob, coincidencia.group(1)) or re.match(ptloc, coincidencia.group(1)):
-                transformar_dir(coincidencia.group(1), None, None)
-                leer_cadena_ens(None, False)
-                
-
-            else:
-                c = coincidencia.group(1)
-                es_vacia = re.match(p, c)
-                if not es_vacia:
-                    transformar_dir(None, None, coincidencia.group(3))
-                    leer_cadena_ens(f"cadena{cds}", True)
-                    declarar_cads(coincidencia.group(1), False)
-                    cds += 1
+            if not es_vacia:
+                t = contparam + 1 + tamraact
+                if re.match(ptloc, coincidencia.group(1)):
+                    des = int(re.match(ptloc, coincidencia.group(1)).group(1)) + 1
+                else:
+                    des = int(re.match(ptglob, coincidencia.group(1)).group(1))
+                paramcad(des, t)
+                contparam += 64
+                # cds += 1
 
             escribir("\n")
         
@@ -539,13 +636,19 @@ def main():
 
         elif re.match(patron_ret_cad, linea, re.VERBOSE):
             coincidencia = re.match(patron_ret_cad, linea, re.VERBOSE)
-            if coincidencia.group(2) != "_":
-                cadena = "\t\t\tMOVE "+coincidencia.group(2)+", .A"
-                escribir(cadena)
-                escribir("\n")
-            cadena = "\t\t\tRET"
+            c = re.match(ptglob, coincidencia.group(3))
+            if c is None:
+                c = re.match(ptloc, coincidencia.group(3))
+                codobj = f"\t\t\tADD #{int(c.group(1))+1}, .IX\n\t\t\tMOVE .A, .R2"
+            else:
+                codobj = f"ADD #{int(c.group(1))}, .IY\n\t\t\tMOVE .A, .R2"
+            escribir(codobj)
+            desp = int(c.group(1)) + 1
+            cadena = f"\n\t\t\tSUB #{tamraact}, #64\n\t\t\tADD .A, .IX\n\t\t\tMOVE .A, .R3"
             escribir(cadena)
-            escribir("\n")
+            leer_cadena_ens(None, False)
+            cadena = "\n\t\t\tBR [.IX]\n"
+            escribir(cadena)
         
         elif re.match(patron_ret_ent, linea, re.VERBOSE):
             coincidencia = re.match(patron_ret_ent, linea, re.VERBOSE)
@@ -555,7 +658,7 @@ def main():
             # *********************************************************************
             # *********************************************************************
             # *********************************************************************
-            desp = int(c.group(1)) + 2
+            desp = int(c.group(1)) + 1
             cadena = f"\t\t\tSUB #{tamraact}, #1\n\t\t\tADD .A, .IX\n\t\t\tMOVE #{desp}[.IX], [.A]\n\t\t\tBR [.IX]\n"
             escribir(cadena)
             escribir("\n")
@@ -573,14 +676,9 @@ def main():
                 tam_ra_llamado = _calcprev.coleccion[f"ra{int(re.match(ptf, et).group(1)) - 1}"]
 
             cadena = f"""
-            MOVE #dir_ret{contador_llamadas}, #{tamraact}[.IX]
-            MOVE #{tamraact + 1}[.IX], .R9 
-            MOVE [.R9], .R9
-
-            MOVE [.R9], .R9
             ADD #{tamraact}, .IX
-            INC .A
-            MOVE .R9, [.A]
+            MOVE #dir_ret{contador_llamadas}, [.A]
+            
             ADD #{tamraact}, .IX
             MOVE .A, .IX
             BR /{et}
@@ -598,7 +696,7 @@ dir_ret{contador_llamadas}:   SUB .IX, #{tamraact}
             # *********************************************************************
             # *********************************************************************
             et = coincidencia.group(1)
-            desp = int(re.match(ptloc, coincidencia.group(3)).group(1)) + 2
+            desp = int(re.match(ptloc, coincidencia.group(3)).group(1)) + 1
             if re.match(ptp, et):
                 tam_ra_llamado = _calcprev.coleccion[f"ra{int(re.match(ptp, et).group(1)) - 1}"]
                 
@@ -606,16 +704,9 @@ dir_ret{contador_llamadas}:   SUB .IX, #{tamraact}
                 tam_ra_llamado = _calcprev.coleccion[f"ra{int(re.match(ptf, et).group(1)) - 1}"]
 
             cadena = f"""
-            MOVE #dir_ret{contador_llamadas}, #{tamraact}[.IX]
-            MOVE #{tamraact + 1}[.IX], .R9 
-            MOVE [.R9], .R9
-
-            MOVE [.R9], .R9
-
             ADD #{tamraact}, .IX
-            INC .A
-            MOVE .R9, [.A]
-            ADD #{tamraact}, .IX
+            MOVE #dir_ret{contador_llamadas}, [.A]
+
             MOVE .A, .IX
             BR /{et}
 
@@ -626,7 +717,8 @@ dir_ret{contador_llamadas}:   SUB #{tam_ra_llamado}, #1
             SUB .IX, #{tamraact}
             MOVE .A, .IX
 
-            MOVE .R9, #{desp}[.IX]
+            ADD #{desp}, .IX
+            MOVE .R9, [.A]
             """
             escribir(cadena)
             escribir("\n")
@@ -645,83 +737,144 @@ dir_ret{contador_llamadas}:   SUB #{tam_ra_llamado}, #1
                 tam_ra_llamado = _calcprev.coleccion[f"ra{int(re.match(ptf, et).group(1)) - 1}"]
 
             cadena = f"""
-            MOVE #dir_ret{contador_llamadas}, #{tamraact}[.IX]
-            MOVE #{tamraact + 1}[.IX], .R9 
-            MOVE [.R9], .R9
-
-            MOVE [.R9], .R9
-
             ADD #{tamraact}, .IX
-            INC .A
-            MOVE .R9, [.A]
-            ADD #{tamraact}, .IX
+            MOVE #dir_ret{contador_llamadas}, [.A]
+
             MOVE .A, .IX
             BR /{et}
 
-dir_ret{contador_llamadas}:   SUB #{tam_ra_llamado}, #1
+dir_ret{contador_llamadas}:   SUB #{tam_ra_llamado}, #64
             ADD .A, .IX
-            MOVE [.A], .R9
+            MOVE .A, .R2
 
             SUB .IX, #{tamraact}
             MOVE .A, .IX
-
-            MOVE .R9, #32[.IX]
             """
             escribir(cadena)
-            escribir("\n")
+            c = coincidencia.group(3)
+            
+            if re.match(ptglob, c):
+                cad = f"\n\t\t\tADD #{re.match(ptglob, c).group(1)}, .IY\n\t\t\tMOVE .A, .R3\n"
+                escribir(cad)
+            
+            elif re.match(ptloc, c):
+                desp = int(re.match(ptloc, c).group(1)) + 1
+                cad = f"\n\t\t\tADD #{desp}, .IX\n\t\t\tMOVE .A, .R3\n"
+                escribir(cad)
+            leer_cadena_ens(None, False)
             contador_llamadas += 1
 
         # Para la sección de procesamiento de READ
         elif re.match(patron_read, linea, re.VERBOSE):
             coincidencia = re.match(patron_read, linea, re.VERBOSE)
             # Usar ININT en lugar de IN para leer enteros
-            cadena = """
-                ININT """ + coincidencia.group(3)
+            if re.match(ptglob, coincidencia.group(1)):
+                des = int(re.match(ptglob, coincidencia.group(1)).group(1))
+                cadena = f"\t\t\tADD #{des}, .IY\n"
+            else:
+                des = int(re.match(ptloc, coincidencia.group(1)).group(1)) + 1
+                cadena = f"\t\t\tADD #{des}, .IX\n"
+            cadena += "\t\t\tINIT_INT [.A]"
             escribir(cadena)
             escribir("\n")
 
         elif re.match(patron_read_cad, linea, re.VERBOSE):
             coincidencia = re.match(patron_read_cad, linea, re.VERBOSE)
             # Usar INSTR en lugar de IN_STR para leer cadenas
-            cadena = """
-                INSTR """ + coincidencia.group(3)
+            declarar_cads("RES 500", False)
+            cadena = f"\n\t\t\tINSTR /cadena{cds}\n"
+            # cadsdict[coincidencia.group(3)] = f"cadena{cds}"
             escribir(cadena)
+            transformar_dir(None, None, coincidencia.group(3))
+            leer_cadena_ens(f"cadena{cds}", True)
+            cds += 1
             escribir("\n")
 
         elif re.match(patron_write, linea, re.VERBOSE):
             coincidencia = re.match(patron_write, linea, re.VERBOSE)
             # Usar WRINT en lugar de OUT para escribir enteros
-            cadena = "\t\t\tWRINT " + coincidencia.group(1)
+            if re.match(ptglob, coincidencia.group(1)):
+                des = int(re.match(ptglob, coincidencia.group(1)).group(1))
+                cadena = f"\t\t\tADD #{des}, .IY\n"
+            else:
+                des = int(re.match(ptloc, coincidencia.group(1)).group(1)) + 1
+                cadena = f"\t\t\tADD #{des}, .IX\n"
+            cadena += "\t\t\tWRINT [.A]"
             escribir(cadena)
             escribir("\n")
 
         elif re.match(patron_write_cad, linea, re.VERBOSE):
             coincidencia = re.match(patron_write_cad, linea, re.VERBOSE)
-            # Usar WRSTR en lugar de OUT_STR para escribir cadenas
-            cadena = "\t\t\tWRSTR " + coincidencia.group(1)
+            
+            if re.match(ptglob, coincidencia.group(1)):
+                des = int(re.match(ptglob, coincidencia.group(1)).group(1))
+                cadena = f"\t\t\tADD #{des}, .IY\n"
+            else:
+                des = int(re.match(ptloc, coincidencia.group(1)).group(1)) + 1
+                cadena = f"\t\t\tADD #{des}, .IX\n"
+            
+            cadena += f"\t\t\tWRSTR [.A]\n"
             escribir(cadena)
-            escribir("\n")
 
         elif re.match(patron_writeln, linea, re.VERBOSE):
-            # Usar WRSTR con una cadena de salto de línea
-            # Declaramos la cadena de salto de línea en la sección de datos
-            cadena = """
-                WRSTR /nl
-            """
-            escribir(cadena)
-            escribir("\n")
-            # Asegurarse de que "nl" esté declarado en la sección de datos
-            if cads is None:
-                cads = "\nnl:\tDATA \"\\n\\0\""
+            coincidencia = re.match(patron_writeln, linea, re.VERBOSE)
+            cad = f"cadena{cds}"
+            declarar_cads("DATA \"\\n\"", False)
+            cds +=1
+
+            if re.match(ptglob, coincidencia.group(1)):
+                des = int(re.match(ptglob, coincidencia.group(1)).group(1))
+                cadena = f"\t\t\tADD #{des}, .IY\n"
+                cadena += "\t\t\tWRINT [.A]"
             else:
-                # Verificar si ya está declarado para evitar duplicados
-                if "\nnl:" not in cads:
-                    cads += "\nnl:\tDATA \"\\n\\0\""
+                des = int(re.match(ptloc, coincidencia.group(1)).group(1)) + 1
+                cadena = f"\t\t\tADD #{des}, .IX\n"
+                cadena += "\t\t\tWRINT [.A]"
+                
+            cadena += f"\n\t\t\tWRSTR /{cad}\n"
+            escribir(cadena)
+            
+        elif re.match(patron_writeln_cad, linea, re.VERBOSE):
+            coincidencia = re.match(patron_writeln_cad, linea, re.VERBOSE)
+            cad = f"cadena{cds}"
+            declarar_cads("DATA \"\\n\"", False)
+            cds += 1
+            if re.match(ptglob, coincidencia.group(1)):
+                des = int(re.match(ptglob, coincidencia.group(1)).group(1))
+                cadena = f"\t\t\tADD #{des}, .IY\n"
+            else:
+                des = int(re.match(ptloc, coincidencia.group(1)).group(1)) + 1
+                cadena = f"\t\t\tADD #{des}, .IX\n"
+            
+            cadena += f"\t\t\tWRSTR [.A]\n"
+            cadena += f"\t\t\tWRSTR /{cad}\n"
+            escribir(cadena)    
         
+
+        elif re.match(patron_param_min, linea, re.VERBOSE):
+            coincidencia = re.match(patron_param_min, linea, re.VERBOSE)
+            transformar_dir(coincidencia.group(1), None, dirmin)
+            if contmin == 0:
+                cadena = "\t\t\tMOVE [.R2], [.R3]\n"
+            else:
+                cadena = "\t\t\tCMP [.R2], [.R3]\n"
+                cadena += f"\t\t\tBP $EtiqMin{contmin}\n"
+                cadena += "\t\t\tMOVE [.R2], [.R3]\n"
+
+            escribir(cadena)
+            contmin +=1
+            
+        elif re.match(patron_min, linea, re.VERBOSE):
+            coincidencia = re.match(patron_min, linea, re.VERBOSE)
+            dirmin = coincidencia.group(3)
+            escribir(f"\t\t\tMOVE [.R2], [.R3]\n")         
+            
         linea = leer()
     escribir("\t\t\tHALT\n\n")
+    i = declarar_cads(None, True)
     escribir(_calcprev.cadfinal)
-    declarar_cads(None, True)
+    if i:
+        escribir("\n\t\t\tEND\n")
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:

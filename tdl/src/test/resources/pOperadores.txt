@@ -1,16 +1,25 @@
-{function factorial (x: integer): integer;
+var x : integer;
+
+function factorial (y: integer; z: string): integer;
 begin
 	return x * 2;
-end;}
-
-procedure ramon (x: string);
-begin
-	return;
 end;
+
+{function whichcad (y: integer): string;
+begin
+	if(y = 2) then
+	begin
+		return 'francymiamor';
+	end;
+	else
+	begin
+		return 'david pearce';
+	end;
+end;}
 
 PROGRAM pruebaOperadores;
 
-var x : integer;
+var r : integer;
 	y : integer;
 	b : boolean;
 	d : boolean;
@@ -22,12 +31,13 @@ begin
     x := 4 * 3;
     
     b := x = y;
-
-	return;		
      
-	b := b AND d;
+	{b := b AND d;}
 
-	s := 'sexo drogas rock and roll';
-	ramon(s);
-{	y := factorial(x);}	
+	r := min(12, 1, 4, 2);
+
+	{s := 'hola';}
+
+	{s := whichcad(y);}
+	{write(s);}
 end;

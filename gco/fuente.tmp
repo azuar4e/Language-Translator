@@ -1,162 +1,159 @@
+			MOVE #inicio_estaticas, .IY
 			MOVE #inicio_pila, .IX
-			ra1: EQU 17
-			ra2: EQU 97
+			ra1: EQU 69
+			ra2: EQU 79
 
 			BR /main
 EtiqFunc2:
 
-			ADD #10, .IX
+			ADD #66, .IX
 			MOVE .A, .R2
 
 			MOVE #2, [.R2]
 
-			ADD #2, .IX
+			ADD #0, .IY
 			MOVE .A, .R2
-			ADD #10, .IX
+			ADD #66, .IX
 			MOVE .A, .R3
-			ADD #14, .IX
+			ADD #67, .IX
 			MOVE .A, .R4
 
 			MUL [.R2], [.R3]
 			MOVE .A, [.R4]
-			SUB #17, #1
+			SUB #69, #1
 			ADD .A, .IX
-			MOVE #14[.IX], [.A]
+			MOVE #67[.IX], [.A]
 			BR [.IX]
 
 main:
 
-			ADD #80, .IX
+			ADD #69, .IX
 			MOVE .A, .R2
 
 			MOVE #2, [.R2]
 
-			ADD #80, .IX
+			ADD #69, .IX
 			MOVE .A, .R2
-			ADD #68, .IX
+			ADD #67, .IX
 			MOVE .A, .R3
 
 			MOVE [.R2], [.R3]
 
-			ADD #84, .IX
+			ADD #70, .IX
 			MOVE .A, .R2
 
 			MOVE #4, [.R2]
 
-			ADD #88, .IX
+			ADD #71, .IX
 			MOVE .A, .R2
 
 			MOVE #3, [.R2]
 
-			ADD #84, .IX
+			ADD #70, .IX
 			MOVE .A, .R2
-			ADD #88, .IX
+			ADD #71, .IX
 			MOVE .A, .R3
-			ADD #92, .IX
+			ADD #72, .IX
 			MOVE .A, .R4
 
 			MUL [.R2], [.R3]
 			MOVE .A, [.R4]
 
-			ADD #92, .IX
-			MOVE .A, .R2
 			ADD #72, .IX
+			MOVE .A, .R2
+			ADD #0, .IY
 			MOVE .A, .R3
 
 			MOVE [.R2], [.R3]
 
-			ADD #72, .IX
+			ADD #0, .IY
 			MOVE .A, .R2
-			ADD #68, .IX
+			ADD #67, .IX
 			MOVE .A, .R3
 
-			CMP .R2, .R3
+			CMP [.R2], [.R3]
 			BNZ $Etiq0
 
-			ADD #93, .IX
+			ADD #73, .IX
 			MOVE .A, .R2
 
 			MOVE #1, [.R2]
 			BR $Etiq1
 Etiq0:
 
-			ADD #93, .IX
+			ADD #73, .IX
 			MOVE .A, .R2
 
 			MOVE #0, [.R2]
 Etiq1:
 
-			ADD #93, .IX
+			ADD #73, .IX
 			MOVE .A, .R2
-			ADD #67, .IX
+			ADD #66, .IX
 			MOVE .A, .R3
 
 			MOVE [.R2], [.R3]
 
-			ADD #67, .IX
+			ADD #74, .IX
 			MOVE .A, .R2
 
-			CMP .R2, .R3
-			BZ $Etiq2
+			MOVE #12, [.R2]
 
-			ADD #66, .IX
-			MOVE .A, .R2
-
-			CMP .R2, .R3
-			BZ $Etiq2
-
-			ADD #94, .IX
+			ADD #75, .IX
 			MOVE .A, .R2
 
 			MOVE #1, [.R2]
-			BR $Etiq3
-Etiq2:
 
-			ADD #94, .IX
+			ADD #76, .IX
 			MOVE .A, .R2
 
-			MOVE #0, [.R2]
-Etiq3:
+			MOVE #4, [.R2]
 
-			ADD #94, .IX
+			ADD #77, .IX
 			MOVE .A, .R2
-			ADD #67, .IX
+
+			MOVE #2, [.R2]
+			MOVE [.R2], [.R3]
+
+			ADD #77, .IX
+			MOVE .A, .R2
+			ADD #78, .IX
 			MOVE .A, .R3
 
 			MOVE [.R2], [.R3]
+EtiqMin0:
 
-			ADD #72, .IX
+			ADD #76, .IX
 			MOVE .A, .R2
+			ADD #78, .IX
+			MOVE .A, .R3
 
-			ADD #97, .IX
-			ADD #2, .A
-			MOVE [.R2], [.A]
+			CMP [.R2], [.R3]
+			BP $EtiqMin1
+			MOVE [.R2], [.R3]
+EtiqMin1:
 
+			ADD #75, .IX
+			MOVE .A, .R2
+			ADD #78, .IX
+			MOVE .A, .R3
 
-            MOVE #dir_ret0, #97[.IX]
-            MOVE #98[.IX], .R9 
-            MOVE [.R9], .R9
+			CMP [.R2], [.R3]
+			BP $EtiqMin2
+			MOVE [.R2], [.R3]
+EtiqMin2:
 
-            MOVE [.R9], .R9
+			ADD #74, .IX
+			MOVE .A, .R2
+			ADD #78, .IX
+			MOVE .A, .R3
 
-            ADD #97, .IX
-            INC .A
-            MOVE .R9, [.A]
-            ADD #97, .IX
-            MOVE .A, .IX
-            BR /EtiqFunc2
+			CMP [.R2], [.R3]
+			BP $EtiqMin3
+			MOVE [.R2], [.R3]
+EtiqMin3:
 
-dir_ret0:   SUB #17, #1
-            ADD .A, .IX
-            MOVE [.A], .R9
-
-            SUB .IX, #97
-            MOVE .A, .IX
-
-            MOVE .R9, #98[.IX]
-            
-
-			ADD #98, .IX
+			ADD #78, .IX
 			MOVE .A, .R2
 			ADD #68, .IX
 			MOVE .A, .R3
@@ -164,5 +161,6 @@ dir_ret0:   SUB #17, #1
 			MOVE [.R2], [.R3]
 			HALT
 
+			inicio_estaticas: RES 1
 			inicio_pila: NOP
 
