@@ -29,6 +29,7 @@ class Atributos {
 	//variables para el codigo intermedio
 	private gci.tupla<String, Integer> lugar;
 	private ArrayList<Object> param;
+	private ArrayList<String> ref;
 
 	//para las posibles etiquetas
 	private gci.tupla<String, String> falso;
@@ -51,6 +52,7 @@ class Atributos {
 		//atributos para la generacion de codigo intermedio
 		this.lugar = null;
 		this.param = null;
+		this.ref = null;
 		this.falso = null;
 		this.siguiente = null;
 		this.inicio = null;
@@ -119,6 +121,30 @@ class Atributos {
 	public void addParam(Object param) {
 		this.param.add(param);
 	}
+
+	public void initRef() {
+        this.ref = new ArrayList<>();
+    }
+
+    public void setRef(ArrayList<String> ref) {
+        this.ref = ref;
+    }
+
+    public ArrayList<String> referencias() {
+        return this.ref;
+    }
+
+	public String getRef(int i) {
+		if (ref == null || i < 0 || i >= ref.size()) {
+			return null;
+		}
+		return this.ref.get(i);
+	}
+
+    public void addRef(String ref) {
+        this.ref.add(ref);
+    }
+
 
 	public void setFalso(gci.tupla<String, String> falso) {
 		this.falso = falso;
@@ -222,6 +248,8 @@ public class ASem {
 	private static final Map<Integer, Supplier<Atributos>> ruleMap = new HashMap<>();
 	private static final Map<Integer, LinkedList<Integer>> paramRef = new HashMap<>();
 	private static final Map<Integer, LinkedList<String>> paramTipo = new HashMap<>();
+	private static final Map<Integer, String> paramRef2 = new HashMap<>();
+	private static boolean ismain = false;
 
 
 
@@ -461,6 +489,7 @@ public class ASem {
 		Procesador.gestorTS.setValorAtributoEnt(pidAtb.getPos(), "numParametro", 0);
 		Procesador.gestorTS.setValorAtributoCad(pidAtb.getPos(), "etiqueta", "main");
 		pidAtb.setEtiqueta("main");
+		ismain = true;
 		gci.emite("ETIQ", gci.nuevaetiq("main"), null, null);
 		return new Atributos();
 	}
@@ -507,6 +536,7 @@ public class ASem {
 		Atributos pidAtb = atb[3];
 		Atributos aAtb = atb[1];
 		Procesador.gestorTS.setTipo(pidAtb.getPos(), "procedimiento");
+		ismain = false;
 
 		if (aAtb.getLongs() > 0) {
 			String[] tipos = aAtb.getTipo().split(" ");
@@ -514,13 +544,13 @@ public class ASem {
 			LinkedList<Integer> paramRefAux = new LinkedList<>();
 			LinkedList<String> paramTipoAux = new LinkedList<>();
 			for (String tipo: tipos) {		
-				paramTipoAux.add(tipo);
+				paramTipoAux.addFirst(tipo);
 			}
 			for (String modo: parametros) {
 				if (modo.equals("valor")){
-					paramRefAux.add(0);
+					paramRefAux.addFirst(0);
 				} else {
-					paramRefAux.add(1);
+					paramRefAux.addFirst(1);
 				}
 			}
 			paramTipo.put(pidAtb.getPos(), paramTipoAux);
@@ -565,19 +595,21 @@ public class ASem {
 		Atributos aAtb = atb[5];
 		Atributos tAtb = atb[1];
 		Procesador.gestorTS.setTipo(pidAtb.getPos(), "función");
+		ismain = false;
+
 		if (aAtb.getLongs() > 0) {
 			String[] tipos = aAtb.getTipo().split(" ");
 			String[] parametros = aAtb.getReferencia().split(" ");
 			LinkedList<Integer> paramRefAux = new LinkedList<>();
 			LinkedList<String> paramTipoAux = new LinkedList<>();
 			for (String tipo: tipos) {
-				paramTipoAux.add(tipo);
+				paramTipoAux.addFirst(tipo);
 			}
 			for (String modo: parametros) {
 				if (modo.equals("valor")){
-					paramRefAux.add(0);
+					paramRefAux.addFirst(0);
 				} else {
-					paramRefAux.add(1);
+					paramRefAux.addFirst(1);
 				}
 			}
 			paramTipo.put(pidAtb.getPos(), paramTipoAux);
@@ -673,6 +705,7 @@ public class ASem {
 		Procesador.gestorTS.setTipo(idAtb.getPos(), tAtb.getTipo());
 		Procesador.gestorTS.setValorAtributoEnt(idAtb.getPos(), "desplazamiento", despLocal);
 		if (xAtb.getReferencia().equals("referencia")) {
+			paramRef2.put(idAtb.getPos(), "referencia");
 			Procesador.gestorTS.setValorAtributoEnt(idAtb.getPos(), "modoParametro", 1);
 			if (aaAtb.getReferencia() != null) {
 				res.setReferencia("referencia " + aaAtb.getReferencia());
@@ -682,6 +715,7 @@ public class ASem {
 			despLocal += 1;
 		} else {
 			Procesador.gestorTS.setValorAtributoEnt(idAtb.getPos(), "modoParametro", 0);
+			paramRef2.put(idAtb.getPos(), "valor");
 			if (aaAtb.getReferencia() != null) {
 				res.setReferencia("valor " + aaAtb.getReferencia());
 			} else {
@@ -715,6 +749,7 @@ public class ASem {
 		Procesador.gestorTS.setTipo(idAtb.getPos(), tAtb.getTipo());
 		Procesador.gestorTS.setValorAtributoEnt(idAtb.getPos(), "desplazamiento", despLocal);
 		if (xAtb.getReferencia().equals("referencia")) {
+			paramRef2.put(idAtb.getPos(), "referencia");
 			Procesador.gestorTS.setValorAtributoEnt(idAtb.getPos(), "modoParametro", 1);
 			if (aaAtb.getReferencia() != null) {
 				res.setReferencia("referencia " + aaAtb.getReferencia());
@@ -723,6 +758,7 @@ public class ASem {
 			}
 			despLocal += 1;
 		} else {
+			paramRef2.put(idAtb.getPos(), "valor");
 			Procesador.gestorTS.setValorAtributoEnt(idAtb.getPos(), "modoParametro", 0);
 			if (aaAtb.getReferencia() != null) {
 				res.setReferencia("valor " + aaAtb.getReferencia());
@@ -1108,11 +1144,19 @@ public class ASem {
 						res.setTipo("tipo_error");
 						break;
 					} else {
-						if (tipo.equals("cadena")) {
-							gci.emite("PRINT_CAD", llATB.getParam(i), null, null);
+						if (!ismain && llATB.getRef(i) != null && llATB.getRef(i).equals("referencia")) {
+							if (tipo.equals("cadena")) {
+								gci.emite("PRINT_CAD_REF", llATB.getParam(i), null, null);
+							} else {
+								gci.emite("PRINT_ENT_REF", llATB.getParam(i), null, null);
+							}	
 						} else {
-							gci.emite("PRINT_ENT", llATB.getParam(i), null, null);
-						}	
+							if (tipo.equals("cadena")) {
+								gci.emite("PRINT_CAD", llATB.getParam(i), null, null);
+							} else {
+								gci.emite("PRINT_ENT", llATB.getParam(i), null, null);
+							}	
+						}
 					}
 				}
 			}
@@ -1140,10 +1184,18 @@ public class ASem {
 						res.setTipo("tipo_error");
 						break;
 					} else {
-						if (tipo.equals("cadena")) {
-							gci.emite("PRINT_CAD_LN", llATB.getParam(i), null, null);
+						if (!ismain && llATB.getRef(i) != null && llATB.getRef(i).equals("referencia")) {
+							if (tipo.equals("cadena")) {
+								gci.emite("PRINT_CAD_LN_REF", llATB.getParam(i), null, null);
+							} else {
+								gci.emite("PRINT_ENT_LN_REF", llATB.getParam(i), null, null);
+							}	
 						} else {
-							gci.emite("PRINT_ENT_LN", llATB.getParam(i), null, null);
+							if (tipo.equals("cadena")) {
+								gci.emite("PRINT_CAD_LN", llATB.getParam(i), null, null);
+							} else {
+								gci.emite("PRINT_ENT_LN", llATB.getParam(i), null, null);
+							}	
 						}	
 					}
 				}
@@ -1169,11 +1221,27 @@ public class ASem {
 				res.setTipo("tipo_error");
 				break;
 			}
-			Object destino = vATB.getParam(i);
-			if (tipo.equals("cadena")) {
-				gci.emite("INPUT_CAD", null, null, destino);
+			gci.tupla<String, Integer> tupla;
+			Integer idpos = (Integer) vATB.getParam(i);
+			if (identificadores.get(idpos) != null && identificadores.get(idpos)) {
+				tupla = new gci.tupla<>("VAR_GLOBAL", procesador.Procesador.gestorTS.getValorAtributoEnt(idpos, "desplazamiento"));
 			} else {
-				gci.emite("INPUT_ENT", null, null, destino);
+				tupla = new gci.tupla<>("VAR_LOCAL", procesador.Procesador.gestorTS.getValorAtributoEnt(idpos, "desplazamiento"));
+			}
+
+			String esref = paramRef2.get(idpos);
+			if (!ismain && esref != null && esref.equals("referencia")) {
+				if (tipo.equals("cadena")) {
+					gci.emite("INPUT_CAD_REF", null, null, tupla);
+				} else {
+					gci.emite("INPUT_ENT_REF", null, null, tupla);
+				}
+			} else {
+				if (tipo.equals("cadena")) {
+					gci.emite("INPUT_CAD", null, null, tupla);
+				} else {
+					gci.emite("INPUT_ENT", null, null, tupla);
+				}
 			}
 		}
 		
@@ -1196,17 +1264,26 @@ public class ASem {
 			//____________________________________________________
 			//instrucciones para la generacion de codigo intermedio
 			gci.tupla<String, Integer> tupla;
+
 			
-			if (identificadores.get(idPos)) {
+			if (identificadores.get(idPos) != null && identificadores.get(idPos)) {
 				tupla = new gci.tupla<>("VAR_GLOBAL", Procesador.gestorTS.getValorAtributoEnt(idPos, "desplazamiento"));
 			} else {
 				tupla = new gci.tupla<>("VAR_LOCAL", Procesador.gestorTS.getValorAtributoEnt(idPos, "desplazamiento"));
 			}
 
-			if (eTipo.equals("cadena")) {
-				gci.emite("ASIG_CAD", atb[3].getLugar(), null, tupla);
-			} else {	
-				gci.emite("ASIG", atb[3].getLugar(), null, tupla);
+			if (paramRef2.get(idPos) != null && paramRef2.get(idPos).equals("referencia") && !ismain) {
+				if (eTipo.equals("cadena")) {
+					gci.emite("ASIG_CAD_PTR", atb[3].getLugar(), null, tupla);
+				} else {	
+					gci.emite("ASIG_PTR", atb[3].getLugar(), null, tupla);
+				}
+			} else {
+				if (eTipo.equals("cadena")) {
+					gci.emite("ASIG_CAD", atb[3].getLugar(), null, tupla);
+				} else {	
+					gci.emite("ASIG", atb[3].getLugar(), null, tupla);
+				}
 			}
 
 			return res;
@@ -1300,6 +1377,7 @@ public class ASem {
 			for (int i = 0; i < llATB.getLongs(); i++) {
 				if (referencias.get(i) == 0) {
 					if (tipos.get(i).equals("cadena")) {
+						
 						gci.emite("PARAM_CAD", llATB.getParam(i), null, null);
 					} else {
 						gci.emite("PARAM", llATB.getParam(i), null, null);
@@ -1372,6 +1450,7 @@ public class ASem {
 		res.setLong(lATB.getLongs());
 		res.setLugar(lATB.getLugar());
 		res.setParam(lATB.parametros());
+		res.setRef(lATB.referencias());
 		return res;
 	}
 
@@ -1395,7 +1474,9 @@ public class ASem {
 		}
 		res.setLong(1 + qATB.getLongs());
 		res.setParam(qATB.parametros());
+		res.setRef(qATB.referencias());
 		res.addParam(eATB.getLugar());
+		res.addRef(eATB.getReferencia());
 		return res;
 	}
 
@@ -1414,7 +1495,9 @@ public class ASem {
 		}
 		res.setLong(1 + q1ATB.getLongs());
 		res.setParam(q1ATB.parametros());
+		res.setRef(q1ATB.referencias());
 		res.addParam(eATB.getLugar());
+		res.addRef(eATB.getReferencia());
 		return res;
 	}
 
@@ -1423,6 +1506,7 @@ public class ASem {
 		res.setTipo("");
 		res.setLong(0);
 		res.initParam();
+		res.initRef();
 		return res;
 	}
 
@@ -1440,13 +1524,14 @@ public class ASem {
 		}
 		res.setLong(1 + wATB.getLongs());
 		res.setParam(wATB.parametros());
-		gci.tupla<String, Integer> tupla;
-		if (identificadores.get(idATB.getPos())) {
-			tupla = new gci.tupla<>("VAR_GLOBAL", procesador.Procesador.gestorTS.getValorAtributoEnt(idATB.getPos(), "desplazamiento"));
-		} else {
-			tupla = new gci.tupla<>("VAR_LOCAL", procesador.Procesador.gestorTS.getValorAtributoEnt(idATB.getPos(), "desplazamiento"));
-		}
-		res.addParam(tupla);
+		res.setRef(wATB.referencias());
+		// gci.tupla<String, Integer> tupla;
+		// if (identificadores.get(idATB.getPos()) != null && identificadores.get(idATB.getPos())) {
+		// 	tupla = new gci.tupla<>("VAR_GLOBAL", procesador.Procesador.gestorTS.getValorAtributoEnt(idATB.getPos(), "desplazamiento"));
+		// } else {
+		// 	tupla = new gci.tupla<>("VAR_LOCAL", procesador.Procesador.gestorTS.getValorAtributoEnt(idATB.getPos(), "desplazamiento"));
+		// }
+		res.addParam(idATB.getPos());
 		return res;
 	}
 
@@ -1464,13 +1549,14 @@ public class ASem {
 		}
 		res.setLong(1 + w1ATB.getLongs());
 		res.setParam(w1ATB.parametros());
-		gci.tupla<String, Integer> tupla;
-		if (identificadores.get(idATB.getPos())) {
-			tupla = new gci.tupla<>("VAR_GLOBAL", procesador.Procesador.gestorTS.getValorAtributoEnt(idATB.getPos(), "desplazamiento"));
-		} else {
-			tupla = new gci.tupla<>("VAR_LOCAL", procesador.Procesador.gestorTS.getValorAtributoEnt(idATB.getPos(), "desplazamiento"));
-		}
-		res.addParam(tupla);
+		res.setRef(w1ATB.referencias());
+		// gci.tupla<String, Integer> tupla;
+		// if (identificadores.get(idATB.getPos()) != null && identificadores.get(idATB.getPos())) {
+		// 	tupla = new gci.tupla<>("VAR_GLOBAL", procesador.Procesador.gestorTS.getValorAtributoEnt(idATB.getPos(), "desplazamiento"));
+		// } else {
+		// 	tupla = new gci.tupla<>("VAR_LOCAL", procesador.Procesador.gestorTS.getValorAtributoEnt(idATB.getPos(), "desplazamiento"));
+		// }
+		res.addParam(idATB.getPos());
 		return res;
 	}
 
@@ -1479,6 +1565,7 @@ public class ASem {
 		res.setTipo("");
 		res.setLong(0);
 		res.initParam();
+		res.initRef();
 		return res;
 	}
 
@@ -1540,6 +1627,7 @@ public class ASem {
 		Atributos[] atb = ASin.pilaSem.toArray(new Atributos[reg.numElementos * 2]);
 		Atributos res = new Atributos();
 		res.setTipo(atb[1].getTipo());
+		if (atb[1].getReferencia() != null) res.setReferencia(atb[1].getReferencia());
 		//____________________________________________________
 		//instrucciones para la generacion de codigo intermedio
 		res.setLugar(atb[1].getLugar());
@@ -1581,6 +1669,8 @@ public class ASem {
 		Atributos gATB = atb[1];
 		Atributos res = new Atributos();
 		res.setTipo(gATB.getTipo());
+		if (atb[1].getReferencia() != null) res.setReferencia(atb[1].getReferencia());
+
 		//____________________________________________________
 		//instrucciones para la generacion de codigo intermedio
 		res.setLugar(gATB.getLugar());
@@ -1711,6 +1801,8 @@ public class ASem {
 		Atributos[] atb = ASin.pilaSem.toArray(new Atributos[reg.numElementos * 2]);
 		Atributos res = new Atributos();
 		res.setTipo(atb[1].getTipo());
+		if (atb[1].getReferencia() != null) res.setReferencia(atb[1].getReferencia());
+
 		//____________________________________________________
 		//instrucciones para la generacion de codigo intermedio
 		res.setLugar(atb[1].getLugar());
@@ -1758,6 +1850,7 @@ public class ASem {
 		Atributos[] atb = ASin.pilaSem.toArray(new Atributos[reg.numElementos * 2]);
 		Atributos res = new Atributos();
 		res.setTipo(atb[1].getTipo());
+		if (atb[1].getReferencia() != null) res.setReferencia(atb[1].getReferencia());
 		//____________________________________________________
 		//instrucciones para la generacion de codigo intermedio
 		res.setLugar(atb[1].getLugar());
@@ -1775,7 +1868,13 @@ public class ASem {
 			//____________________________________________________
 			//instrucciones para la generacion de codigo intermedio
 			res.setLugar(gci.nuevatemp("entero"));
-			gci.emite("MUL", atb[5].getLugar(), atb[1].getLugar(), res.getLugar());
+			if (atb[5].getReferencia() != null && atb[5].getReferencia().equals("referencia")) {
+				gci.emite("MUL_PTR_1", atb[5].getLugar(), atb[1].getLugar(), res.getLugar());
+			} else if (atb[1].getReferencia() != null && atb[1].getReferencia().equals("referencia")) {
+				gci.emite("MUL_PTR_2", atb[5].getLugar(), atb[1].getLugar(), res.getLugar());
+		    } else {
+				gci.emite("MUL", atb[5].getLugar(), atb[1].getLugar(), res.getLugar());
+			}
 			return res;
 		} else {
 			GestorError.setError(Acciones.eSem2_tipo_incompatible,
@@ -1827,6 +1926,7 @@ public class ASem {
 		Atributos[] atb = ASin.pilaSem.toArray(new Atributos[reg.numElementos * 2]);
 		Atributos res = new Atributos();
 		res.setTipo(atb[1].getTipo());
+		if (atb[1].getReferencia() != null) res.setReferencia(atb[1].getReferencia());
 		//____________________________________________________
 		//instrucciones para la generacion de codigo intermedio
 		res.setLugar(atb[1].getLugar());
@@ -1856,6 +1956,7 @@ public class ASem {
 		Atributos[] atb = ASin.pilaSem.toArray(new Atributos[reg.numElementos * 2]);
 		Atributos res = new Atributos();
 		res.setTipo(atb[1].getTipo());
+		if (atb[1].getReferencia() != null) res.setReferencia(atb[1].getReferencia());
 		//____________________________________________________
 		//instrucciones para la generacion de codigo intermedio
 		res.setLugar(atb[1].getLugar());
@@ -1915,6 +2016,7 @@ public class ASem {
 		Atributos[] atb = ASin.pilaSem.toArray(new Atributos[reg.numElementos * 2]);
 		Atributos res = new Atributos();
 		res.setTipo(atb[1].getTipo());
+		if (atb[1].getReferencia() != null) res.setReferencia(atb[1].getReferencia());
 		//____________________________________________________
 		//instrucciones para la generacion de codigo intermedio
 		res.setLugar(atb[1].getLugar());
@@ -2014,7 +2116,7 @@ public class ASem {
 		//____________________________________________________________
 		//instrucciones para la generacion de codigo intermedio
 		if (llAtb.getTipo().equals("")) {
-
+			if (paramRef2.get(idAtb.getPos()) != null && paramRef2.get(idAtb.getPos()).equals("referencia")) {res.setReferencia("referencia");}
 			if (identificadores.get(idAtb.getPos()) == null) {
 				res.setLugar(new gci.tupla<>("VAR_LOCAL", procesador.Procesador.gestorTS.getValorAtributoEnt(idAtb.getPos(), "desplazamiento")));
 			} else {

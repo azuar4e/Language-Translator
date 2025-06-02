@@ -1,21 +1,16 @@
 var x : integer;
 
-function factorial (y: integer; z: string): integer;
+procedure cositas (var y: integer; var z: string);
 begin
-	return x * 2;
+	write('[+] Imprimimos la cadena pasada como parametro: ');
+	writeln(z);
+	read(z);
+	writeln(z);
+	x := y * 5;
+	return;
 end;
 
-{function whichcad (y: integer): string;
-begin
-	if(y = 2) then
-	begin
-		return 'francymiamor';
-	end;
-	else
-	begin
-		return 'david pearce';
-	end;
-end;}
+
 
 PROGRAM pruebaOperadores;
 
@@ -27,17 +22,32 @@ var r : integer;
 
 begin
 	y := 2;
+	writeln(y);
 
-    x := 4 * 3;
+{    x := 4 * 3;
+	writeln(x);
     
     b := x = y;
-     
-	{b := b AND d;}
 
-	r := min(12, 1, 4, 2);
+	b := b AND d;
 
-	{s := 'hola';}
+	write('[+] Calculamos el minimo de una lista y lo imprimimos: ');
+	r := min(1970, 2001, 1917, 1939);
+	if r = 1917 then begin writeln(r); end;
 
-	{s := whichcad(y);}
-	{write(s);}
+	write('[+] Llamamos a whichcad e imprimimos el resultado: ');
+	s := whichcad(y);
+	writeln(s);
+}
+	s := 'hola';
+	cositas(y, s);
+	writeln(x);
+	writeln(s);
+
+	write('[+] Imprima una cadena por pantalla: ');
+	read(s);
+	write('[+] Cadena impresa: ');
+	writeln(s);
+	s := 'cambio de planes morlanes';
+	writeln(s);
 end;

@@ -5,6 +5,7 @@ import subprocess
 import re
 from _ens import escribir
 import _calcprev
+from pprint import pprint
 
 #________________________________________________________________________
 # resto de variables
@@ -20,14 +21,28 @@ where = ""
 sumra = 0
 contmin = 0
 param_min = []
-# diccionario con cadenas y las variables que la contienen
-# cadsdict = {}
 
 #________________________________________________________________________
 # patrones
 
 patron_mul = r"""
 \(MUL,\s*
+    ((?:\{[^{}]*\}|[^,()])+)  ,\s*
+    ((?:\{[^{}]*\}|[^,()])+)  ,\s*
+    ((?:\{[^{}]*\}|[^,()])+) 
+\)
+"""
+
+patron_mul_ptr_1 = r"""
+\(MUL_PTR_1,\s*
+    ((?:\{[^{}]*\}|[^,()])+)  ,\s*
+    ((?:\{[^{}]*\}|[^,()])+)  ,\s*
+    ((?:\{[^{}]*\}|[^,()])+) 
+\)
+"""
+
+patron_mul_ptr_2 = r"""
+\(MUL_PTR_2,\s*
     ((?:\{[^{}]*\}|[^,()])+)  ,\s*
     ((?:\{[^{}]*\}|[^,()])+)  ,\s*
     ((?:\{[^{}]*\}|[^,()])+) 
@@ -58,6 +73,21 @@ patron_asig_cad = r"""
 \)
 """
 
+patron_asig_ptr = r"""
+\(ASIG_PTR,\s*
+    ((?:\{[^{}]*\}|[^,()])+)  ,\s*
+    ((?:\{[^{}]*\}|[^,()])+)  ,\s*
+    ((?:\{[^{}]*\}|[^,()])+) 
+\)
+"""
+
+patron_asig_cad_ptr = r"""
+\(ASIG_CAD_PTR,\s*
+    ("[^"]*"|\{[^{}]*\}|[^,()]+)?\s*,\s*
+    ("[^"]*"|\{[^{}]*\}|[^,()]+)?\s*,\s*
+    ("[^"]*"|\{[^{}]*\}|[^,()]+)?\s*
+\)
+"""
 
 patron_goto = r"""
 \(GOTO,\s*
@@ -215,6 +245,22 @@ patron_read_cad = r"""
 \)
 """
 
+patron_read_ref = r"""
+\(INPUT_ENT_REF,\s*
+    ((?:\{[^{}]*\}|[^,()])+)  ,\s*
+    ((?:\{[^{}]*\}|[^,()])+)  ,\s*
+    ((?:\{[^{}]*\}|[^,()])+) 
+\)
+"""
+
+patron_read_cad_ref = r"""
+\(INPUT_CAD_REF,\s*
+    ((?:\{[^{}]*\}|[^,()])+)  ,\s*
+    ((?:\{[^{}]*\}|[^,()])+)  ,\s*
+    ((?:\{[^{}]*\}|[^,()])+) 
+\)
+"""
+
 patron_write = r"""
 \(PRINT_ENT,\s*
     ((?:\{[^{}]*\}|[^,()])+)  ,\s*
@@ -241,6 +287,38 @@ patron_writeln = r"""
 
 patron_writeln_cad = r"""
 \(PRINT_CAD_LN,\s*
+    ((?:\{[^{}]*\}|[^,()])+)  ,\s*
+    ((?:\{[^{}]*\}|[^,()])+)  ,\s*
+    ((?:\{[^{}]*\}|[^,()])+) 
+\)
+"""
+
+patron_write_ref = r"""
+\(PRINT_ENT_REF,\s*
+    ((?:\{[^{}]*\}|[^,()])+)  ,\s*
+    ((?:\{[^{}]*\}|[^,()])+)  ,\s*
+    ((?:\{[^{}]*\}|[^,()])+) 
+\)
+"""
+
+patron_write_cad_ref = r"""
+\(PRINT_CAD_REF,\s*
+    ((?:\{[^{}]*\}|[^,()])+)  ,\s*
+    ((?:\{[^{}]*\}|[^,()])+)  ,\s*
+    ((?:\{[^{}]*\}|[^,()])+) 
+\)
+"""
+
+patron_writeln_ref = r"""
+\(PRINT_ENT_LN_REF,\s*
+    ((?:\{[^{}]*\}|[^,()])+)  ,\s*
+    ((?:\{[^{}]*\}|[^,()])+)  ,\s*
+    ((?:\{[^{}]*\}|[^,()])+) 
+\)
+"""
+
+patron_writeln_cad_ref = r"""
+\(PRINT_CAD_LN_REF,\s*
     ((?:\{[^{}]*\}|[^,()])+)  ,\s*
     ((?:\{[^{}]*\}|[^,()])+)  ,\s*
     ((?:\{[^{}]*\}|[^,()])+) 
@@ -375,20 +453,38 @@ def transformar_dir(dir1, dir2, dir3):
 # main
 
 def main():
-    global cds, contador_llamadas, contparam, where, contmin, param_min#, cadsdict  # Añadir estas variables globales
-    _calcprev.main() # calculo de la cabecera del ensamblador
+    global cds, contador_llamadas, contparam, where, contmin, param_min
+    _calcprev.main()
 
     linea = leer()
     while linea:
         if re.match(patron_mul, linea, re.VERBOSE):
             coincidencia = re.match(patron_mul, linea, re.VERBOSE)
             transformar_dir(coincidencia.group(1), coincidencia.group(2), coincidencia.group(3))
-            cadena = "\t\t\tMUL [.R2], [.R3]"
+            cadena = "\t\t\tMUL [.R2], [.R3]\n"
             escribir(cadena)
-            escribir("\n")
-            cadena = "\t\t\tMOVE .A, [.R4]"
+            cadena = "\t\t\tMOVE .A, [.R4]\n"
             escribir(cadena)
-            escribir("\n")
+            
+        elif re.match(patron_mul_ptr_1, linea, re.VERBOSE):
+            coincidencia = re.match(patron_mul_ptr_1, linea, re.VERBOSE)
+            transformar_dir(coincidencia.group(1), coincidencia.group(2), coincidencia.group(3))
+            cadena = "\t\t\tMOVE [.R2], .R2\n"
+            escribir(cadena)
+            cadena = "\t\t\tMUL [.R2], [.R3]\n"
+            escribir(cadena)
+            cadena = "\t\t\tMOVE .A, [.R4]\n"
+            escribir(cadena)
+
+        elif re.match(patron_mul_ptr_2, linea, re.VERBOSE):
+            coincidencia = re.match(patron_mul_ptr_2, linea, re.VERBOSE)
+            transformar_dir(coincidencia.group(1), coincidencia.group(2), coincidencia.group(3))
+            cadena = "\t\t\tMOVE [.R3], .R3\n"
+            escribir(cadena)
+            cadena = "\t\t\tMUL [.R2], [.R3]\n"
+            escribir(cadena)
+            cadena = "\t\t\tMOVE .A, [.R4]\n"
+            escribir(cadena)
         
         elif re.match(patron_and, linea, re.VERBOSE):
             coincidencia = re.match(patron_and, linea, re.VERBOSE)
@@ -448,6 +544,45 @@ def main():
                 es_vacia = re.match(p, c)
                 if not es_vacia:
                     transformar_dir(None, None, coincidencia.group(3))
+                    leer_cadena_ens(f"cadena{cds}", True)
+                    declarar_cads("DATA "+coincidencia.group(1), False)
+                    # cadsdict[coincidencia.group(3)] = f"cadena{cds}"
+                    cds += 1
+
+            escribir("\n")
+
+        elif re.match(patron_asig_ptr, linea, re.VERBOSE):
+            coincidencia = re.match(patron_asig_ptr, linea, re.VERBOSE)
+            if re.match(ptglob, coincidencia.group(1)) or re.match(ptloc, coincidencia.group(1)):
+                transformar_dir(coincidencia.group(1), None, coincidencia.group(3))
+                cadena = "\t\t\tMOVE [.R3], .R3\n"
+                cadena += "\t\t\tMOVE [.R2], [.R3]"
+                escribir(cadena)
+            else:
+                transformar_dir(None, None, coincidencia.group(3))
+                escribir(f"\t\t\tMOVE #{coincidencia.group(1)}, [.R2]")
+            escribir("\n")
+            
+        elif re.match(patron_asig_cad_ptr, linea, re.VERBOSE):
+            coincidencia = re.match(patron_asig_cad_ptr, linea, re.VERBOSE)
+            if re.match(ptglob, coincidencia.group(1)) or re.match(ptloc, coincidencia.group(1)):
+                transformar_dir(coincidencia.group(1), None, coincidencia.group(3))
+
+                if not es_vacia:
+                    cadena = "\t\t\tMOVE [.R3], .R3\n"
+                    escribir(cadena)
+                    leer_cadena_ens(None, False)
+                else:
+                    escribir("\t\t\tMOVE #0, [.R2]\n")
+                    escribir("\t\t\tMOVE [.R2], [.R3]\n")
+                
+            else:
+                c = coincidencia.group(1)
+                es_vacia = re.match(p, c)
+                if not es_vacia:
+                    transformar_dir(None, None, coincidencia.group(3))
+                    cadena = "\t\t\tMOVE [.R3], .R3\n"
+                    escribir(cadena)
                     leer_cadena_ens(f"cadena{cds}", True)
                     declarar_cads("DATA "+coincidencia.group(1), False)
                     # cadsdict[coincidencia.group(3)] = f"cadena{cds}"
@@ -606,7 +741,6 @@ def main():
             t = 1 + contparam
             contparam += 1
             cadena = f"\t\t\tADD #{tamraact}, .IX\n\t\t\tADD #{t}, .A\n\t\t\tMOVE .R2, [.A]\n"
-
             escribir(cadena)
             escribir("\n")
         
@@ -626,8 +760,6 @@ def main():
             escribir("\n")
         
         elif re.match(patron_ret, linea, re.VERBOSE):  #chequea si es el del main o de una funcion
-            coincidencia = re.match(patron_ret, linea, re.VERBOSE)
-            # linea = leer()
             if where == "main":
                 cadena = "\n\t\t\tHALT\n"
             else:
@@ -764,10 +896,8 @@ dir_ret{contador_llamadas}:   SUB #{tam_ra_llamado}, #64
             leer_cadena_ens(None, False)
             contador_llamadas += 1
 
-        # Para la sección de procesamiento de READ
         elif re.match(patron_read, linea, re.VERBOSE):
             coincidencia = re.match(patron_read, linea, re.VERBOSE)
-            # Usar ININT en lugar de IN para leer enteros
             if re.match(ptglob, coincidencia.group(1)):
                 des = int(re.match(ptglob, coincidencia.group(1)).group(1))
                 cadena = f"\t\t\tADD #{des}, .IY\n"
@@ -780,12 +910,36 @@ dir_ret{contador_llamadas}:   SUB #{tam_ra_llamado}, #64
 
         elif re.match(patron_read_cad, linea, re.VERBOSE):
             coincidencia = re.match(patron_read_cad, linea, re.VERBOSE)
-            # Usar INSTR en lugar de IN_STR para leer cadenas
             declarar_cads("RES 500", False)
             cadena = f"\n\t\t\tINSTR /cadena{cds}\n"
-            # cadsdict[coincidencia.group(3)] = f"cadena{cds}"
             escribir(cadena)
             transformar_dir(None, None, coincidencia.group(3))
+            leer_cadena_ens(f"cadena{cds}", True)
+            cds += 1
+            escribir("\n")
+            
+        elif re.match(patron_read_ref, linea, re.VERBOSE):
+            coincidencia = re.match(patron_read_ref, linea, re.VERBOSE)
+            if re.match(ptglob, coincidencia.group(1)):
+                des = int(re.match(ptglob, coincidencia.group(1)).group(1))
+                cadena = f"\t\t\tADD #{des}, .IY\n"
+                cadena += "\t\t\tMOVE [.A], .A\n"
+            else:
+                des = int(re.match(ptloc, coincidencia.group(1)).group(1)) + 1
+                cadena = f"\t\t\tADD #{des}, .IX\n"
+                cadena += "\t\t\tMOVE [.A], .A\n"
+            cadena += "\t\t\tINIT_INT [.A]"
+            escribir(cadena)
+            escribir("\n")
+
+        elif re.match(patron_read_cad_ref, linea, re.VERBOSE):
+            coincidencia = re.match(patron_read_cad_ref, linea, re.VERBOSE)
+            declarar_cads("RES 500", False)
+            cadena = f"\n\t\t\tINSTR /cadena{cds}\n"
+            escribir(cadena)
+            transformar_dir(None, None, coincidencia.group(3))
+            cadena = "\t\t\tMOVE [.R2], .R2\n"
+            escribir(cadena)
             leer_cadena_ens(f"cadena{cds}", True)
             cds += 1
             escribir("\n")
@@ -796,9 +950,11 @@ dir_ret{contador_llamadas}:   SUB #{tam_ra_llamado}, #64
             if re.match(ptglob, coincidencia.group(1)):
                 des = int(re.match(ptglob, coincidencia.group(1)).group(1))
                 cadena = f"\t\t\tADD #{des}, .IY\n"
+
             else:
                 des = int(re.match(ptloc, coincidencia.group(1)).group(1)) + 1
                 cadena = f"\t\t\tADD #{des}, .IX\n"
+
             cadena += "\t\t\tWRINT [.A]"
             escribir(cadena)
             escribir("\n")
@@ -809,9 +965,11 @@ dir_ret{contador_llamadas}:   SUB #{tam_ra_llamado}, #64
             if re.match(ptglob, coincidencia.group(1)):
                 des = int(re.match(ptglob, coincidencia.group(1)).group(1))
                 cadena = f"\t\t\tADD #{des}, .IY\n"
+
             else:
                 des = int(re.match(ptloc, coincidencia.group(1)).group(1)) + 1
                 cadena = f"\t\t\tADD #{des}, .IX\n"
+
             
             cadena += f"\t\t\tWRSTR [.A]\n"
             escribir(cadena)
@@ -839,6 +997,7 @@ dir_ret{contador_llamadas}:   SUB #{tam_ra_llamado}, #64
             cad = f"cadena{cds}"
             declarar_cads("DATA \"\\n\"", False)
             cds += 1
+
             if re.match(ptglob, coincidencia.group(1)):
                 des = int(re.match(ptglob, coincidencia.group(1)).group(1))
                 cadena = f"\t\t\tADD #{des}, .IY\n"
@@ -848,7 +1007,78 @@ dir_ret{contador_llamadas}:   SUB #{tam_ra_llamado}, #64
             
             cadena += f"\t\t\tWRSTR [.A]\n"
             cadena += f"\t\t\tWRSTR /{cad}\n"
-            escribir(cadena)    
+            escribir(cadena)
+            
+            
+            
+        elif re.match(patron_write_ref, linea, re.VERBOSE):
+            coincidencia = re.match(patron_write_ref, linea, re.VERBOSE)
+            # Usar WRINT en lugar de OUT para escribir enteros
+            if re.match(ptglob, coincidencia.group(1)):
+                des = int(re.match(ptglob, coincidencia.group(1)).group(1))
+                cadena = f"\t\t\tADD #{des}, .IY\n"
+                cadena += "\t\t\tMOVE [.A], .A\n"
+            else:
+                des = int(re.match(ptloc, coincidencia.group(1)).group(1)) + 1
+                cadena = f"\t\t\tADD #{des}, .IX\n"
+                cadena += "\t\t\tMOVE [.A], .A\n"
+            cadena += "\t\t\tWRINT [.A]"
+            escribir(cadena)
+            escribir("\n")
+
+        elif re.match(patron_write_cad_ref, linea, re.VERBOSE):
+            coincidencia = re.match(patron_write_cad_ref, linea, re.VERBOSE)
+            
+            if re.match(ptglob, coincidencia.group(1)):
+                des = int(re.match(ptglob, coincidencia.group(1)).group(1))
+                cadena = f"\t\t\tADD #{des}, .IY\n"
+                cadena += "\t\t\tMOVE [.A], .A\n"
+            else:
+                des = int(re.match(ptloc, coincidencia.group(1)).group(1)) + 1
+                cadena = f"\t\t\tADD #{des}, .IX\n"
+                cadena += "\t\t\tMOVE [.A], .A\n"
+            
+            cadena += f"\t\t\tWRSTR [.A]\n"
+            escribir(cadena)
+
+        elif re.match(patron_writeln_ref, linea, re.VERBOSE):
+            coincidencia = re.match(patron_writeln_ref, linea, re.VERBOSE)
+            cad = f"cadena{cds}"
+            declarar_cads("DATA \"\\n\"", False)
+            cds +=1
+
+            if re.match(ptglob, coincidencia.group(1)):
+                des = int(re.match(ptglob, coincidencia.group(1)).group(1))
+                cadena = f"\t\t\tADD #{des}, .IY\n"
+                cadena += "\t\t\tMOVE [.A], .A\n"
+                cadena += "\t\t\tWRINT [.A]"
+            else:
+                des = int(re.match(ptloc, coincidencia.group(1)).group(1)) + 1
+                cadena = f"\t\t\tADD #{des}, .IX\n"
+                cadena += "\t\t\tMOVE [.A], .A\n"
+                cadena += "\t\t\tWRINT [.A]"
+                
+            cadena += f"\n\t\t\tWRSTR /{cad}\n"
+            escribir(cadena)
+            
+        elif re.match(patron_writeln_cad_ref, linea, re.VERBOSE):
+            coincidencia = re.match(patron_writeln_cad_ref, linea, re.VERBOSE)
+            cad = f"cadena{cds}"
+            declarar_cads("DATA \"\\n\"", False)
+            cds += 1
+
+            if re.match(ptglob, coincidencia.group(1)):
+                des = int(re.match(ptglob, coincidencia.group(1)).group(1))
+                cadena = f"\t\t\tADD #{des}, .IY\n"
+                cadena += "\t\t\tMOVE [.A], .A\n"
+            else:
+                des = int(re.match(ptloc, coincidencia.group(1)).group(1)) + 1
+                cadena = f"\t\t\tADD #{des}, .IX\n"
+                cadena += "\t\t\tMOVE [.A], .A\n"
+            
+            cadena += f"\t\t\tWRSTR [.A]\n"
+            cadena += f"\t\t\tWRSTR /{cad}\n"
+            escribir(cadena)
         
 
         elif re.match(patron_param_min, linea, re.VERBOSE):
