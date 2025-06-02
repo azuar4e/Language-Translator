@@ -1144,18 +1144,10 @@ public class ASem {
 						res.setTipo("tipo_error");
 						break;
 					} else {
-						if (!ismain && llATB.getRef(i) != null && llATB.getRef(i).equals("referencia")) {
-							if (tipo.equals("cadena")) {
-								gci.emite("PRINT_CAD_REF", llATB.getParam(i), null, null);
-							} else {
-								gci.emite("PRINT_ENT_REF", llATB.getParam(i), null, null);
-							}	
+						if (tipo.equals("cadena")) {
+							gci.emite("PRINT_CAD", llATB.getParam(i), null, null);
 						} else {
-							if (tipo.equals("cadena")) {
-								gci.emite("PRINT_CAD", llATB.getParam(i), null, null);
-							} else {
-								gci.emite("PRINT_ENT", llATB.getParam(i), null, null);
-							}	
+							gci.emite("PRINT_ENT", llATB.getParam(i), null, null);
 						}
 					}
 				}
@@ -1184,18 +1176,10 @@ public class ASem {
 						res.setTipo("tipo_error");
 						break;
 					} else {
-						if (!ismain && llATB.getRef(i) != null && llATB.getRef(i).equals("referencia")) {
-							if (tipo.equals("cadena")) {
-								gci.emite("PRINT_CAD_LN_REF", llATB.getParam(i), null, null);
-							} else {
-								gci.emite("PRINT_ENT_LN_REF", llATB.getParam(i), null, null);
-							}	
+						if (tipo.equals("cadena")) {
+							gci.emite("PRINT_CAD_LN", llATB.getParam(i), null, null);
 						} else {
-							if (tipo.equals("cadena")) {
-								gci.emite("PRINT_CAD_LN", llATB.getParam(i), null, null);
-							} else {
-								gci.emite("PRINT_ENT_LN", llATB.getParam(i), null, null);
-							}	
+							gci.emite("PRINT_ENT_LN", llATB.getParam(i), null, null);
 						}	
 					}
 				}
@@ -1229,19 +1213,10 @@ public class ASem {
 				tupla = new gci.tupla<>("VAR_LOCAL", procesador.Procesador.gestorTS.getValorAtributoEnt(idpos, "desplazamiento"));
 			}
 
-			String esref = paramRef2.get(idpos);
-			if (!ismain && esref != null && esref.equals("referencia")) {
-				if (tipo.equals("cadena")) {
-					gci.emite("INPUT_CAD_REF", null, null, tupla);
-				} else {
-					gci.emite("INPUT_ENT_REF", null, null, tupla);
-				}
+			if (tipo.equals("cadena")) {
+				gci.emite("INPUT_CAD", null, null, tupla);
 			} else {
-				if (tipo.equals("cadena")) {
-					gci.emite("INPUT_CAD", null, null, tupla);
-				} else {
-					gci.emite("INPUT_ENT", null, null, tupla);
-				}
+				gci.emite("INPUT_ENT", null, null, tupla);
 			}
 		}
 		
@@ -1272,19 +1247,11 @@ public class ASem {
 				tupla = new gci.tupla<>("VAR_LOCAL", Procesador.gestorTS.getValorAtributoEnt(idPos, "desplazamiento"));
 			}
 
-			// if (paramRef2.get(idPos) != null && paramRef2.get(idPos).equals("referencia") && !ismain) {
-			// 	if (eTipo.equals("cadena")) {
-			// 		gci.emite("ASIG_CAD_PTR", atb[3].getLugar(), null, tupla);
-			// 	} else {	
-			// 		gci.emite("ASIG_PTR", atb[3].getLugar(), null, tupla);
-			// 	}
-			// } else {
-				if (eTipo.equals("cadena")) {
-					gci.emite("ASIG_CAD", atb[3].getLugar(), null, tupla);
-				} else {	
-					gci.emite("ASIG", atb[3].getLugar(), null, tupla);
-				}
-			// }
+			if (eTipo.equals("cadena")) {
+				gci.emite("ASIG_CAD", atb[3].getLugar(), null, tupla);
+			} else {	
+				gci.emite("ASIG", atb[3].getLugar(), null, tupla);
+			}
 
 			return res;
 		} else {
@@ -1525,12 +1492,6 @@ public class ASem {
 		res.setLong(1 + wATB.getLongs());
 		res.setParam(wATB.parametros());
 		res.setRef(wATB.referencias());
-		// gci.tupla<String, Integer> tupla;
-		// if (identificadores.get(idATB.getPos()) != null && identificadores.get(idATB.getPos())) {
-		// 	tupla = new gci.tupla<>("VAR_GLOBAL", procesador.Procesador.gestorTS.getValorAtributoEnt(idATB.getPos(), "desplazamiento"));
-		// } else {
-		// 	tupla = new gci.tupla<>("VAR_LOCAL", procesador.Procesador.gestorTS.getValorAtributoEnt(idATB.getPos(), "desplazamiento"));
-		// }
 		res.addParam(idATB.getPos());
 		return res;
 	}
@@ -1550,12 +1511,6 @@ public class ASem {
 		res.setLong(1 + w1ATB.getLongs());
 		res.setParam(w1ATB.parametros());
 		res.setRef(w1ATB.referencias());
-		// gci.tupla<String, Integer> tupla;
-		// if (identificadores.get(idATB.getPos()) != null && identificadores.get(idATB.getPos())) {
-		// 	tupla = new gci.tupla<>("VAR_GLOBAL", procesador.Procesador.gestorTS.getValorAtributoEnt(idATB.getPos(), "desplazamiento"));
-		// } else {
-		// 	tupla = new gci.tupla<>("VAR_LOCAL", procesador.Procesador.gestorTS.getValorAtributoEnt(idATB.getPos(), "desplazamiento"));
-		// }
 		res.addParam(idATB.getPos());
 		return res;
 	}
@@ -1869,13 +1824,7 @@ public class ASem {
 			//____________________________________________________
 			//instrucciones para la generacion de codigo intermedio
 			res.setLugar(gci.nuevatemp("entero"));
-			// if (atb[5].getReferencia() != null && atb[5].getReferencia().equals("referencia")) {
-			// 	gci.emite("MUL_PTR_1", atb[5].getLugar(), atb[1].getLugar(), res.getLugar());
-			// } else if (atb[1].getReferencia() != null && atb[1].getReferencia().equals("referencia")) {
-			// 	gci.emite("MUL_PTR_2", atb[5].getLugar(), atb[1].getLugar(), res.getLugar());
-		    // } else {
-				gci.emite("MUL", atb[5].getLugar(), atb[1].getLugar(), res.getLugar());
-			// }
+			gci.emite("MUL", atb[5].getLugar(), atb[1].getLugar(), res.getLugar());
 			return res;
 		} else {
 			GestorError.setError(Acciones.eSem2_tipo_incompatible,

@@ -19,11 +19,19 @@ bucle0:	    INC .R2
             CMP [.R7], #0
             BNZ $bucle0
         
+
 			ADD #3, .IX
-			WRSTR [.A]
+			MOVE .A, .R2
+
+
+			WRSTR [.R2]
+
 			ADD #1, .IX
-			MOVE [.A], .A
-			WRSTR [.A]
+			MOVE .A, .R2
+			MOVE [.R2], .R2
+
+
+			WRSTR [.R2]
 			WRSTR /cadena1
 
 			INSTR /cadena2
@@ -42,9 +50,13 @@ bucle1:	    INC .R2
             CMP [.R7], #0
             BNZ $bucle1
         
+
 			ADD #1, .IX
-			MOVE [.A], .A
-			WRSTR [.A]
+			MOVE .A, .R2
+			MOVE [.R2], .R2
+
+
+			WRSTR [.R2]
 			WRSTR /cadena3
 
 			ADD #67, .IX
@@ -84,8 +96,13 @@ main:
 			MOVE .A, .R3
 
 			MOVE [.R2], [.R3]
+
 			ADD #67, .IX
-			WRINT [.A]
+			MOVE .A, .R2
+
+
+			WRINT [.R2]
+
 			WRSTR /cadena4
 
 			ADD #70, .IX
@@ -143,11 +160,20 @@ bucle3:	    INC .R3
 dir_ret0:   SUB .IX, #326
             MOVE .A, .IX
             
+
 			ADD #0, .IY
-			WRINT [.A]
+			MOVE .A, .R2
+
+
+			WRINT [.R2]
+
 			WRSTR /cadena6
+
 			ADD #1, .IX
-			WRSTR [.A]
+			MOVE .A, .R2
+
+
+			WRSTR [.R2]
 			WRSTR /cadena7
 
 			ADD #134, .IX
@@ -163,8 +189,12 @@ bucle4:	    INC .R2
             CMP [.R7], #0
             BNZ $bucle4
         
+
 			ADD #134, .IX
-			WRSTR [.A]
+			MOVE .A, .R2
+
+
+			WRSTR [.R2]
 
 			INSTR /cadena9
 
@@ -195,10 +225,18 @@ bucle6:	    INC .R2
             CMP [.R7], #0
             BNZ $bucle6
         
+
 			ADD #198, .IX
-			WRSTR [.A]
+			MOVE .A, .R2
+
+
+			WRSTR [.R2]
+
 			ADD #1, .IX
-			WRSTR [.A]
+			MOVE .A, .R2
+
+
+			WRSTR [.R2]
 			WRSTR /cadena11
 
 			ADD #262, .IX
@@ -229,8 +267,12 @@ bucle8:	    INC .R3
             CMP [.R2], #0
             BNZ $bucle8
         
+
 			ADD #1, .IX
-			WRSTR [.A]
+			MOVE .A, .R2
+
+
+			WRSTR [.R2]
 			WRSTR /cadena13
 			HALT
 
