@@ -1272,19 +1272,19 @@ public class ASem {
 				tupla = new gci.tupla<>("VAR_LOCAL", Procesador.gestorTS.getValorAtributoEnt(idPos, "desplazamiento"));
 			}
 
-			if (paramRef2.get(idPos) != null && paramRef2.get(idPos).equals("referencia") && !ismain) {
-				if (eTipo.equals("cadena")) {
-					gci.emite("ASIG_CAD_PTR", atb[3].getLugar(), null, tupla);
-				} else {	
-					gci.emite("ASIG_PTR", atb[3].getLugar(), null, tupla);
-				}
-			} else {
+			// if (paramRef2.get(idPos) != null && paramRef2.get(idPos).equals("referencia") && !ismain) {
+			// 	if (eTipo.equals("cadena")) {
+			// 		gci.emite("ASIG_CAD_PTR", atb[3].getLugar(), null, tupla);
+			// 	} else {	
+			// 		gci.emite("ASIG_PTR", atb[3].getLugar(), null, tupla);
+			// 	}
+			// } else {
 				if (eTipo.equals("cadena")) {
 					gci.emite("ASIG_CAD", atb[3].getLugar(), null, tupla);
 				} else {	
 					gci.emite("ASIG", atb[3].getLugar(), null, tupla);
 				}
-			}
+			// }
 
 			return res;
 		} else {
@@ -1647,6 +1647,7 @@ public class ASem {
 			res.setLugar(gci.nuevatemp("lógico"));
 			res.setFalso(gci.nuevaetiq(null));
 			res.setSiguiente(gci.nuevaetiq(null));
+
 			gci.emite("GOTO_IG", f1ATB.getLugar(), 0, res.getFalso());
 			gci.emite("GOTO_IG", gATB.getLugar(), 0, res.getFalso());
 			gci.emite("ASIG", 1, null, res.getLugar());
@@ -1868,13 +1869,13 @@ public class ASem {
 			//____________________________________________________
 			//instrucciones para la generacion de codigo intermedio
 			res.setLugar(gci.nuevatemp("entero"));
-			if (atb[5].getReferencia() != null && atb[5].getReferencia().equals("referencia")) {
-				gci.emite("MUL_PTR_1", atb[5].getLugar(), atb[1].getLugar(), res.getLugar());
-			} else if (atb[1].getReferencia() != null && atb[1].getReferencia().equals("referencia")) {
-				gci.emite("MUL_PTR_2", atb[5].getLugar(), atb[1].getLugar(), res.getLugar());
-		    } else {
+			// if (atb[5].getReferencia() != null && atb[5].getReferencia().equals("referencia")) {
+			// 	gci.emite("MUL_PTR_1", atb[5].getLugar(), atb[1].getLugar(), res.getLugar());
+			// } else if (atb[1].getReferencia() != null && atb[1].getReferencia().equals("referencia")) {
+			// 	gci.emite("MUL_PTR_2", atb[5].getLugar(), atb[1].getLugar(), res.getLugar());
+		    // } else {
 				gci.emite("MUL", atb[5].getLugar(), atb[1].getLugar(), res.getLugar());
-			}
+			// }
 			return res;
 		} else {
 			GestorError.setError(Acciones.eSem2_tipo_incompatible,

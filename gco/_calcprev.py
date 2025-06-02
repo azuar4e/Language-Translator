@@ -9,10 +9,13 @@ globales = r"TABLA PRINCIPAL #\d:"
 locales = r"TABLA LOCAL #\d+:"
 lexema = r"\*LEXEMA: '(.+)'"
 tipo = r"\s+\+ Tipo: '(.+)'"
+de = r"\s+\+ Despl: (.+)"
+pr = r"\s+\+ Param: (.+)"
 parametro = r"\s+\+ TipoParam\d: '(.+)'"
 retorno = r"\s+\+ TipoRetorno: '(.+)'"
 ras = 1
 coleccion = {}
+referencias = {}
 separador = "----------------------------------------"
 
 
@@ -49,6 +52,14 @@ def main():
                     while not re.match(tipo, linea):
                         linea = leer()
                     desp += reserva(re.match(tipo, linea).group(1))
+                    linea = leer()
+                    d = re.match(de, linea).group(1)
+                    linea = leer()
+                    p = re.match(pr, linea).group(1)
+                    if int(p) == 1:
+                        if referencias.get(f"ra{ras}") == None:
+                            referencias[f"ra{ras}"] = []
+                        referencias[f"ra{ras}"].append(int(d) + 1)
                 linea = leer()
 
             coleccion[f"ra{ras}"] = desp

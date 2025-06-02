@@ -30,8 +30,8 @@ bucle0:	    INC .R2
 
 			ADD #1, .IX
 			MOVE .A, .R2
-
 			MOVE [.R2], .R2
+
 
             MOVE #cadena2, .R7
             DEC .R2
@@ -54,12 +54,12 @@ bucle1:	    INC .R2
 
 			ADD #2, .IX
 			MOVE .A, .R2
+			MOVE [.R2], .R2
 			ADD #67, .IX
 			MOVE .A, .R3
 			ADD #68, .IX
 			MOVE .A, .R4
 
-			MOVE [.R2], .R2
 			MUL [.R2], [.R3]
 			MOVE .A, [.R4]
 
