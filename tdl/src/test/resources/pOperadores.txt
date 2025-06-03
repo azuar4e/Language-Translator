@@ -6,11 +6,16 @@ begin
 	writeln(z);
 	read(z);
 	writeln(z);
-	x := y * 5;
+	if (y = 2) then
+		begin
+			x := y * 5;
+		end;
+	else
+		begin
+			x := y * 4;
+		end;
 	return;
 end;
-
-
 
 PROGRAM pruebaOperadores;
 

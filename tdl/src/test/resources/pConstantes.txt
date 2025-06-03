@@ -1,3 +1,13 @@
+var jj: integer;
+
+procedure operador;	{dejar solo la línea con el operador implementado}
+var sss: string;
+begin
+	write('El mínimo es ', min(jj, 22, 33, 9, 44, 10));
+	{writeln(jj);}
+end;
+
+
 PROGRAM pruebaConstantes;
 
 var x : integer;
@@ -7,10 +17,15 @@ var x : integer;
 begin
     x := 32767;  { Maximo valor de entero valido }
     {x := -32767;} { Minimo valor de entero valido }
-    x := 0;      { Entero valido }
-    
-    s := '123456789012345678901234567890123456789012345678901234567890123';	{ Maxima longitud de cadena }
-    s := '¡Hola, @Boreal#2023!'; 											{ Cadena con caracteres especiales }
-    s := ''; 																{ Cadena vacia }
-    
+    x := 1;      { Entero valido }
+    jj := 7;
+    operador;
+    return;
+    {s := '123456789012345678901234567890123456789012345678901234567890123';}	{ Maxima longitud de cadena }
+    {s := '¡Hola, @Boreal#2023!';} 											{ Cadena con caracteres especiales }
+    write('semen', x);
+    writeln(x, 2);
+    write(min(x,56,5,69));
+    x := min (45,98,277,4);
+    writeln(x);
 end;

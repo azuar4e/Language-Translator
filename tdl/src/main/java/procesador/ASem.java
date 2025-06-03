@@ -29,7 +29,7 @@ class Atributos {
 	//variables para el codigo intermedio
 	private gci.tupla<String, Integer> lugar;
 	private ArrayList<Object> param;
-	private ArrayList<String> ref;
+	// private ArrayList<String> ref;
 
 	//para las posibles etiquetas
 	private gci.tupla<String, String> falso;
@@ -52,7 +52,7 @@ class Atributos {
 		//atributos para la generacion de codigo intermedio
 		this.lugar = null;
 		this.param = null;
-		this.ref = null;
+		// this.ref = null;
 		this.falso = null;
 		this.siguiente = null;
 		this.inicio = null;
@@ -119,31 +119,31 @@ class Atributos {
 	}
 
 	public void addParam(Object param) {
-		this.param.add(param);
+		this.param.addFirst(param);
 	}
 
-	public void initRef() {
-        this.ref = new ArrayList<>();
-    }
+	// public void initRef() {
+    //     this.ref = new ArrayList<>();
+    // }
 
-    public void setRef(ArrayList<String> ref) {
-        this.ref = ref;
-    }
+    // public void setRef(ArrayList<String> ref) {
+    //     this.ref = ref;
+    // }
 
-    public ArrayList<String> referencias() {
-        return this.ref;
-    }
+    // public ArrayList<String> referencias() {
+    //     return this.ref;
+    // }
 
-	public String getRef(int i) {
-		if (ref == null || i < 0 || i >= ref.size()) {
-			return null;
-		}
-		return this.ref.get(i);
-	}
+	// public String getRef(int i) {
+	// 	if (ref == null || i < 0 || i >= ref.size()) {
+	// 		return null;
+	// 	}
+	// 	return this.ref.get(i);
+	// }
 
-    public void addRef(String ref) {
-        this.ref.add(ref);
-    }
+    // public void addRef(String ref) {
+    //     this.ref.add(ref);
+    // }
 
 
 	public void setFalso(gci.tupla<String, String> falso) {
@@ -249,7 +249,9 @@ public class ASem {
 	private static final Map<Integer, LinkedList<Integer>> paramRef = new HashMap<>();
 	private static final Map<Integer, LinkedList<String>> paramTipo = new HashMap<>();
 	private static final Map<Integer, String> paramRef2 = new HashMap<>();
-	private static boolean ismain = false;
+	// private static boolean ismain = false;
+	private static int contminetiq = 0;
+	// private static LinkedList<Integer> procs = new LinkedList<>();
 
 
 
@@ -489,7 +491,7 @@ public class ASem {
 		Procesador.gestorTS.setValorAtributoEnt(pidAtb.getPos(), "numParametro", 0);
 		Procesador.gestorTS.setValorAtributoCad(pidAtb.getPos(), "etiqueta", "main");
 		pidAtb.setEtiqueta("main");
-		ismain = true;
+		// ismain = true;
 		gci.emite("ETIQ", gci.nuevaetiq("main"), null, null);
 		return new Atributos();
 	}
@@ -523,6 +525,7 @@ public class ASem {
 
 			GestorError.writeError("Exit fuera de bucle detectado en Procedure");
 
+		gci.emite("RETURN", null, null, null);
 		destroy(Tabla.LOCAL);
 		tsGlobal = true;
 		zonaDeclaracion = true;
@@ -536,8 +539,8 @@ public class ASem {
 		Atributos pidAtb = atb[3];
 		Atributos aAtb = atb[1];
 		Procesador.gestorTS.setTipo(pidAtb.getPos(), "procedimiento");
-		ismain = false;
-
+		// ismain = false;
+		// procs.add(pidAtb.getPos());
 		if (aAtb.getLongs() > 0) {
 			String[] tipos = aAtb.getTipo().split(" ");
 			String[] parametros = aAtb.getReferencia().split(" ");
@@ -595,7 +598,7 @@ public class ASem {
 		Atributos aAtb = atb[5];
 		Atributos tAtb = atb[1];
 		Procesador.gestorTS.setTipo(pidAtb.getPos(), "función");
-		ismain = false;
+		// ismain = false;
 
 		if (aAtb.getLongs() > 0) {
 			String[] tipos = aAtb.getTipo().split(" ");
@@ -1330,12 +1333,17 @@ public class ASem {
 		}
 		res.setExit(0);
 		res.setRet("tipo_ok");
-		if (llATB.parametros() == null) {
-			if (identificadores.get(idATB.getPos())) {
-				res.setLugar(new gci.tupla<>("VAR_GLOBAL", procesador.Procesador.gestorTS.getValorAtributoEnt(idATB.getPos(), "desplazamiento")));
+		if (llATB.getLongs() == 0) {
+			if (idTipo.equals("procedimiento")){
+				gci.emite("CALL", Procesador.gestorTS.getValorAtributoCad(idATB.getPos(), "etiqueta"), null, null);
 			} else {
-				res.setLugar(new gci.tupla<>("VAR_LOCAL", procesador.Procesador.gestorTS.getValorAtributoEnt(idATB.getPos(), "desplazamiento")));
-			}			
+				if (identificadores.get(idATB.getPos()) != null && identificadores.get(idATB.getPos())) {
+					res.setLugar(new gci.tupla<>("VAR_GLOBAL", procesador.Procesador.gestorTS.getValorAtributoEnt(idATB.getPos(), "desplazamiento")));
+				} else {
+					res.setLugar(new gci.tupla<>("VAR_LOCAL", procesador.Procesador.gestorTS.getValorAtributoEnt(idATB.getPos(), "desplazamiento")));
+				}
+			}
+		
 		} else {
 			// res.setLugar(gci.nuevatemp(res.getTipo()));
 			LinkedList<Integer> referencias = paramRef.get(idATB.getPos());
@@ -1417,7 +1425,6 @@ public class ASem {
 		res.setLong(lATB.getLongs());
 		res.setLugar(lATB.getLugar());
 		res.setParam(lATB.parametros());
-		res.setRef(lATB.referencias());
 		return res;
 	}
 
@@ -1441,9 +1448,7 @@ public class ASem {
 		}
 		res.setLong(1 + qATB.getLongs());
 		res.setParam(qATB.parametros());
-		res.setRef(qATB.referencias());
 		res.addParam(eATB.getLugar());
-		res.addRef(eATB.getReferencia());
 		return res;
 	}
 
@@ -1462,9 +1467,7 @@ public class ASem {
 		}
 		res.setLong(1 + q1ATB.getLongs());
 		res.setParam(q1ATB.parametros());
-		res.setRef(q1ATB.referencias());
 		res.addParam(eATB.getLugar());
-		res.addRef(eATB.getReferencia());
 		return res;
 	}
 
@@ -1473,7 +1476,6 @@ public class ASem {
 		res.setTipo("");
 		res.setLong(0);
 		res.initParam();
-		res.initRef();
 		return res;
 	}
 
@@ -1491,7 +1493,6 @@ public class ASem {
 		}
 		res.setLong(1 + wATB.getLongs());
 		res.setParam(wATB.parametros());
-		res.setRef(wATB.referencias());
 		res.addParam(idATB.getPos());
 		return res;
 	}
@@ -1510,7 +1511,6 @@ public class ASem {
 		}
 		res.setLong(1 + w1ATB.getLongs());
 		res.setParam(w1ATB.parametros());
-		res.setRef(w1ATB.referencias());
 		res.addParam(idATB.getPos());
 		return res;
 	}
@@ -1520,7 +1520,6 @@ public class ASem {
 		res.setTipo("");
 		res.setLong(0);
 		res.initParam();
-		res.initRef();
 		return res;
 	}
 
@@ -2065,15 +2064,19 @@ public class ASem {
 
 		//____________________________________________________________
 		//instrucciones para la generacion de codigo intermedio
-		if (llAtb.getTipo().equals("")) {
-			if (paramRef2.get(idAtb.getPos()) != null && paramRef2.get(idAtb.getPos()).equals("referencia")) {res.setReferencia("referencia");}
-			if (identificadores.get(idAtb.getPos()) == null) {
-				res.setLugar(new gci.tupla<>("VAR_LOCAL", procesador.Procesador.gestorTS.getValorAtributoEnt(idAtb.getPos(), "desplazamiento")));
+		if (llAtb.getLongs() == 0) {
+			if (idTipo.equals("procedimiento")){
+				gci.emite("CALL", Procesador.gestorTS.getValorAtributoCad(idAtb.getPos(), "etiqueta"), null, null);
 			} else {
-				if (identificadores.get(idAtb.getPos())) {
-					res.setLugar(new gci.tupla<>("VAR_GLOBAL", procesador.Procesador.gestorTS.getValorAtributoEnt(idAtb.getPos(), "desplazamiento")));
-				} else {
+				if (paramRef2.get(idAtb.getPos()) != null && paramRef2.get(idAtb.getPos()).equals("referencia")) {res.setReferencia("referencia");}
+				if (identificadores.get(idAtb.getPos()) == null) {
 					res.setLugar(new gci.tupla<>("VAR_LOCAL", procesador.Procesador.gestorTS.getValorAtributoEnt(idAtb.getPos(), "desplazamiento")));
+				} else {
+					if (identificadores.get(idAtb.getPos())) {
+						res.setLugar(new gci.tupla<>("VAR_GLOBAL", procesador.Procesador.gestorTS.getValorAtributoEnt(idAtb.getPos(), "desplazamiento")));
+					} else {
+						res.setLugar(new gci.tupla<>("VAR_LOCAL", procesador.Procesador.gestorTS.getValorAtributoEnt(idAtb.getPos(), "desplazamiento")));
+					}
 				}
 			}
 			
@@ -2093,14 +2096,16 @@ public class ASem {
 				}
 			}
 			String ret = Procesador.gestorTS.getValorAtributoCad(idAtb.getPos(), "tipoRetorno");
-			if ("entero".equals(ret)) {
-				res.setLugar(gci.nuevatemp(res.getTipo()));
-				gci.emite("CALL_FUN", Procesador.gestorTS.getValorAtributoCad(idAtb.getPos(), "etiqueta"), null, res.getLugar());
-			} else if ("cadena".equals(ret)) {
-				res.setLugar(gci.nuevatemp(res.getTipo()));
-				gci.emite("CALL_FUN_CAD", Procesador.gestorTS.getValorAtributoCad(idAtb.getPos(), "etiqueta"), null, res.getLugar());
-			} else {
-				gci.emite("CALL", Procesador.gestorTS.getValorAtributoCad(idAtb.getPos(), "etiqueta"), null, null);
+			switch(ret) {
+				case "entero":
+					gci.emite("CALL_FUN", Procesador.gestorTS.getValorAtributoCad(idAtb.getPos(), "etiqueta"), null, res.getLugar());
+					break;
+				case "cadena":
+					gci.emite("CALL_FUN_CAD", Procesador.gestorTS.getValorAtributoCad(idAtb.getPos(), "etiqueta"), null, res.getLugar());
+					break;
+				default:
+					gci.emite("CALL", Procesador.gestorTS.getValorAtributoCad(idAtb.getPos(), "etiqueta"), null, null);
+					break;
 			}
 		}
 
@@ -2183,7 +2188,7 @@ public class ASem {
 				break;
 			}
 			gci.emite("PARAM_MIN", lAtb.getParam(i), null, null);
-			gci.emite("ETIQ", gci.nuevaetiq("EtiqMin"+i), null, null);
+			gci.emite("ETIQ", gci.nuevaetiq("EtiqMin"+contminetiq++), null, null);
 		}
 
 		return res;

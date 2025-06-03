@@ -34,5 +34,6 @@ begin
 	writeln({ Comentario dentro del parametro }'Hola');
 	
 	x := { Comentario en medio de una sentencia} 10;
+	writeln(x);
 	
 end; { Comentario al final }

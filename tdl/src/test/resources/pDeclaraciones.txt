@@ -17,6 +17,7 @@ begin
 	x := c * 2;
 	b := y AND n;
 	s := 'hola mundo';
+	writeln(s);
 	s := 'ramondinocl';
 	read(s);
 	writeln(s);

@@ -1,15 +1,15 @@
-function factorial (x: integer): integer;
-begin
-	if (x > 1) then
-		return x * factorial (x - 1);
-	return 1;
-end;
-
-procedure holaMundo;
+procedure holaMundo(var y: integer);
 var s : string;
 begin
 	s := 'holamundo';
     writeln(s);
+	y := 13;
+    return;	
+end;
+
+procedure area(b: integer; h: integer; var res: integer);
+begin
+	res := b * h;
     return;	
 end;	
 
@@ -22,48 +22,19 @@ var x : integer;
 	s : string;
 
 begin
-	If x > 1 Then s:= 'x mayor que 1';
+	If x = 1 Then s:= 'x igual que 1';
 	if (b) then write('hola mundo');
-	if factorial(y) < 1 then x := factorial(y);
-	if (factorial(y) < 1) then holaMundo;
-	
-	if(x < factorial(y)) then
-	begin
-  		if(x < y) then
+	holaMundo(y);
+	if y = 12 then writeln(y);
+	x := 12;	
+	if(x = y) then
 		begin
- 			if(x = y - 1) then
-			begin
-				writeln (x);
-			end;
-			write(y);
+			writeln (x);
+			if(10 = 10) then return;
 		end;
-		write(factorial(y));
-		loop 
-			n:= n + 1;
-			exit when n > 32766;
-		  	write (n);
-		end;
-		if(n > factorial(y)) then return;
-	end;
 	else 
-	begin
-		holaMundo;
-		while n <= 10 do
 		begin
-		   	n:= n + 1;
-		   	writeln (n);
-		end; 
-		if(n < y) then
-		begin
-			return;
+			area(5, 10, x);
+			write(x);
 		end;
-		else
-		begin
-			holaMundo;
-			y := factorial(x);
-			repeat
-				x := n + y;
-			until not (y < x);
-		end;
-	end;
 end;

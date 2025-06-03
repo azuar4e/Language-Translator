@@ -1,12 +1,12 @@
 			MOVE #inicio_estaticas, .IY
 			MOVE #inicio_pila, .IX
-			ra1: EQU 132
-			ra2: EQU 326
+			ra1: EQU 135
+			ra2: EQU 144
 
 			BR /main
 EtiqProc2:
 
-			ADD #3, .IX
+			ADD #65, .IX
 			MOVE .A, .R2
 
 
@@ -20,28 +20,159 @@ bucle0:	    INC .R2
             BNZ $bucle0
         
 
-			ADD #3, .IX
+			ADD #129, .IX
+			MOVE .A, .R2
+
+			MOVE #22, [.R2]
+
+			ADD #130, .IX
+			MOVE .A, .R2
+
+			MOVE #33, [.R2]
+
+			ADD #131, .IX
+			MOVE .A, .R2
+
+			MOVE #9, [.R2]
+
+			ADD #132, .IX
+			MOVE .A, .R2
+
+			MOVE #44, [.R2]
+
+			ADD #133, .IX
+			MOVE .A, .R2
+
+			MOVE #10, [.R2]
+
+			ADD #0, .IY
+			MOVE .A, .R2
+			ADD #134, .IX
+			MOVE .A, .R3
+
+			MOVE [.R2], [.R3]
+EtiqMin0:
+
+			ADD #129, .IX
+			MOVE .A, .R2
+			ADD #134, .IX
+			MOVE .A, .R3
+
+			CMP [.R2], [.R3]
+			BP $EtiqMin1
+			MOVE [.R2], [.R3]
+EtiqMin1:
+
+			ADD #130, .IX
+			MOVE .A, .R2
+			ADD #134, .IX
+			MOVE .A, .R3
+
+			CMP [.R2], [.R3]
+			BP $EtiqMin2
+			MOVE [.R2], [.R3]
+EtiqMin2:
+
+			ADD #131, .IX
+			MOVE .A, .R2
+			ADD #134, .IX
+			MOVE .A, .R3
+
+			CMP [.R2], [.R3]
+			BP $EtiqMin3
+			MOVE [.R2], [.R3]
+EtiqMin3:
+
+			ADD #132, .IX
+			MOVE .A, .R2
+			ADD #134, .IX
+			MOVE .A, .R3
+
+			CMP [.R2], [.R3]
+			BP $EtiqMin4
+			MOVE [.R2], [.R3]
+EtiqMin4:
+
+			ADD #133, .IX
+			MOVE .A, .R2
+			ADD #134, .IX
+			MOVE .A, .R3
+
+			CMP [.R2], [.R3]
+			BP $EtiqMin5
+			MOVE [.R2], [.R3]
+EtiqMin5:
+
+			ADD #65, .IX
 			MOVE .A, .R2
 
 
 			WRSTR [.R2]
 
-			ADD #1, .IX
+			ADD #134, .IX
 			MOVE .A, .R2
-			MOVE [.R2], .R2
 
 
-			WRSTR [.R2]
-			WRSTR /cadena1
+			WRINT [.R2]
 
-			INSTR /cadena2
 
-			ADD #1, .IX
+			BR [.IX]
+main:
+
+			ADD #67, .IX
 			MOVE .A, .R2
-			MOVE [.R2], .R2
+
+			MOVE #32767, [.R2]
+
+			ADD #67, .IX
+			MOVE .A, .R2
+			ADD #66, .IX
+			MOVE .A, .R3
+
+			MOVE [.R2], [.R3]
+
+			ADD #68, .IX
+			MOVE .A, .R2
+
+			MOVE #1, [.R2]
+
+			ADD #68, .IX
+			MOVE .A, .R2
+			ADD #66, .IX
+			MOVE .A, .R3
+
+			MOVE [.R2], [.R3]
+
+			ADD #69, .IX
+			MOVE .A, .R2
+
+			MOVE #7, [.R2]
+
+			ADD #69, .IX
+			MOVE .A, .R2
+			ADD #0, .IY
+			MOVE .A, .R3
+
+			MOVE [.R2], [.R3]
+
+            ADD #144, .IX
+            MOVE #dir_ret0, [.A]
+            
+            ADD #144, .IX
+            MOVE .A, .IX
+            BR /EtiqProc2
+
+dir_ret0:   SUB .IX, #144
+            MOVE .A, .IX
+            
+
+			HALT
+
+			ADD #70, .IX
+			MOVE .A, .R2
 
 
-            MOVE #cadena2, .R7
+            MOVE #cadena1, .R7
             DEC .R2
             DEC .R7
 bucle1:	    INC .R2
@@ -51,246 +182,180 @@ bucle1:	    INC .R2
             BNZ $bucle1
         
 
-			ADD #1, .IX
+			ADD #70, .IX
 			MOVE .A, .R2
-			MOVE [.R2], .R2
 
 
 			WRSTR [.R2]
-			WRSTR /cadena3
 
-			ADD #67, .IX
+			ADD #66, .IX
 			MOVE .A, .R2
 
-			MOVE #5, [.R2]
 
-			ADD #2, .IX
-			MOVE .A, .R2
-			MOVE [.R2], .R2
-			ADD #67, .IX
-			MOVE .A, .R3
-			ADD #68, .IX
-			MOVE .A, .R4
+			WRINT [.R2]
 
-			MUL [.R2], [.R3]
-			MOVE .A, [.R4]
 
-			ADD #68, .IX
-			MOVE .A, .R2
-			ADD #0, .IY
-			MOVE .A, .R3
-
-			MOVE [.R2], [.R3]
-
-			BR [.IX]
-main:
-
-			ADD #69, .IX
+			ADD #134, .IX
 			MOVE .A, .R2
 
 			MOVE #2, [.R2]
 
-			ADD #69, .IX
+			ADD #66, .IX
 			MOVE .A, .R2
-			ADD #67, .IX
+
+
+			WRINT [.R2]
+
+			WRSTR /cadena2
+
+			ADD #134, .IX
+			MOVE .A, .R2
+
+
+			WRINT [.R2]
+
+			WRSTR /cadena3
+
+			ADD #135, .IX
+			MOVE .A, .R2
+
+			MOVE #56, [.R2]
+
+			ADD #136, .IX
+			MOVE .A, .R2
+
+			MOVE #5, [.R2]
+
+			ADD #137, .IX
+			MOVE .A, .R2
+
+			MOVE #69, [.R2]
+
+			ADD #66, .IX
+			MOVE .A, .R2
+			ADD #138, .IX
+			MOVE .A, .R3
+
+			MOVE [.R2], [.R3]
+EtiqMin6:
+
+			ADD #135, .IX
+			MOVE .A, .R2
+			ADD #138, .IX
+			MOVE .A, .R3
+
+			CMP [.R2], [.R3]
+			BP $EtiqMin7
+			MOVE [.R2], [.R3]
+EtiqMin7:
+
+			ADD #136, .IX
+			MOVE .A, .R2
+			ADD #138, .IX
+			MOVE .A, .R3
+
+			CMP [.R2], [.R3]
+			BP $EtiqMin8
+			MOVE [.R2], [.R3]
+EtiqMin8:
+
+			ADD #137, .IX
+			MOVE .A, .R2
+			ADD #138, .IX
+			MOVE .A, .R3
+
+			CMP [.R2], [.R3]
+			BP $EtiqMin9
+			MOVE [.R2], [.R3]
+EtiqMin9:
+
+			ADD #138, .IX
+			MOVE .A, .R2
+
+
+			WRINT [.R2]
+
+
+			ADD #139, .IX
+			MOVE .A, .R2
+
+			MOVE #45, [.R2]
+
+			ADD #140, .IX
+			MOVE .A, .R2
+
+			MOVE #98, [.R2]
+
+			ADD #141, .IX
+			MOVE .A, .R2
+
+			MOVE #277, [.R2]
+
+			ADD #142, .IX
+			MOVE .A, .R2
+
+			MOVE #4, [.R2]
+
+			ADD #139, .IX
+			MOVE .A, .R2
+			ADD #143, .IX
+			MOVE .A, .R3
+
+			MOVE [.R2], [.R3]
+EtiqMin10:
+
+			ADD #140, .IX
+			MOVE .A, .R2
+			ADD #143, .IX
+			MOVE .A, .R3
+
+			CMP [.R2], [.R3]
+			BP $EtiqMin11
+			MOVE [.R2], [.R3]
+EtiqMin11:
+
+			ADD #141, .IX
+			MOVE .A, .R2
+			ADD #143, .IX
+			MOVE .A, .R3
+
+			CMP [.R2], [.R3]
+			BP $EtiqMin12
+			MOVE [.R2], [.R3]
+EtiqMin12:
+
+			ADD #142, .IX
+			MOVE .A, .R2
+			ADD #143, .IX
+			MOVE .A, .R3
+
+			CMP [.R2], [.R3]
+			BP $EtiqMin13
+			MOVE [.R2], [.R3]
+EtiqMin13:
+
+			ADD #143, .IX
+			MOVE .A, .R2
+			ADD #66, .IX
 			MOVE .A, .R3
 
 			MOVE [.R2], [.R3]
 
-			ADD #67, .IX
+			ADD #66, .IX
 			MOVE .A, .R2
 
 
 			WRINT [.R2]
 
 			WRSTR /cadena4
-
-			ADD #70, .IX
-			MOVE .A, .R2
-
-
-            MOVE #cadena5, .R7
-            DEC .R2
-            DEC .R7
-bucle2:	    INC .R2
-            INC .R7
-            MOVE [.R7], [.R2]
-            CMP [.R7], #0
-            BNZ $bucle2
-        
-
-			ADD #70, .IX
-			MOVE .A, .R2
-			ADD #1, .IX
-			MOVE .A, .R3
-
-
-            DEC .R3
-            DEC .R2
-bucle3:	    INC .R3
-            INC .R2
-            MOVE [.R2], [.R3]
-            CMP [.R2], #0
-            BNZ $bucle3
-        
-
-			ADD #1, .IX
-			MOVE .A, .R2
-
-			ADD #326, .IX
-			ADD #1, .A
-			MOVE .R2, [.A]
-
-
-			ADD #67, .IX
-			MOVE .A, .R2
-
-			ADD #326, .IX
-			ADD #2, .A
-			MOVE .R2, [.A]
-
-
-            ADD #326, .IX
-            MOVE #dir_ret0, [.A]
-            
-            ADD #326, .IX
-            MOVE .A, .IX
-            BR /EtiqProc2
-
-dir_ret0:   SUB .IX, #326
-            MOVE .A, .IX
-            
-
-			ADD #0, .IY
-			MOVE .A, .R2
-
-
-			WRINT [.R2]
-
-			WRSTR /cadena6
-
-			ADD #1, .IX
-			MOVE .A, .R2
-
-
-			WRSTR [.R2]
-			WRSTR /cadena7
-
-			ADD #134, .IX
-			MOVE .A, .R2
-
-
-            MOVE #cadena8, .R7
-            DEC .R2
-            DEC .R7
-bucle4:	    INC .R2
-            INC .R7
-            MOVE [.R7], [.R2]
-            CMP [.R7], #0
-            BNZ $bucle4
-        
-
-			ADD #134, .IX
-			MOVE .A, .R2
-
-
-			WRSTR [.R2]
-
-			INSTR /cadena9
-
-			ADD #1, .IX
-			MOVE .A, .R2
-
-
-            MOVE #cadena9, .R7
-            DEC .R2
-            DEC .R7
-bucle5:	    INC .R2
-            INC .R7
-            MOVE [.R7], [.R2]
-            CMP [.R7], #0
-            BNZ $bucle5
-        
-
-			ADD #198, .IX
-			MOVE .A, .R2
-
-
-            MOVE #cadena10, .R7
-            DEC .R2
-            DEC .R7
-bucle6:	    INC .R2
-            INC .R7
-            MOVE [.R7], [.R2]
-            CMP [.R7], #0
-            BNZ $bucle6
-        
-
-			ADD #198, .IX
-			MOVE .A, .R2
-
-
-			WRSTR [.R2]
-
-			ADD #1, .IX
-			MOVE .A, .R2
-
-
-			WRSTR [.R2]
-			WRSTR /cadena11
-
-			ADD #262, .IX
-			MOVE .A, .R2
-
-
-            MOVE #cadena12, .R7
-            DEC .R2
-            DEC .R7
-bucle7:	    INC .R2
-            INC .R7
-            MOVE [.R7], [.R2]
-            CMP [.R7], #0
-            BNZ $bucle7
-        
-
-			ADD #262, .IX
-			MOVE .A, .R2
-			ADD #1, .IX
-			MOVE .A, .R3
-
-
-            DEC .R3
-            DEC .R2
-bucle8:	    INC .R3
-            INC .R2
-            MOVE [.R2], [.R3]
-            CMP [.R2], #0
-            BNZ $bucle8
-        
-
-			ADD #1, .IX
-			MOVE .A, .R2
-
-
-			WRSTR [.R2]
-			WRSTR /cadena13
 			HALT
 
 
-cadena0:	DATA "[+] Imprimimos la cadena pasada como parametro: "
-cadena1:	DATA "\n"
-cadena2:	RES 500
+cadena0:	DATA "El mínimo es "
+cadena1:	DATA "semen"
+cadena2:	DATA "\n"
 cadena3:	DATA "\n"
 cadena4:	DATA "\n"
-cadena5:	DATA "hola"
-cadena6:	DATA "\n"
-cadena7:	DATA "\n"
-cadena8:	DATA "[+] Imprima una cadena por pantalla: "
-cadena9:	RES 500
-cadena10:	DATA "[+] Cadena impresa: "
-cadena11:	DATA "\n"
-cadena12:	DATA "cambio de planes morlanes"
-cadena13:	DATA "\n"
 
 			inicio_estaticas: RES 1
 			inicio_pila: NOP
