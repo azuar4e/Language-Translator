@@ -547,13 +547,13 @@ public class ASem {
 			LinkedList<Integer> paramRefAux = new LinkedList<>();
 			LinkedList<String> paramTipoAux = new LinkedList<>();
 			for (String tipo: tipos) {		
-				paramTipoAux.addFirst(tipo);
+				paramTipoAux.add(tipo);
 			}
 			for (String modo: parametros) {
 				if (modo.equals("valor")){
-					paramRefAux.addFirst(0);
+					paramRefAux.add(0);
 				} else {
-					paramRefAux.addFirst(1);
+					paramRefAux.add(1);
 				}
 			}
 			paramTipo.put(pidAtb.getPos(), paramTipoAux);
@@ -606,13 +606,13 @@ public class ASem {
 			LinkedList<Integer> paramRefAux = new LinkedList<>();
 			LinkedList<String> paramTipoAux = new LinkedList<>();
 			for (String tipo: tipos) {
-				paramTipoAux.addFirst(tipo);
+				paramTipoAux.add(tipo);
 			}
 			for (String modo: parametros) {
 				if (modo.equals("valor")){
-					paramRefAux.addFirst(0);
+					paramRefAux.add(0);
 				} else {
-					paramRefAux.addFirst(1);
+					paramRefAux.add(1);
 				}
 			}
 			paramTipo.put(pidAtb.getPos(), paramTipoAux);
@@ -1349,7 +1349,7 @@ public class ASem {
 			LinkedList<Integer> referencias = paramRef.get(idATB.getPos());
 			LinkedList<String> tipos = paramTipo.get(idATB.getPos());
 
-			for (int i = 0; i < llATB.getLongs(); i++) {
+			for (int i = llATB.getLongs() - 1; i >= 0; i--) {
 				if (referencias.get(i) == 0) {
 					if (tipos.get(i).equals("cadena")) {
 						
@@ -2084,7 +2084,7 @@ public class ASem {
 			LinkedList<Integer> referencias = paramRef.get(idAtb.getPos());
 			LinkedList<String> tipos = paramTipo.get(idAtb.getPos());
 
-			for (int i = 0; i < llAtb.getLongs(); i++) {
+			for (int i = llAtb.getLongs() - 1; i >= 0; i--) {
 				if (referencias.get(i) == 0) {
 					if (tipos.get(i).equals("cadena")) {
 						gci.emite("PARAM_CAD", llAtb.getParam(i), null, null);

@@ -58,7 +58,7 @@ begin
 	imprime (nnn, kk);
 	rr:= 1;
 	write(nnn);
-	if (320 = nnn) then	return;	{ poner la condición para que se cumpla tras 3 o 4 iteraciones }
+	if (0 = nnn) then	return;	{ poner la condición para que se cumpla tras 3 o 4 iteraciones }
 	Recursivo (nnn * pp * 2, rr);
 	resul:= nnn * rr;
 	imprime (nnn, kk);
@@ -68,19 +68,16 @@ end;
 procedure operador;	{dejar solo la línea con el operador implementado}
 var sss: string;
 begin
-	write('El mínimo es ', min(jj, 22, 33, 5, 44, 10));
-	{writeln(jj);}
+	write('El minimo es ', min(jj, 22, 33, 5, 44, 10));
 end;
 
 program main;
 var cinco: integer;
 begin
+	Recursivo(jj, cinco);
+	imprime (cinco, kk);
 	cinco:= 5;
 	operador;
-	return;
-	{write('El mínimo es ');}
-	{jj := min(4, 22, 33, 5, 44, 10);}
-	{writeln(jj);}
 	s1:= 'introduce un digito. ';
 	bb:= 5 = cinco; { cambiar los valores para que bb siempre valga true en función del operador }
 	write (s1);

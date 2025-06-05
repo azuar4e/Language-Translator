@@ -18,7 +18,7 @@ contador_llamadas = 0 # Para generar etiquetas unicas de retorno
 tamraact = None
 raact = None
 es_vacia = False
-contparam = 0
+contparam = 1
 where = ""
 sumra = 0
 esetiq = False
@@ -612,7 +612,7 @@ def main():
             esetiq = False
             coincidencia = re.match(patron_param, linea, re.VERBOSE)
             transformar_dir(coincidencia.group(1), None, None)
-            t = 1 + contparam
+            t = contparam
             contparam += 1
             cadena = f"\t\t\tADD #{tamraact}, .IX\n\t\t\tADD #{t}, .A\n\t\t\tMOVE [.R2], [.A]\n"
 
@@ -623,7 +623,7 @@ def main():
             esetiq = False
             coincidencia = re.match(patron_param_ref, linea, re.VERBOSE)
             transformar_dir(coincidencia.group(1), None, None)
-            t = 1 + contparam
+            t = contparam
             contparam += 1
             cadena = f"\t\t\tADD #{tamraact}, .IX\n\t\t\tADD #{t}, .A\n\t\t\tMOVE .R2, [.A]\n"
             escribir(cadena)
@@ -633,7 +633,7 @@ def main():
             esetiq = False
             coincidencia = re.match(patron_param_cad, linea, re.VERBOSE)
             if not es_vacia:
-                t = contparam + 1 + tamraact
+                t = contparam + tamraact
                 if re.match(ptloc, coincidencia.group(1)):
                     des = int(re.match(ptloc, coincidencia.group(1)).group(1)) + 1
                 else:
@@ -686,6 +686,7 @@ def main():
         elif re.match(patron_call, linea, re.VERBOSE):
             esetiq = False
             coincidencia = re.match(patron_call, linea, re.VERBOSE)
+            contparam = 1
             # *********************************************************************
             # *********************************************************************
             # *********************************************************************
@@ -714,6 +715,7 @@ dir_ret{contador_llamadas}:   SUB .IX, #{tamraact}
         elif re.match(patron_call_fun, linea, re.VERBOSE):
             esetiq = False
             coincidencia = re.match(patron_call_fun, linea, re.VERBOSE)
+            contparam = 1
             # *********************************************************************
             # *********************************************************************
             # *********************************************************************
@@ -749,6 +751,7 @@ dir_ret{contador_llamadas}:   SUB #{tam_ra_llamado}, #1
         elif re.match(patron_call_fun_cad, linea, re.VERBOSE):
             esetiq = False
             coincidencia = re.match(patron_call_fun_cad, linea, re.VERBOSE)
+            contparam = 1
             # *********************************************************************
             # *********************************************************************
             # *********************************************************************
