@@ -100,36 +100,36 @@ bucle1:	    INC .R2
 			BR [.IX]
 EtiqProc3:
 
-			ADD #131, .IX
+			ADD #68, .IX
 			MOVE .A, .R2
 
 			MOVE #7, [.R2]
 
-			ADD #131, .IX
+			ADD #68, .IX
 			MOVE .A, .R2
-			ADD #130, .IX
+			ADD #67, .IX
 			MOVE .A, .R3
 
 			MOVE [.R2], [.R3]
 
-			ADD #132, .IX
+			ADD #69, .IX
 			MOVE .A, .R2
 
 			MOVE #4, [.R2]
 
-			ADD #132, .IX
+			ADD #69, .IX
 			MOVE .A, .R2
 			ADD #0, .IY
 			MOVE .A, .R3
 
 			MOVE [.R2], [.R3]
 
-			ADD #133, .IX
+			ADD #70, .IX
 			MOVE .A, .R2
 
 			MOVE #1, [.R2]
 
-			ADD #133, .IX
+			ADD #70, .IX
 			MOVE .A, .R2
 			ADD #1, .IY
 			MOVE .A, .R3
@@ -138,7 +138,8 @@ EtiqProc3:
 
 			ADD #2, .IX
 			MOVE .A, .R2
-			ADD #66, .IX
+			MOVE [.R2], .R2
+			ADD #3, .IX
 			MOVE .A, .R3
 
 
@@ -153,7 +154,7 @@ bucle2:	    INC .R3
 
 			INSTR /cadena3
 
-			ADD #66, .IX
+			ADD #3, .IX
 			MOVE .A, .R2
 
 
@@ -167,7 +168,7 @@ bucle3:	    INC .R2
             BNZ $bucle3
         
 
-			ADD #66, .IX
+			ADD #3, .IX
 			MOVE .A, .R2
 			ADD #4, .IY
 			MOVE .A, .R3
@@ -184,6 +185,7 @@ bucle4:	    INC .R3
 
 			ADD #2, .IX
 			MOVE .A, .R2
+			MOVE [.R2], .R2
 
 
 			WRSTR [.R2]
@@ -195,7 +197,7 @@ bucle4:	    INC .R3
 			WRSTR [.R2]
 			WRSTR /cadena4
 
-			ADD #130, .IX
+			ADD #67, .IX
 			MOVE .A, .R2
 			ADD #3, .IY
 			MOVE .A, .R3
@@ -203,14 +205,14 @@ bucle4:	    INC .R3
 			CMP [.R2], [.R3]
 			BNZ $Etiq4
 
-			ADD #134, .IX
+			ADD #71, .IX
 			MOVE .A, .R2
 
 			MOVE #1, [.R2]
 			BR $Etiq5
 Etiq4:
 
-			ADD #134, .IX
+			ADD #71, .IX
 			MOVE .A, .R2
 
 			MOVE #0, [.R2]
@@ -222,26 +224,26 @@ Etiq5:
 			CMP [.R2], #0
 			BZ $Etiq6
 
-			ADD #134, .IX
+			ADD #71, .IX
 			MOVE .A, .R2
 
 			CMP [.R2], #0
 			BZ $Etiq6
 
-			ADD #135, .IX
+			ADD #72, .IX
 			MOVE .A, .R2
 
 			MOVE #1, [.R2]
 			BR $Etiq7
 Etiq6:
 
-			ADD #135, .IX
+			ADD #72, .IX
 			MOVE .A, .R2
 
 			MOVE #0, [.R2]
 Etiq7:
 
-			ADD #135, .IX
+			ADD #72, .IX
 			MOVE .A, .R2
 
 			CMP [.R2], #0
@@ -253,12 +255,12 @@ Etiq7:
 			CMP [.R2], #0
 			BZ $Etiq9
 
-			ADD #136, .IX
+			ADD #73, .IX
 			MOVE .A, .R2
 
 			MOVE #0, [.R2]
 
-			ADD #136, .IX
+			ADD #73, .IX
 			MOVE .A, .R2
 
 			ADD #138, .IX
@@ -266,7 +268,7 @@ Etiq7:
 			MOVE [.R2], [.A]
 
 
-			ADD #130, .IX
+			ADD #67, .IX
 			MOVE .A, .R2
 
 			ADD #138, .IX
@@ -289,12 +291,12 @@ Etiq9:
 			NOP
 Etiq8:
 
-			ADD #137, .IX
+			ADD #74, .IX
 			MOVE .A, .R2
 
 			MOVE #0, [.R2]
 
-			ADD #137, .IX
+			ADD #74, .IX
 			MOVE .A, .R2
 
 			ADD #138, .IX
@@ -849,18 +851,13 @@ bucle9:	    INC .R2
 			MOVE .R2, [.A]
 
 
-            ADD #133, .IX
-            MOVE .A, .R2
-            ADD #264, .IX
-            MOVE .A, .R3
-            DEC .R3
-            DEC .R2
-bucle10:	    INC .R3
-            INC .R2
-            MOVE [.R2], [.R3]
-            CMP [.R2], #0
-            BNZ $bucle10
-        
+			ADD #133, .IX
+			MOVE .A, .R2
+
+			ADD #262, .IX
+			ADD #2, .A
+			MOVE .R2, [.A]
+
 
             ADD #262, .IX
             MOVE #dir_ret8, [.A]
@@ -946,11 +943,11 @@ dir_ret10:   SUB .IX, #262
             MOVE #cadena10, .R7
             DEC .R2
             DEC .R7
-bucle11:	    INC .R2
+bucle10:	    INC .R2
             INC .R7
             MOVE [.R7], [.R2]
             CMP [.R7], #0
-            BNZ $bucle11
+            BNZ $bucle10
         
 
 			ADD #198, .IX

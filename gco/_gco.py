@@ -133,6 +133,14 @@ patron_param_ref = r"""
 \)
 """
 
+patron_param_ref_cad = r"""
+\(PARAM_REF_CAD,\s*
+    ((?:\{[^{}]*\}|[^,()])+)  ,\s*
+    ((?:\{[^{}]*\}|[^,()])+)  ,\s*
+    ((?:\{[^{}]*\}|[^,()])+) 
+\)
+"""
+
 patron_param_cad = r"""
 \(PARAM_CAD,\s*
     ((?:\{[^{}]*\}|[^,()])+)  ,\s*
@@ -625,6 +633,16 @@ def main():
             transformar_dir(coincidencia.group(1), None, None)
             t = contparam
             contparam += 1
+            cadena = f"\t\t\tADD #{tamraact}, .IX\n\t\t\tADD #{t}, .A\n\t\t\tMOVE .R2, [.A]\n"
+            escribir(cadena)
+            escribir("\n")
+            
+        elif re.match(patron_param_ref_cad, linea, re.VERBOSE):
+            esetiq = False
+            coincidencia = re.match(patron_param_ref_cad, linea, re.VERBOSE)
+            transformar_dir(coincidencia.group(1), None, None)
+            t = contparam
+            contparam += 64
             cadena = f"\t\t\tADD #{tamraact}, .IX\n\t\t\tADD #{t}, .A\n\t\t\tMOVE .R2, [.A]\n"
             escribir(cadena)
             escribir("\n")

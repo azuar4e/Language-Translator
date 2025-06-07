@@ -25,7 +25,7 @@ begin
 	writeln ('.');
 end;
 
-procedure  sent (s: string; var rr: integer);
+procedure  sent (var s: string; var rr: integer);
 var
 	iii: integer;
 	ss: string;

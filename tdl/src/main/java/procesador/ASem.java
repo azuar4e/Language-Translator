@@ -1358,7 +1358,11 @@ public class ASem {
 						gci.emite("PARAM", llATB.getParam(i), null, null);
 					}
 				} else {
-					gci.emite("PARAM_REF", llATB.getParam(i), null, null);
+					if (tipos.get(i).equals("cadena")) {
+						gci.emite("PARAM_REF_CAD", llATB.getParam(i), null, null);
+					} else {
+						gci.emite("PARAM_REF", llATB.getParam(i), null, null);
+					}
 				}
 			}
 
@@ -2092,7 +2096,11 @@ public class ASem {
 						gci.emite("PARAM", llAtb.getParam(i), null, null);
 					}
 				} else {
-					gci.emite("PARAM_REF", llAtb.getParam(i), null, null);
+					if (tipos.get(i).equals("cadena")) {
+						gci.emite("PARAM_REF_CAD", llAtb.getParam(i), null, null);
+					} else {
+						gci.emite("PARAM_REF", llAtb.getParam(i), null, null);
+					}
 				}
 			}
 			String ret = Procesador.gestorTS.getValorAtributoCad(idAtb.getPos(), "tipoRetorno");
