@@ -1,0 +1,103 @@
+{ Se debe editar el fichero para hacer las siguientes modificaciones: 
+// + cambiarlo por uno de los operadores aritméticos implementados
+// operador relacional: cambiarlo por uno de los operadores relacionales implementados 
+// and cambiarlo por uno de los operadores lógicos implementados
+// eliminar los operadores especiales no implementado
+// en la función sent, dejar solamente el case o el if-else implementado y borrar la otra estructura
+}
+
+VAR
+ bb: boolean;
+ s1: string;
+ kk: integer;
+ pp: integer;
+ jj: integer;
+
+procedure print (kk: integer; s1: integer);
+begin
+	write (kk, ' #');
+	if (0 <> s1)	{ Cuando s1 valga 0, esta expresión debe evaluarse como falsa y cuando sea positivo, debe evaluarse como verdadera }
+	then   write (s1);
+	writeln ('.');
+end;
+
+procedure  sent (s: string; var rr: integer);
+var
+	iii: integer;
+	ss: string;
+	kk: integer;
+begin
+	ss:=s;
+	iii:= 22;
+	jj:= 4;
+	pp:= 1;
+	kk:= 33;
+	read (ss);
+	s1:=ss;
+	writeln (s, s1);
+	
+	WHILE bb and (iii < kk) do 	{ cambiar la lógica de la condición del bucle para que no sea un bucle infinito, pero conservando un operador relacional y un operador lógico. Tener en cuenta la actualización de iii dentro del bucle}
+	begin
+		if (bb) then print (iii, 0);
+		iii:= iii+1;
+	end;
+	
+	FOR iii:= kk to 44 do	
+	begin
+		if (bb) then print (iii, 0);
+	end;
+
+	REPEAT
+		if (bb) then print (iii, 0);
+		iii:= iii+1;
+	UNTIL bb and (iii > kk);	{ cambiar la lógica de la condición del bucle para que no sea un bucle infinito, pero conservando un operador relacional y un operador lógico. Tener en cuenta la actualización de iii dentro del bucle }
+	
+	LOOP 
+		iii:= iii + 1;
+		exit when bb and (iii < kk); { cambiar la lógica de la condición del bucle para que no sea un bucle infinito, pero conservando un operador relacional y un operador lógico. Tener en cuenta la actualización de iii dentro del bucle }
+		if (bb) then print (iii, 0);
+	end;
+	
+	rr:= jj;
+end;
+
+procedure  Recursivo (nnn: integer; var rr: integer);
+var resul: integer;
+begin
+	kk:= kk + 11;
+	print (nnn, kk);
+	rr:= 1;
+	if (1 < nnn) then	return;	{ poner la condición para que se cumpla tras 3 o 4 iteraciones }
+	Recursivo (nnn + pp, rr);
+	resul:= nnn + rr;
+	print (nnn, kk);
+	rr:= resul;
+end;
+
+procedure operador;	{dejar solo la línea con el operador implementado}
+var sss: string;
+begin
+	writeln (kk,'**3=',kk**3);
+	sss:= 'Eres ' + s1; writeln (sss);
+	if (kk IN (2, 4, 6, 8, pp)) then writeln ('es un número par');
+	writeln ('El mínimo es ', MIN (pp, 22, 33, kk, 44, jj));
+	writeln ('El máximo es ', MAX (pp, 77, 11, kk, 00, jj));
+end;
+
+program main;
+var cinco: integer;
+begin
+	s1:= 'Introduce un digito. ';
+	write (s1);
+	cinco:= 5;
+	bb:= 0 < cinco; { cambiar los valores para que bb siempre valga true en función del operador }
+	read (kk);
+	writeln ('Escribe tu nombre. ');
+	sent('Hola, ', cinco);
+	writeln (cinco);
+	operador;
+	kk:=11;
+	Recursivo(jj, cinco);
+	print (cinco, kk);
+	writeln ('Adios, ', (s1));
+end;

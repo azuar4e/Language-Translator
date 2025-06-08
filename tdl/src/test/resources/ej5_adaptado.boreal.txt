@@ -1,0 +1,123 @@
+{ Ejemplo 5 adaptado para el traductor con operadores limitados - Basado en estructura del ej2 }
+
+VAR
+ s1: string;
+ kk: integer;
+ bb: boolean;
+ pp: integer;
+ jj: integer;
+
+procedure imprime (num: integer; valor: integer);
+begin
+	write (num, ' # ');
+	if (0 = valor) then   
+	begin
+		write ('cero');
+	end;
+	else
+	begin
+		write (valor);
+	end;
+	writeln ('. ');
+end;
+
+procedure sent (texto: string; var resultado: integer);
+var
+	iii: integer;
+	ss: string;
+begin
+	ss := texto;
+	iii := 8;
+	pp := 1;
+	jj := 4;
+	writeln (ss);
+	
+	{ Simular el case original con if-else anidados }
+	if (iii = 8) then
+	begin
+		writeln ('Caso 8: par');
+		resultado := iii;
+	end;
+	else
+	begin
+		if (iii = 4) then
+		begin
+			writeln ('Caso 4');
+			resultado := iii * 2;
+		end;
+		else
+		begin
+			writeln ('Caso otro');
+			resultado := 1;
+		end;
+	end;
+	
+	{ Condición con AND como en el original }
+	if (bb and (iii = 8)) then	
+	begin
+		writeln ('Condicion verdadera');
+	end;
+	else
+	begin
+		writeln ('Condicion falsa');
+	end;
+end;
+
+procedure Recursivo (nnn: integer; var rr: integer);
+var temp: integer;
+begin
+	kk := kk * 2;  { Solo multiplicación permitida }
+	writeln ('Recursivo con: ', nnn);
+	rr := 1;
+	
+	{ Condición de parada }
+	if (1 = nnn) then
+	begin
+		return;
+	end;
+	else
+	begin
+		temp := nnn * pp;
+		Recursivo (temp, rr);
+		rr := nnn * rr;
+	end;
+end;
+
+procedure operador;
+begin
+	{ Solo función min con parámetros limitados }
+	writeln ('El mínimo es ', min(pp, jj));
+end;
+
+program main;
+var 
+	cinco: integer;
+	resultado: integer;
+begin
+	{ Inicializar variables como en el original }
+	cinco := 5;
+	pp := 1;
+	jj := 4;
+	kk := 1;
+	s1 := 'introduce un digito: ';
+	bb := (cinco = 5); { bb será true }
+	
+	{ Entrada y salida como en el original }
+	write (s1);
+	read (kk);
+	writeln ('Escribe tu nombre: ');
+	
+	{ Llamadas a procedures separadas }
+	sent('Hello, ', resultado);
+	writeln ('Resultado sent: ', resultado);
+	
+	operador;
+	
+	kk := 11;
+	Recursivo(jj, resultado);
+	writeln ('Resultado recursivo: ', resultado);
+	
+	imprime (resultado, kk);
+	
+	writeln ('Bye, ', s1);
+end;

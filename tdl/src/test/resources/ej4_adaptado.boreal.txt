@@ -1,0 +1,103 @@
+{ Ejemplo 4 adaptado para el traductor con operadores limitados }
+
+VAR
+ bb: boolean;
+ s1: string;
+ kk: integer;
+ pp: integer;
+ jj: integer;
+
+procedure print (kk: integer; s1: integer);
+begin
+	write (kk, ' #');
+	if (0 = s1)	{ Cuando s1 valga 0, esta expresión es falsa }
+	then   
+	begin
+	end;
+	else
+	begin
+		write (s1);
+	end;
+	writeln ('. ');
+end;
+
+procedure sent (s: string; var resultado: integer);
+var
+	iii: integer;
+	ss: string;
+	kk: integer;
+begin
+	ss:=s;
+	iii:= 22;
+	jj:= 4;
+	pp:= 1;
+	kk:= 33;
+	read (ss);
+	s1:=ss;
+	writeln (s, s1);
+	
+	{ Estructura if simple en lugar de bucles complejos }
+	if (bb and (iii = kk)) then 
+	begin
+		if (bb) then print (iii, 0);
+	end;
+	else
+	begin
+		print (kk, 0);
+	end;
+	
+	resultado := jj;
+end;
+
+procedure Recursivo (nnn: integer; var rr: integer);
+var resul: integer;
+begin
+	kk:= kk * 11;  { Solo multiplicación permitida }
+	print (nnn, kk);
+	if (1 = nnn) then	{ Condición de parada tras pocas iteraciones }
+	begin
+		rr := 1;
+		return;
+	end;
+	else
+	begin
+		{ Simplificamos la recursión }
+		resul := nnn * pp;
+		Recursivo (resul, rr);
+		resul := nnn * rr;
+		print (nnn, kk);
+		rr := resul;
+	end;
+end;
+
+procedure operador;
+begin
+	{ Solo función min con dos parámetros }
+	writeln ('El mínimo es ', min(jj, kk));
+end;
+
+program main;
+var 
+	cinco: integer;
+	resultado: integer;
+begin
+	s1:= 'Introduce un digito. ';
+	write (s1);
+	cinco:= 5;
+	bb:= 5 = cinco; { bb será true con estos valores }
+	read (kk);
+	writeln ('Escribe tu nombre. ');
+	
+	{ Llamadas separadas sin anidar }
+	sent('Hola, ', resultado);
+	writeln ('Resultado sent: ', resultado);
+	
+	operador;
+	
+	kk:=11;
+	Recursivo(jj, resultado);
+	writeln ('Resultado recursivo: ', resultado);
+	print (resultado, kk);
+	
+	writeln ('Adios, ', s1);
+end;
