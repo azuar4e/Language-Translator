@@ -106,7 +106,7 @@ begin
 	write (s1);
 	read (kk);
 	writeln ('Escribe tu nombre: ');
-	
+	read (s1);
 	{ Llamadas a procedures separadas }
 	sent('Hello, ', resultado);
 	writeln ('Resultado sent: ', resultado);
@@ -114,6 +114,8 @@ begin
 	operador;
 	
 	kk := 11;
+	jj := 1;
+	
 	Recursivo(jj, resultado);
 	writeln ('Resultado recursivo: ', resultado);
 	
