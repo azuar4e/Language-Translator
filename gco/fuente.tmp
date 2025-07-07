@@ -1,0 +1,979 @@
+			MOVE #inicio_estaticas, .IY
+			MOVE #inicio_pila, .IX
+			ra1: EQU 133
+			ra2: EQU 138
+			ra3: EQU 78
+			ra4: EQU 135
+			ra5: EQU 262
+
+			BR /main
+EtiqProc2:
+
+			ADD #3, .IX
+			MOVE .A, .R2
+
+
+            MOVE #cadena0, .R7
+            DEC .R2
+            DEC .R7
+bucle0:	    INC .R2
+            INC .R7
+            MOVE [.R7], [.R2]
+            CMP [.R7], #0
+            BNZ $bucle0
+        
+
+			ADD #2, .IX
+			MOVE .A, .R2
+
+
+			WRINT [.R2]
+
+
+			ADD #3, .IX
+			MOVE .A, .R2
+
+
+			WRSTR [.R2]
+
+			ADD #67, .IX
+			MOVE .A, .R2
+
+			MOVE #0, [.R2]
+
+			ADD #67, .IX
+			MOVE .A, .R2
+			ADD #1, .IX
+			MOVE .A, .R3
+
+			CMP [.R2], [.R3]
+			BNZ $Etiq0
+
+			ADD #68, .IX
+			MOVE .A, .R2
+
+			MOVE #1, [.R2]
+			BR $Etiq1
+Etiq0:
+
+			ADD #68, .IX
+			MOVE .A, .R2
+
+			MOVE #0, [.R2]
+Etiq1:
+
+			ADD #68, .IX
+			MOVE .A, .R2
+
+			CMP [.R2], #0
+			BZ $Etiq2
+Etiq2:
+
+			ADD #1, .IX
+			MOVE .A, .R2
+
+
+			WRINT [.R2]
+
+
+			ADD #69, .IX
+			MOVE .A, .R2
+
+
+            MOVE #cadena1, .R7
+            DEC .R2
+            DEC .R7
+bucle1:	    INC .R2
+            INC .R7
+            MOVE [.R7], [.R2]
+            CMP [.R7], #0
+            BNZ $bucle1
+        
+
+			ADD #69, .IX
+			MOVE .A, .R2
+
+
+			WRSTR [.R2]
+			WRSTR /cadena2
+
+			BR [.IX]
+EtiqProc3:
+
+			ADD #131, .IX
+			MOVE .A, .R2
+
+			MOVE #7, [.R2]
+
+			ADD #131, .IX
+			MOVE .A, .R2
+			ADD #130, .IX
+			MOVE .A, .R3
+
+			MOVE [.R2], [.R3]
+
+			ADD #132, .IX
+			MOVE .A, .R2
+
+			MOVE #4, [.R2]
+
+			ADD #132, .IX
+			MOVE .A, .R2
+			ADD #0, .IY
+			MOVE .A, .R3
+
+			MOVE [.R2], [.R3]
+
+			ADD #133, .IX
+			MOVE .A, .R2
+
+			MOVE #1, [.R2]
+
+			ADD #133, .IX
+			MOVE .A, .R2
+			ADD #1, .IY
+			MOVE .A, .R3
+
+			MOVE [.R2], [.R3]
+
+			ADD #2, .IX
+			MOVE .A, .R2
+			ADD #66, .IX
+			MOVE .A, .R3
+
+
+            DEC .R3
+            DEC .R2
+bucle2:	    INC .R3
+            INC .R2
+            MOVE [.R2], [.R3]
+            CMP [.R2], #0
+            BNZ $bucle2
+        
+
+			INSTR /cadena3
+
+			ADD #66, .IX
+			MOVE .A, .R2
+
+
+            MOVE #cadena3, .R7
+            DEC .R2
+            DEC .R7
+bucle3:	    INC .R2
+            INC .R7
+            MOVE [.R7], [.R2]
+            CMP [.R7], #0
+            BNZ $bucle3
+        
+
+			ADD #66, .IX
+			MOVE .A, .R2
+			ADD #4, .IY
+			MOVE .A, .R3
+
+
+            DEC .R3
+            DEC .R2
+bucle4:	    INC .R3
+            INC .R2
+            MOVE [.R2], [.R3]
+            CMP [.R2], #0
+            BNZ $bucle4
+        
+
+			ADD #2, .IX
+			MOVE .A, .R2
+
+
+			WRSTR [.R2]
+			WRSTR /cadena4
+
+			ADD #4, .IY
+			MOVE .A, .R2
+
+
+			WRSTR [.R2]
+			WRSTR /cadena5
+
+			ADD #130, .IX
+			MOVE .A, .R2
+			ADD #3, .IY
+			MOVE .A, .R3
+
+			CMP [.R2], [.R3]
+			BNZ $Etiq4
+
+			ADD #134, .IX
+			MOVE .A, .R2
+
+			MOVE #1, [.R2]
+			BR $Etiq5
+Etiq4:
+
+			ADD #134, .IX
+			MOVE .A, .R2
+
+			MOVE #0, [.R2]
+Etiq5:
+
+			ADD #2, .IY
+			MOVE .A, .R2
+
+			CMP [.R2], #0
+			BZ $Etiq6
+
+			ADD #134, .IX
+			MOVE .A, .R2
+
+			CMP [.R2], #0
+			BZ $Etiq6
+
+			ADD #135, .IX
+			MOVE .A, .R2
+
+			MOVE #1, [.R2]
+			BR $Etiq7
+Etiq6:
+
+			ADD #135, .IX
+			MOVE .A, .R2
+
+			MOVE #0, [.R2]
+Etiq7:
+
+			ADD #135, .IX
+			MOVE .A, .R2
+
+			CMP [.R2], #0
+			BZ $Etiq8
+
+			ADD #2, .IY
+			MOVE .A, .R2
+
+			CMP [.R2], #0
+			BZ $Etiq9
+
+			ADD #136, .IX
+			MOVE .A, .R2
+
+			MOVE #0, [.R2]
+
+			ADD #136, .IX
+			MOVE .A, .R2
+
+			ADD #138, .IX
+			ADD #1, .A
+			MOVE [.R2], [.A]
+
+
+			ADD #130, .IX
+			MOVE .A, .R2
+
+			ADD #138, .IX
+			ADD #2, .A
+			MOVE [.R2], [.A]
+
+
+            ADD #138, .IX
+            MOVE #dir_ret0, [.A]
+            
+            ADD #138, .IX
+            MOVE .A, .IX
+            BR /EtiqProc2
+
+dir_ret0:   SUB .IX, #138
+            MOVE .A, .IX
+            
+Etiq9:
+
+			NOP
+Etiq8:
+
+			ADD #137, .IX
+			MOVE .A, .R2
+
+			MOVE #0, [.R2]
+
+			ADD #137, .IX
+			MOVE .A, .R2
+
+			ADD #138, .IX
+			ADD #1, .A
+			MOVE [.R2], [.A]
+
+
+			ADD #3, .IY
+			MOVE .A, .R2
+
+			ADD #138, .IX
+			ADD #2, .A
+			MOVE [.R2], [.A]
+
+
+            ADD #138, .IX
+            MOVE #dir_ret1, [.A]
+            
+            ADD #138, .IX
+            MOVE .A, .IX
+            BR /EtiqProc2
+
+dir_ret1:   SUB .IX, #138
+            MOVE .A, .IX
+            
+
+			ADD #0, .IY
+			MOVE .A, .R2
+			ADD #1, .IX
+			MOVE .A, .R3
+			MOVE [.R3], .R3
+
+			MOVE [.R2], [.R3]
+
+			BR [.IX]
+EtiqProc4:
+
+			ADD #4, .IX
+			MOVE .A, .R2
+
+			MOVE #2, [.R2]
+
+			ADD #3, .IY
+			MOVE .A, .R2
+			ADD #4, .IX
+			MOVE .A, .R3
+			ADD #5, .IX
+			MOVE .A, .R4
+
+			MUL [.R2], [.R3]
+			MOVE .A, [.R4]
+
+			ADD #5, .IX
+			MOVE .A, .R2
+			ADD #3, .IY
+			MOVE .A, .R3
+
+			MOVE [.R2], [.R3]
+
+			ADD #3, .IY
+			MOVE .A, .R2
+
+			ADD #78, .IX
+			ADD #1, .A
+			MOVE [.R2], [.A]
+
+
+			ADD #2, .IX
+			MOVE .A, .R2
+
+			ADD #78, .IX
+			ADD #2, .A
+			MOVE [.R2], [.A]
+
+
+            ADD #78, .IX
+            MOVE #dir_ret2, [.A]
+            
+            ADD #78, .IX
+            MOVE .A, .IX
+            BR /EtiqProc2
+
+dir_ret2:   SUB .IX, #78
+            MOVE .A, .IX
+            
+
+			ADD #6, .IX
+			MOVE .A, .R2
+
+			MOVE #1, [.R2]
+
+			ADD #6, .IX
+			MOVE .A, .R2
+			ADD #1, .IX
+			MOVE .A, .R3
+			MOVE [.R3], .R3
+
+			MOVE [.R2], [.R3]
+
+			ADD #7, .IX
+			MOVE .A, .R2
+
+			MOVE #16, [.R2]
+
+			ADD #7, .IX
+			MOVE .A, .R2
+			ADD #2, .IX
+			MOVE .A, .R3
+
+			CMP [.R2], [.R3]
+			BNZ $Etiq11
+
+			ADD #8, .IX
+			MOVE .A, .R2
+
+			MOVE #1, [.R2]
+			BR $Etiq12
+Etiq11:
+
+			ADD #8, .IX
+			MOVE .A, .R2
+
+			MOVE #0, [.R2]
+Etiq12:
+
+			ADD #8, .IX
+			MOVE .A, .R2
+
+			CMP [.R2], #0
+			BZ $Etiq13
+
+			BR [.IX]
+Etiq13:
+
+			ADD #9, .IX
+			MOVE .A, .R2
+
+			MOVE #2, [.R2]
+
+			ADD #2, .IX
+			MOVE .A, .R2
+			ADD #9, .IX
+			MOVE .A, .R3
+			ADD #10, .IX
+			MOVE .A, .R4
+
+			MUL [.R2], [.R3]
+			MOVE .A, [.R4]
+
+			ADD #11, .IX
+			MOVE .A, .R2
+
+			MOVE #1, [.R2]
+
+			ADD #10, .IX
+			MOVE .A, .R2
+			ADD #11, .IX
+			MOVE .A, .R3
+			ADD #12, .IX
+			MOVE .A, .R4
+
+			MUL [.R2], [.R3]
+			MOVE .A, [.R4]
+
+			ADD #1, .IX
+			MOVE .A, .R2
+			MOVE [.R2], .R2
+
+			ADD #78, .IX
+			ADD #1, .A
+			MOVE .R2, [.A]
+
+
+			ADD #12, .IX
+			MOVE .A, .R2
+
+			ADD #78, .IX
+			ADD #2, .A
+			MOVE [.R2], [.A]
+
+
+            ADD #78, .IX
+            MOVE #dir_ret3, [.A]
+            
+            ADD #78, .IX
+            MOVE .A, .IX
+            BR /EtiqProc4
+
+dir_ret3:   SUB .IX, #78
+            MOVE .A, .IX
+            
+
+			ADD #2, .IX
+			MOVE .A, .R2
+			ADD #1, .IX
+			MOVE .A, .R3
+			MOVE [.R3], .R3
+			ADD #13, .IX
+			MOVE .A, .R4
+
+			MUL [.R2], [.R3]
+			MOVE .A, [.R4]
+
+			ADD #13, .IX
+			MOVE .A, .R2
+			ADD #3, .IX
+			MOVE .A, .R3
+
+			MOVE [.R2], [.R3]
+
+			ADD #3, .IY
+			MOVE .A, .R2
+
+			ADD #78, .IX
+			ADD #1, .A
+			MOVE [.R2], [.A]
+
+
+			ADD #2, .IX
+			MOVE .A, .R2
+
+			ADD #78, .IX
+			ADD #2, .A
+			MOVE [.R2], [.A]
+
+
+            ADD #78, .IX
+            MOVE #dir_ret4, [.A]
+            
+            ADD #78, .IX
+            MOVE .A, .IX
+            BR /EtiqProc2
+
+dir_ret4:   SUB .IX, #78
+            MOVE .A, .IX
+            
+
+			ADD #14, .IX
+			MOVE .A, .R2
+
+
+            MOVE #cadena6, .R7
+            DEC .R2
+            DEC .R7
+bucle5:	    INC .R2
+            INC .R7
+            MOVE [.R7], [.R2]
+            CMP [.R7], #0
+            BNZ $bucle5
+        
+
+			ADD #14, .IX
+			MOVE .A, .R2
+
+
+			WRSTR [.R2]
+			WRSTR /cadena7
+
+			ADD #3, .IX
+			MOVE .A, .R2
+
+
+			WRINT [.R2]
+
+			WRSTR /cadena8
+
+			ADD #3, .IX
+			MOVE .A, .R2
+			ADD #1, .IX
+			MOVE .A, .R3
+			MOVE [.R3], .R3
+
+			MOVE [.R2], [.R3]
+
+			BR [.IX]
+EtiqProc5:
+
+			ADD #65, .IX
+			MOVE .A, .R2
+
+
+            MOVE #cadena9, .R7
+            DEC .R2
+            DEC .R7
+bucle6:	    INC .R2
+            INC .R7
+            MOVE [.R7], [.R2]
+            CMP [.R7], #0
+            BNZ $bucle6
+        
+
+			ADD #129, .IX
+			MOVE .A, .R2
+
+			MOVE #22, [.R2]
+
+			ADD #130, .IX
+			MOVE .A, .R2
+
+			MOVE #33, [.R2]
+
+			ADD #131, .IX
+			MOVE .A, .R2
+
+			MOVE #44, [.R2]
+
+			ADD #132, .IX
+			MOVE .A, .R2
+
+			MOVE #3, [.R2]
+
+			ADD #1, .IY
+			MOVE .A, .R2
+			ADD #132, .IX
+			MOVE .A, .R3
+			ADD #133, .IX
+			MOVE .A, .R4
+
+			MUL [.R2], [.R3]
+			MOVE .A, [.R4]
+
+			ADD #0, .IY
+			MOVE .A, .R2
+			ADD #134, .IX
+			MOVE .A, .R3
+
+			MOVE [.R2], [.R3]
+EtiqMin0:
+
+			ADD #129, .IX
+			MOVE .A, .R2
+			ADD #134, .IX
+			MOVE .A, .R3
+
+			CMP [.R2], [.R3]
+			BP $EtiqMin1
+			MOVE [.R2], [.R3]
+EtiqMin1:
+
+			ADD #130, .IX
+			MOVE .A, .R2
+			ADD #134, .IX
+			MOVE .A, .R3
+
+			CMP [.R2], [.R3]
+			BP $EtiqMin2
+			MOVE [.R2], [.R3]
+EtiqMin2:
+
+			ADD #3, .IY
+			MOVE .A, .R2
+			ADD #134, .IX
+			MOVE .A, .R3
+
+			CMP [.R2], [.R3]
+			BP $EtiqMin3
+			MOVE [.R2], [.R3]
+EtiqMin3:
+
+			ADD #131, .IX
+			MOVE .A, .R2
+			ADD #134, .IX
+			MOVE .A, .R3
+
+			CMP [.R2], [.R3]
+			BP $EtiqMin4
+			MOVE [.R2], [.R3]
+EtiqMin4:
+
+			ADD #133, .IX
+			MOVE .A, .R2
+			ADD #134, .IX
+			MOVE .A, .R3
+
+			CMP [.R2], [.R3]
+			BP $EtiqMin5
+			MOVE [.R2], [.R3]
+EtiqMin5:
+
+			ADD #65, .IX
+			MOVE .A, .R2
+
+
+			WRSTR [.R2]
+			WRSTR /cadena10
+
+			ADD #134, .IX
+			MOVE .A, .R2
+
+
+			WRINT [.R2]
+
+			WRSTR /cadena11
+
+			BR [.IX]
+main:
+
+			ADD #2, .IX
+			MOVE .A, .R2
+
+			MOVE #5, [.R2]
+
+			ADD #2, .IX
+			MOVE .A, .R2
+			ADD #1, .IX
+			MOVE .A, .R3
+
+			MOVE [.R2], [.R3]
+
+			ADD #3, .IX
+			MOVE .A, .R2
+
+
+            MOVE #cadena12, .R7
+            DEC .R2
+            DEC .R7
+bucle7:	    INC .R2
+            INC .R7
+            MOVE [.R7], [.R2]
+            CMP [.R7], #0
+            BNZ $bucle7
+        
+
+			ADD #3, .IX
+			MOVE .A, .R2
+			ADD #4, .IY
+			MOVE .A, .R3
+
+
+            DEC .R3
+            DEC .R2
+bucle8:	    INC .R3
+            INC .R2
+            MOVE [.R2], [.R3]
+            CMP [.R2], #0
+            BNZ $bucle8
+        
+
+			ADD #67, .IX
+			MOVE .A, .R2
+
+			MOVE #5, [.R2]
+
+			ADD #67, .IX
+			MOVE .A, .R2
+			ADD #1, .IX
+			MOVE .A, .R3
+
+			CMP [.R2], [.R3]
+			BNZ $Etiq14
+
+			ADD #68, .IX
+			MOVE .A, .R2
+
+			MOVE #1, [.R2]
+			BR $Etiq15
+Etiq14:
+
+			ADD #68, .IX
+			MOVE .A, .R2
+
+			MOVE #0, [.R2]
+Etiq15:
+
+			ADD #68, .IX
+			MOVE .A, .R2
+			ADD #2, .IY
+			MOVE .A, .R3
+
+			MOVE [.R2], [.R3]
+
+			ADD #4, .IY
+			MOVE .A, .R2
+
+
+			WRSTR [.R2]
+
+			ADD #3, .IY
+			MOVE .A, .R2
+
+			ININT [.R2]
+
+			ADD #69, .IX
+			MOVE .A, .R2
+
+
+            MOVE #cadena13, .R7
+            DEC .R2
+            DEC .R7
+bucle9:	    INC .R2
+            INC .R7
+            MOVE [.R7], [.R2]
+            CMP [.R7], #0
+            BNZ $bucle9
+        
+
+			ADD #69, .IX
+			MOVE .A, .R2
+
+
+			WRSTR [.R2]
+			WRSTR /cadena14
+
+			ADD #133, .IX
+			MOVE .A, .R2
+
+
+            MOVE #cadena15, .R7
+            DEC .R2
+            DEC .R7
+bucle10:	    INC .R2
+            INC .R7
+            MOVE [.R7], [.R2]
+            CMP [.R7], #0
+            BNZ $bucle10
+        
+
+			ADD #1, .IX
+			MOVE .A, .R2
+
+			ADD #262, .IX
+			ADD #1, .A
+			MOVE .R2, [.A]
+
+
+            ADD #133, .IX
+            MOVE .A, .R2
+            ADD #264, .IX
+            MOVE .A, .R3
+            DEC .R3
+            DEC .R2
+bucle11:	    INC .R3
+            INC .R2
+            MOVE [.R2], [.R3]
+            CMP [.R2], #0
+            BNZ $bucle11
+        
+
+            ADD #262, .IX
+            MOVE #dir_ret5, [.A]
+            
+            ADD #262, .IX
+            MOVE .A, .IX
+            BR /EtiqProc3
+
+dir_ret5:   SUB .IX, #262
+            MOVE .A, .IX
+            
+
+            ADD #262, .IX
+            MOVE #dir_ret6, [.A]
+            
+            ADD #262, .IX
+            MOVE .A, .IX
+            BR /EtiqProc5
+
+dir_ret6:   SUB .IX, #262
+            MOVE .A, .IX
+            
+
+			ADD #197, .IX
+			MOVE .A, .R2
+
+			MOVE #5, [.R2]
+
+			ADD #197, .IX
+			MOVE .A, .R2
+			ADD #3, .IY
+			MOVE .A, .R3
+
+			MOVE [.R2], [.R3]
+
+			ADD #1, .IX
+			MOVE .A, .R2
+
+			ADD #262, .IX
+			ADD #1, .A
+			MOVE .R2, [.A]
+
+
+			ADD #0, .IY
+			MOVE .A, .R2
+
+			ADD #262, .IX
+			ADD #2, .A
+			MOVE [.R2], [.A]
+
+
+            ADD #262, .IX
+            MOVE #dir_ret7, [.A]
+            
+            ADD #262, .IX
+            MOVE .A, .IX
+            BR /EtiqProc4
+
+dir_ret7:   SUB .IX, #262
+            MOVE .A, .IX
+            
+
+			ADD #3, .IY
+			MOVE .A, .R2
+
+			ADD #262, .IX
+			ADD #1, .A
+			MOVE [.R2], [.A]
+
+
+			ADD #1, .IX
+			MOVE .A, .R2
+
+			ADD #262, .IX
+			ADD #2, .A
+			MOVE [.R2], [.A]
+
+
+            ADD #262, .IX
+            MOVE #dir_ret8, [.A]
+            
+            ADD #262, .IX
+            MOVE .A, .IX
+            BR /EtiqProc2
+
+dir_ret8:   SUB .IX, #262
+            MOVE .A, .IX
+            
+
+			ADD #198, .IX
+			MOVE .A, .R2
+
+
+            MOVE #cadena16, .R7
+            DEC .R2
+            DEC .R7
+bucle12:	    INC .R2
+            INC .R7
+            MOVE [.R7], [.R2]
+            CMP [.R7], #0
+            BNZ $bucle12
+        
+
+			ADD #198, .IX
+			MOVE .A, .R2
+
+
+			WRSTR [.R2]
+			WRSTR /cadena17
+
+			ADD #4, .IY
+			MOVE .A, .R2
+
+
+			WRSTR [.R2]
+			WRSTR /cadena18
+			HALT
+
+
+cadena0:	DATA " # "
+cadena1:	DATA "."
+cadena2:	DATA "\n"
+cadena3:	RES 500
+cadena4:	DATA "\n"
+cadena5:	DATA "\n"
+cadena6:	DATA "el resultado es: "
+cadena7:	DATA "\n"
+cadena8:	DATA "\n"
+cadena9:	DATA "El minimo es "
+cadena10:	DATA "\n"
+cadena11:	DATA "\n"
+cadena12:	DATA "introduce un digito. "
+cadena13:	DATA "Escribe tu nombre. "
+cadena14:	DATA "\n"
+cadena15:	DATA "Hello, "
+cadena16:	DATA "Bye, "
+cadena17:	DATA "\n"
+cadena18:	DATA "\n"
+
+			inicio_estaticas: RES 68
+			inicio_pila: NOP
+
+			END
+

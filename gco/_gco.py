@@ -811,7 +811,7 @@ dir_ret{contador_llamadas}:   SUB #{tam_ra_llamado}, #64
         elif re.match(patron_read, linea, re.VERBOSE):
             esetiq = False
             coincidencia = re.match(patron_read, linea, re.VERBOSE)
-            transformar_dir(coincidencia.group(1), None, None)
+            transformar_dir(None, None, coincidencia.group(3))
             cadena = "\t\t\tININT [.R2]"
             escribir(cadena)
             escribir("\n")
