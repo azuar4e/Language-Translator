@@ -128,7 +128,7 @@ To load the `codobj.ens` file, go to `Archivo > Abrir y Ensamblar`. If everythin
 
 ![Assembly Window](images/image8.png)
 
-Now we are ready to run the assembler. Pressing ▶️ will execute the assembler and show the result. If our code calls console output functions, the console will open. In this case, we assembled the file `expr.txt` (available in the GitHub repository), and the result is as follows:
+Now we are ready to run the assembler. Pressing ▶️ will execute the assembler and show the result. If our code calls console output functions, the console will open. In this case, we assembled the file `expr.txt` (available in the `gco/` directory), and the result is as follows:
 
 ![Assembler Result](images/image9.png)
 
